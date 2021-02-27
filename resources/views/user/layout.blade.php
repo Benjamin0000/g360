@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>{{$title}} | GetSupport360</title>
+    <link href="/assets/images/favicon.png" rel="shortcut icon" type="image/ico" />
+    <link href="/assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/css/colors/blue.css" rel="stylesheet" type="text/css" />
+    <script>var baseurl = "/";</script>
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head><body class="fix-header fix-sidebar card-no-border">
+    <!-- ============================================================== -->
+    <!-- Preloader - style you can find in spinners.css -->
+    <!-- ============================================================== -->
+    <div class="preloader">
+        <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" /> </svg>
+    </div>
+    <!-- ============================================================== -->
+    <!-- Main wrapper - style you can find in pages.scss -->
+    <!-- ============================================================== -->
+    <div id="main-wrapper">
+        <!-- ============================================================== -->
+        <!-- Topbar header - style you can find in pages.scss -->
+        <!-- ============================================================== -->
+        <header class="topbar">
+            <nav class="navbar top-navbar navbar-expand-md navbar-light">
+                <!-- ============================================================== -->
+                <!-- Logo -->
+                <!-- ============================================================== -->
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">
+                        <!-- Logo icon -->
+                        <b>
+                            <img src="/assets/images/logo.png" alt="homepage" class="dark-logo" style="width: 65%" />
+                        </b>
+                    </a>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Logo -->
+                <!-- ============================================================== -->
+                <div class="navbar-collapse">
+                    <!-- ============================================================== -->
+                    <!-- toggle and nav items -->
+                    <!-- ============================================================== -->
+                    <ul class="navbar-nav mr-auto mt-md-0 ">
+                        <!-- This is  -->
+                        <li class="nav-item"> <a class="nav-link nav-toggler hidden-md-up text-muted waves-effect waves-dark" href="javascript:void(0)"><i class="ti-menu"></i></a> </li>
+                        <li class="nav-item"> <a class="nav-link sidebartoggler hidden-sm-down text-muted waves-effect waves-dark" href="javascript:void(0)"><i class="icon-arrow-left-circle"></i></a> </li>
+                        
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-muted text-muted waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="mdi mdi-message"></i>
+                                <div class="notify"> 
+                                                                    </div>
+                            </a>
+                            
+                            <div class="dropdown-menu mailbox animated bounceInDown">
+                                <ul>
+                                    <li>
+                                        <div class="drop-title"><i class="fa fa-link text-danger"></i> Notifications</div>
+                                    </li>
+                                    <li>
+                                        <div class="message-center">
+                                            <!-- Message -->
+                                                                                        <a href="/user/notification/b4c7dd4cad860d4718cdfdce36380bd3">
+                                                <div class="mail-contnet">
+                                                    <span class="mail-desc">Maintaince for homemade tile and frontage</span> 
+                                                    <span class="time">05:22PM</span>
+                                                </div>
+                                            </a>
+                                                                                        <a href="/user/notification/a539e9d79d351f93cc4c43e241d0275c">
+                                                <div class="mail-contnet">
+                                                    <span class="mail-desc">Maintaince for homemade tile and frontage</span> 
+                                                    <span class="time">09:36PM</span>
+                                                </div>
+                                            </a>
+                                                                                        <a href="/user/notification/c8819280ab0da9e0dddd4bf945ea24f7">
+                                                <div class="mail-contnet">
+                                                    <span class="mail-desc">0</span> 
+                                                    <span class="time">08:08PM</span>
+                                                </div>
+                                            </a>
+                                                                                    </div>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link text-center" href="/user/notification"> <strong>Check all notifications</strong> <i class="fa fa-angle-right"></i> </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-muted text-muted waves-effect waves-dark" href="/user/store/request"> <i class="mdi mdi-shopping"></i>
+                                <div class="notify"> 
+                                                                    </div>
+                            </a>
+                        </li>
+
+                        <li class="nav-item hide"> <a class="nav-link text-muted " href="javascript:void(0)"><i class="ti-user"></i> 123456789 </a> </li>
+                       
+                    </ul>
+                    
+                </div>
+            </nav>
+        </header>
+
+        <aside class="left-sidebar">
+            <!-- Sidebar scroll-->
+            <div class="scroll-sidebar">
+                <!-- User profile -->
+                <div class="user-profile">
+                    <!-- User profile image -->
+                    <div class="profile-img"> 
+                        <img src="/assets/images/default.png" alt="user" /> 
+                    </div>
+                    <!-- User profile text-->
+                    <div class="profile-text"> <a href="#" class="dropdown-toggle link u-dropdown" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">Hero hey Dash<span class="caret"></span></a>
+                        <div class="dropdown-menu animated flipInY">
+                            <a href="/user/profile" class="dropdown-item"><i class="ti-user"></i> My Profile</a>
+                            <div class="dropdown-divider"></div> <a href="/user/setting" class="dropdown-item"><i class="ti-settings"></i> Account Setting</a>
+                            <div class="dropdown-divider"></div> <a href="/user/logout" class="dropdown-item"><i class="fa fa-power-off"></i> Logout</a>
+                        </div>
+                    </div>
+                    <h6>G- No. :123456789 </h6>
+                </div>
+                <!-- End User profile text-->
+                <!-- Sidebar navigation-->
+                <nav class="sidebar-nav">
+                    <ul id="sidebarnav">
+                        <li>
+                            <a href="/user" >
+                                <i class="mdi mdi-gauge"></i>
+                                <span class="hide-menu">Dashboard </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="" aria-expanded="false" >
+                                <i class="mdi mdi-trending-up"></i>
+                                <span class="hide-menu">G - Funds </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="" aria-expanded="false" >
+                                <i class="mdi mdi-trending-up"></i>
+                                <span class="hide-menu">Investment </span>
+                            </a>
+                        </li>
+                        <li >
+                            <a href="" >
+                                <i class="mdi mdi-textbox"></i>
+                                <span class="hide-menu">Loan </span>
+                            </a>
+                        </li>
+                        <li >
+                            <a href="" >
+                                <i class="mdi mdi-ticket"></i>
+                                <span class="hide-menu">Bonus Reward </span>
+                            </a>
+                        </li>
+                        <li >
+                            <a href="" >
+                                <i class="mdi mdi-vector-arrange-above"></i>
+                                <span class="hide-menu">E - Pin </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="" >
+                                <i class="fa  fa-medkit"></i>
+                                <span class="hide-menu">Insurrance</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="" >
+                                <i class="fa  fa-medkit"></i>
+                                <span class="hide-menu">My Orders</span>
+                            </a>
+                        </li>
+
+                                                <li> 
+                            <a class="has-arrow " href="#" aria-expanded="false"><i class="mdi mdi-vector-polyline"></i><span class="hide-menu">My Store</span></a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="">Overview</a></li>
+                                <li><a href="">Add Product</a></li>
+                                <li><a href="">Manage Products</a></li>
+                                <li><a href="">Product Request</a></li>
+                                <li><a href="">Storefront</a></li>
+                            </ul>
+                        </li>
+                                                
+                        <li>
+                            <a class="has-arrow " href="#" aria-expanded="false"><i class="mdi mdi-vector-polyline"></i><span class="hide-menu">Downline</span></a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="">Direct Referals</a></li>
+                                <li><a href="">Indirect Referal</a></li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a class="has-arrow " href="#" aria-expanded="false"><i class="mdi mdi-history"></i><span class="hide-menu">Transaction History</span></a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="">E - wallet</a></li>
+                                <li><a href="">Point Value</a></li>
+                                <li><a href="">Deca Unit</a></li>
+                            </ul>
+                        </li>
+                        
+                        <!--<li>
+                            <a href="/user/bank" >
+                                <i class="mdi mdi-widgets"></i>
+                                <span class="hide-menu">Bank </span>
+                            </a>
+                        </li>-->
+
+                        <li>
+                            <a href="" >
+                                <i class="mdi mdi-help"></i>
+                                <span class="hide-menu">Support </span>
+                            </a>
+                        </li>
+
+                    </ul>
+                </nav>
+                <!-- End Sidebar navigation -->
+            </div>
+            <!-- End Sidebar scroll-->
+            <!-- Bottom points-->
+            <div class="sidebar-footer">
+                <!-- item-->
+                <a href="" class="link" data-toggle="tooltip" title="Settings"><i class="ti-settings"></i></a>
+                <!-- item-->
+                <a href="" class="link" data-toggle="tooltip" title="Notification"><i class=" far fa-bell"></i></a>
+                <!-- item-->
+                <a href="" class="link" data-toggle="tooltip" title="Logout"><i class="mdi mdi-power"></i></a>
+            </div>
+            <!-- End Bottom points-->
+        </aside>
+
+<div class="page-wrapper">
+    <!-- ============================================================== -->
+    <!-- Container fluid  -->
+    <!-- ============================================================== -->
+<div class="container-fluid">
+    @yield('content')
+</div>
+<footer class="footer">
+    © 2021 Getsupport360 Team
+</footer>
+</div>
+</div>
+<script type='text/javascript' src='/assets/plugins/jquery/jquery.min.js'></script>
+<script type='text/javascript' src='/assets/plugins/bootstrap/js/popper.min.js'></script>
+<script type='text/javascript' src='/assets/plugins/bootstrap/js/bootstrap.min.js'></script>
+<script type='text/javascript' src='/assets/js/jquery.slimscroll.js'></script>
+<script type='text/javascript' src='/assets/js/waves.js'></script>
+<script type='text/javascript' src='/assets/js/sidebarmenu.js'></script>
+<script type='text/javascript' src='/assets/plugins/sticky-kit-master/dist/sticky-kit.min.js'></script>
+<script type='text/javascript' src='/assets/js/custom.js'></script>
+<script type='text/javascript' src='/assets/plugins/styleswitcher/jQuery.style.switcher.js'></script>    
+</body>
+</html>
