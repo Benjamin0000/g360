@@ -43,18 +43,18 @@
             {{-- <input type="hidden" name="redirect" value="<?=$this->input->get("redirect")?>" /> --}}
             <h6 id="err_zone2" class="text-center text-danger mt-3"></h6>
             <div class="form-group mt-2">
-                <label for="sponsor">G-Number</label>
-                <input type="text" class="form-control" id="sponsor" name="gnumber" required>
+                <label for="gnumber">G-Number</label>
+                <input type="text" class="form-control" id="gnumber" name="gnumber" required>
             </div>
             <div class="form-group">
                 <label for="email_phone">Password</label>
                 <input type="password" class="form-control" name="password" placeholder="Password" required>
             </div>
-
+             @csrf
             <div class="form-group mt-3">
               <div class="col-md-12">
                 <div class="checkbox checkbox-primary  pt-0">
-                  <input id="checkbox-signup" type="checkbox">
+                  <input id="checkbox-signup" name="rem" value='1' type="checkbox">
                   <label for="checkbox-signup"> Remember me </label>
                 </div>
               </div>
@@ -69,7 +69,7 @@
               <div class="col-sm-12 text-center">
                 <p>
                   <a href="{{route('register')}}" class="text-primary ml-1">Sign Up</a> | Reset:
-                  <a href="" class="text-primary ml-1"> password, G- number </a> 
+                  <a href="javascript:void(0)" id="to-recover" class="text-primary ml-1"> password, G- number </a> 
                 </p>
               </div>
             </div>

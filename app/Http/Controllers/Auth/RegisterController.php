@@ -90,7 +90,7 @@ class RegisterController extends Controller
      */
     public function resendVerification()
     {
-
+        
     }
     /**
      * Registation confirmation

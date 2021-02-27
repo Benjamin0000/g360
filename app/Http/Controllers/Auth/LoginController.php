@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
+use App\Http\Helpers;
+use App\Models\User;
 class LoginController extends Controller
 {
     /**
@@ -17,45 +19,51 @@ class LoginController extends Controller
         return view('auth.login');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function login(Request $request)
+    {
+        if(!$request->gnumber || !$request->password)return;
+        if( $check = User::where('gnumber', $request->gnumber)->first() ){
+            if( password_verify($request->password, $check->password) ){
+                $d = [
+                    'd'=>  ['r'=>route('dasbhoard.index')]
+                ];
+                $rem = $request->rem ? true : false;
+                Auth::login($check, $rem);
+                die(Helpers::ajaxOut($d, true));
+            }else
+                die(Helpers::ajaxOut("G-number or password don't match", false));
+        }
+        die(Helpers::ajaxOut("Account don't exist",false));
+    }
+   
+
+    public function showEmailForm()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function sendResetLink(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function showUpdatePassForm($token, $gnumber)
+    {
+
+    }
+
+    public function updatePassword(Request $request)
+    {
+        
+    }
+
+
+    public function forgotGnumber()
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function getGnumber(Request $request)
     {
         //
     }

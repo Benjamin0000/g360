@@ -402,7 +402,7 @@ $(function () {
 
         $.ajax({
             type: "POST",
-            url: baseurl+'intl/check_logins',
+            url: '/login',
             data: datastring,
             dataType: "json",
             success: function(data) {

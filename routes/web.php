@@ -33,6 +33,12 @@ Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+#pass reset
+Route::get('/reset', [LoginController::class, 'showEmailForm'])->name('pass.showEmailForm');
+Route::post('/reset', [LoginController::class, 'sendResetLink'])->name('pass.sendResetLink');
+Route::get('/password/reset/{token}/{email}', [LoginController::class, 'showUpdateForm'])->name('pass.showUpdateForm');
+Route::post('/password/update', [LoginController::class, 'updatePassword'])->name('pass.updatePass');
+
 #registration
 Route::get('/register', [RegisterController::class, 'index'])->name('register');
 Route::post('/register', [RegisterController::class, 'store'])->name('register');
