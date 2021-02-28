@@ -65,7 +65,7 @@ class RegisterController extends Controller
                 $data['id'] = Helpers::genTableId(User::class);
                 $data['gnumber'] = Helpers::genGnumber();
                 $data['password'] = Hash::make($data['password']);
-                $data['ref_num'] = $data['sponsor'];
+                $data['ref_gnum'] = $data['sponsor'];
                 $user = User::create($data);
            
                 $token = Token::create([

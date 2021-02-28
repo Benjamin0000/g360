@@ -23,7 +23,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('phone');
             $table->string('pic')->nullable();
-            $table->bigInteger('ref_num');
+            $table->bigInteger('ref_gnum');
             $table->integer('pkg_id')->default(0);
             $table->decimal('w_balance', 10, 2)->default(0); // withdrawal wallet
             $table->decimal('t_balance', 10, 2)->default(0); // transaction wallet
