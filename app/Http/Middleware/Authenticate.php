@@ -3,6 +3,8 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
+use Illuminate\Support\Facades\Auth;
+use Closure;
 
 class Authenticate extends Middleware
 {
@@ -17,5 +19,25 @@ class Authenticate extends Middleware
         if (! $request->expectsJson()) {
             return route('login');
         }
+    }
+     /**
+     * Handle an incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @param  string[]  ...$guards
+     * @return mixed
+     *
+     * @throws \Illuminate\Auth\AuthenticationException
+     */
+    public function handle($request, Closure $next, ...$guards)
+    {
+        $this->authenticate($request, $guards);
+        $currentUrl = url()->current();
+        if($currentUrl == route('package.index'))
+            return $next($request);
+        if(Auth::user()->pkg)
+            return $next($request);
+        return redirect(route('package.index'))->with('select_a_pkg', 'not empty');
     }
 }

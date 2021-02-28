@@ -65,7 +65,7 @@ class RegisterController extends Controller
                 $data['id'] = Helpers::genTableId(User::class);
                 $data['gnumber'] = Helpers::genGnumber();
                 $data['password'] = Hash::make($data['password']);
-                $data['ref'] = $data['sponsor'];
+                $data['ref_num'] = $data['sponsor'];
                 $user = User::create($data);
            
                 $token = Token::create([
@@ -87,7 +87,6 @@ class RegisterController extends Controller
                     ]);
                 }
                 if(!$mailSent){
-                    $user->wallet->delete();
                     $user->delete();
                     $token->delete();
                     die(Helpers::ajaxOut('', false));

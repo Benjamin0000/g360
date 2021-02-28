@@ -252,11 +252,11 @@
     <!-- ============================================================== -->
     <!-- Container fluid  -->
     <!-- ============================================================== -->
-<div class="container-fluid">
+<div class="container-fluid" style="padding:20px 20px;">
     @yield('content')
 </div>
 <footer class="footer">
-    © 2021 Getsupport360 Team
+    © {{date('Y')}} Getsupport360 Team
 </footer>
 </div>
 </div>

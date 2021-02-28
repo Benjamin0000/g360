@@ -27,7 +27,7 @@ class User extends Authenticatable
         'title',
         'fname',
         'lname',
-        'ref',
+        'ref_num',
         'email',
         'phone',
         'password',

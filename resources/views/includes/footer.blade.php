@@ -121,7 +121,7 @@
 		<footer class="footer-bottom-area">
 			<div class="container">
 				<div class="copy-right">
-					<p>© Copyright 2020 Get Suport 360. All Rights Reserved By</p>
+					<p>© Copyright {{date('Y')}} Get Suport 360. All Rights Reserved By</p>
 				</div>
 			</div>
 		</footer>

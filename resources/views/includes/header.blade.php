@@ -33,7 +33,8 @@
 		<!-- Title -->
 		<link href="/assets/css/style.css" rel="stylesheet" type="text/css" />
 		<link href="/assets/css/colors/blue.css" rel="stylesheet" type="text/css" />
-		<title>{{$title}}</title>
+		<title>{{$title}}</title> 
+		<style>@media screen and (min-width:992px){.m-auth{display:none;}}</style>
     </head>
     <body>
 		<!-- Start Preloader Area -->
@@ -128,9 +129,20 @@
 											</a>
 										</li>
 
+										<li class="nav-item m-auth">
+											<a href="{{route('login')}}" class="nav-link">
+												 Login <span class='fa fa-lock' ></span>
+											</a>
+										</li>
+
+										<li class="nav-item m-auth">
+											<a href="{{route('register')}}" class="nav-link">
+												 Sign up <span class='fa fa-user' ></span>
+											</a>
+										</li>
 									</ul>
 									
-									
+									@guest
 									<!-- Start Other Option -->
 									<div class="others-option">
 										<div class="get-quote">
@@ -142,17 +154,16 @@
 											</a>
 										</div>
 									</div>
-									<!-- End Other Option -->
-									{{-- 
-										<div class="others-option">
+									<!-- End Other Option -->		
+									@else			
+									<div class="others-option">
 										<div class="get-quote">
-											<a href="" class="default-btn">
-												User Dashboard
+											<a href="{{route('dasbhoard.index')}}" class="default-btn">
+												My Dashboard
 											</a>
 										</div>
 									</div>
-									--}}
-									
+									@endguest									
 								</div>
 							</div>
 						</nav>
