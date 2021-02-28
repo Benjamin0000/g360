@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 use App\Mail\ChangePassword;
 use App\Http\Helpers;
 use App\Models\User;
@@ -46,6 +47,7 @@ class LoginController extends Controller
                 ];
                 $rem = $request->rem ? true : false;
                 Auth::login($check, $rem);
+                Session::flash('login_success', 'not empty');
                 return Helpers::ajaxOut($d, true);
             }else
                 die(Helpers::ajaxOut("G-number or password don't match", false));
@@ -146,7 +148,7 @@ class LoginController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function logout() : RedirectResponse
+    public function logout() 
     {
         Auth::logout();
         return redirect( route('login') )->with('logout', 'not empty');

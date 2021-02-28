@@ -268,6 +268,21 @@
 <script type='text/javascript' src='/assets/js/sidebarmenu.js'></script>
 <script type='text/javascript' src='/assets/plugins/sticky-kit-master/dist/sticky-kit.min.js'></script>
 <script type='text/javascript' src='/assets/js/custom.js'></script>
-<script type='text/javascript' src='/assets/plugins/styleswitcher/jQuery.style.switcher.js'></script>    
+<script type='text/javascript' src='/assets/plugins/styleswitcher/jQuery.style.switcher.js'></script>   
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js" integrity="sha512-efUTj3HdSPwWJ9gjfGR71X9cvsrthIA78/Fvd/IN+fttQVy7XWkOAXb295j8B3cmm/kFKVxjiNYzKw9IQJHIuQ==" crossorigin="anonymous"></script>
+<script>
+$(".lou_btn").click(function(){
+  $("#lou_f").submit();
+});
+@if( session('login_success') )
+  swal({
+    title: "Welcome back!",
+    text: "{{Auth::user()->fname}}",
+    icon: "success",
+    button: "Thank you",
+  });
+@endif
+</script>
 </body>
 </html>

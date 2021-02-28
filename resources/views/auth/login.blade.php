@@ -46,6 +46,10 @@
             <div class="alert alert-success">
               Password changed! please login with your new password
             </div>
+          @elseif(session('logout'))
+            <div class="alert alert-success">
+              Logout was successful
+            </div>
           @endif
           <form class="form-horizontal" id="loginform" action="">
             <a href="/" class="text-center db">
