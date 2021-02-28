@@ -16,6 +16,17 @@ use Carbon\Carbon;
 
 class RegisterController extends Controller
 {
+
+     /**
+     * Creates a new controller instance
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('guest')->except('verifyEmail');
+    }
+    
     /**
      * Display a listing of the resource.
      *
@@ -34,30 +45,32 @@ class RegisterController extends Controller
     public function store(Request $request) 
     {
         if($request->ajax()){
-            $okay = true;
+            $noError = true;
             $fvalues = [
                 'title','username',
                 'fname','lname', 'phone',
-                'sponsor','email','password'
+                'sponsor','email','password',
+                'confirm_password'
             ];
             foreach($fvalues as $value){
                 if($msg = Helpers::formE($value)){
                     $out['rv'][] = ['ele'=>$value,'msg'=>$msg, 'status'=>false];
-                    $okay = false;
+                    $noError = false;
                 }else{
                     $out['rv'][] = ['ele'=>$value,'msg'=> null,'status'=>true];
                 }
             }
-            if($okay){
+            if($noError){
                 $data = $request->all();
-                $data['id'] = Helpers::genUserId();
+                $data['id'] = Helpers::genTableId(User::class);
                 $data['gnumber'] = Helpers::genGnumber();
                 $data['password'] = Hash::make($data['password']);
                 $data['ref'] = $data['sponsor'];
                 $user = User::create($data);
            
                 $token = Token::create([
-                    'user_id'=>$data['id'],
+                    'id'=>Helpers::genTableId(Token::class),
+                    'user_id'=>$user['id'],
                     'email'=>$user['email'],
                     'token'=>Helpers::getVToken()
                 ]);
@@ -77,21 +90,13 @@ class RegisterController extends Controller
                     $user->wallet->delete();
                     $user->delete();
                     $token->delete();
-                    die();
+                    die(Helpers::ajaxOut('', false));
                 }
             }
-            return Helpers::ajaxOut($out, $okay);
+            return Helpers::ajaxOut($out, $noError);
         }
     }
-    /**
-     * Resend Verification
-     *
-     * @param  \Illuminate\Http\Request  $request
-     */
-    public function resendVerification()
-    {
-        
-    }
+
     /**
      * Registation confirmation
      *
@@ -115,7 +120,7 @@ class RegisterController extends Controller
                         if( $user->email_verified_at == '' ){
                             $user->email_verified_at = Carbon::now();
                             $r_to = 'pkg';
-                            //create wallet;
+                            #create wallet
                         }else 
                             $r_to = 'dash';
                         $user->save();
@@ -125,7 +130,7 @@ class RegisterController extends Controller
                             return redirect( route('package.index') )->with('choose_pkg', 'select pkg');
                         }
                         else
-                            return redirect( route('dashboard.index') )->with('email_verified', 'vefified');
+                            return redirect( route('login') )->with('email_verified', 'vefified');
                     }
                }
                $check->delete();

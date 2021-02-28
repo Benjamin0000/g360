@@ -17,6 +17,8 @@ use Exception;
   class Helpers 
   {
 
+    public const LOCAL_CURR_SYMBOL = '₦';
+
 	/**
      * Store Email Addresses
 	 * 
@@ -84,6 +86,7 @@ use Exception;
             return $token;
         return self::getVToken();
       }
+
      /**
       * Get IP address of visitors
       *
@@ -110,10 +113,11 @@ use Exception;
              $ipaddress = '';
          return $ipaddress;
      }
+
      /**
-      * Validate registration from
-      *
-      * @return String | void
+      * Validate input fields in registration form
+      * @param  string $field (field name)
+      * @return string | void
      */
      public static function formE($field)
      {
@@ -158,14 +162,11 @@ use Exception;
                     return "email is too long";
                 if(!filter_var($value, FILTER_VALIDATE_EMAIL))
                     return "invalid email address";
+                if(User::where('email', $value)->exists())
+                    return 'email already exists';
             break;
 
             case 'phone': 
-                if(strlen($value) <= 0)
-                    return "phone number is too short";
-                elseif(strlen($value) >= 20)
-                    return "phone number is too long";
-                #validate phone number format
                 $phoneUtil = PhoneNumberUtil::getInstance();
                 try {
                     $proto = $phoneUtil->parse($value, "NG");
@@ -191,72 +192,82 @@ use Exception;
                     return "password is too long";
             break;
 
+            case 'confirm_password': 
+                if($value !== request('password'))
+                    return 'password don\'t  match';
+            break;
+
             default: 
                 throw new Exception("invalid field");
-                break;
         }
         return null;
     }
 
+    /**
+      * Get gnumber for the default user
+      * @param  void 
+      * @return int || null
+     */
+    public static function defaultGnum()
+    {
+        $defaultUser = User::where('def_user', 1)->first();
+        if($defaultUser)
+            return $defaultUser->gnumber;
+        return null;
+    }
+
+    /**
+      * Generate gnumber for new users
+      * @param  void 
+      * @return int 
+    */
     public static function genGnumber()
     {
-        $id = mt_rand(10000000,99999999);
+        $id = mt_rand(1000000000,9999999999);
         if(!User::where('gnumber', $id)->exists())
             return $id;
         return self::genGnumber();
     } 
 
-    public static function genUserId()
+    /**
+      * Generate user id for new users
+      * @param  void 
+      * @return int 
+    */
+    public static function genTableId($class)
     {
         $id = bin2hex(openssl_random_pseudo_bytes(5));
-        if(!User::where('id', $id)->exists())
+        if(!$class::where('id', $id)->exists())
             return $id;
-        return self::genUserId();
+        return self::genTableId($class);
     }
 
-    public static function getCurrency()
+    /**
+      * Ajax request ouput format
+      * for login and registratoin
+      * @param  array || object || null $out  
+      * @return object | string
+    */
+    public static function ajaxOut($out = null,$status = true) 
     {
-        return '₦';
-    }
-
-    public static function ajaxOut($out = null,$status = true)
-    {
-        // self::_sleep(1);
-
-        $m = [];
         if($status)
-        {
             $m =  ['status'=> true, 'msg'=> 'Action completed'];
-        }
         else
-        {
             $m =  ['status'=> false, 'msg'=> 'Action failed'];
-        }
-
-        if(is_array($out) || is_object($out))
-        {
+        if(is_array($out) || is_object($out)){
             foreach($out as $k => $v)
-            {
-                $m[$k] = $v;
-            }
+                $m[$k] = $v; 
         }
-        elseif(is_string($out))
-        {
+        elseif(is_string($out)){
             $m['msg'] = $out;
             $m['status'] = $status;
         }
-        else if(is_null($out))
-        {
+        else if(is_null($out)){
             $m['status'] = $status;
             $m['msg'] = null;
         }
-
         return json_encode($m);
     }
 
-    public static function _sleep($sec)
-    {
-        sleep($sec);
-    }
   } 
  ?>

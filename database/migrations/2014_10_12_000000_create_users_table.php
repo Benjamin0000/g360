@@ -14,17 +14,18 @@ class CreateUsersTable extends Migration
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->string('id')->primary();
+            $table->string('id', 30)->primary();
             $table->string('username')->unique();
-            $table->integer('gnumber')->unique();
+            $table->bigInteger('gnumber')->unique();
             $table->string('title', 5);
             $table->string('fname');
             $table->string('lname');
-            $table->string('email');
+            $table->string('email')->unique();
             $table->string('phone');
             $table->string('pic')->nullable();
             $table->integer('ref');
             $table->integer('pkg_id')->default(0);
+            $table->tinyInteger('def_user')->default(0); // Default user that refers other users without a sponsor
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

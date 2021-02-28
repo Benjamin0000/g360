@@ -181,12 +181,26 @@ $(function () {
         $("#loginform").slideUp();
         $("#recoverform").fadeIn();
     });
-
-     // ==============================================================
+    $('#to-login').on("click", function () {
+        $("#recoverform").hide();
+        $("#loginform").fadeIn();
+    });
+    // ==============================================================
     // Collapsable cards
     // ==============================================================
     $(document).on("click", ".card-actions a", function(e) {
     if (e.preventDefault(), $(this).hasClass("btn-close")) $(this).parent().parent().parent().fadeOut();
+    });
+    
+    $(document).on("click", ".ssshow", function(){
+        var state = $('.password');
+        if(state.attr('type') == 'password'){
+            state.attr('type', 'text');
+            $(this).html('Hide');
+        }else if(state.attr('type') == 'text'){
+            state.attr('type', 'password');
+            $(this).html('Show');
+        }
     });
 
     // For Custom File Input
@@ -298,52 +312,39 @@ $(function () {
         
     });
 
-    $("#vform").on('submit',function(e){
-
+    $("#recoverform").on('submit', function(e){
         var $form = $(this);
-        if($form.data('forward'))
-        {
-            return;
-        }
         e.preventDefault();
         e.stopPropagation();
-        
-        var $ele = $form.find('#vbtn');
-        
+        var $ele = $form.find('#rbtn');
         $ele.data('text',$ele.text());
         $ele.html(loader);
         $ele.prop('disabled',true);
-        
         var datastring = $form.serialize();
-
         $.ajax({
             type: "POST",
-            url: baseurl+'intl/check_verification_code',
+            url: '/reset',
             data: datastring,
             dataType: "json",
             success: function(data) {
                 console.log(data);
                 $ele.text($ele.data('text'));
-                $ele.prop('disabled',false);
-                                
-                if(data.status)
-                {
-                    $form.data('forward',true);
-                    $form.submit();
+                $ele.prop('disabled',false);       
+                if(data.status){
+                    $("#recoverform").html("<div class='alert alert-success'>A verification link has been sent to your email, please click on it to reset your password</div>");
                 }
-                else
-                {
+                else{
                     var $in = $("#vcode");
                     $in.removeClass('is-valid');
                     $in.addClass('is-invalid');
-                    $("#vcode_error").text(data.msg);
+                    $("#rperror").text(data.msg);
                 }
             },
             error: function(xhr, status, error) {
                 console.log('error',xhr.responseText);
                 $ele.text($ele.data('text'));
                 $ele.prop('disabled',false);
-                $("#err_zone2").html(xhr_error);
+                $("#err_zone1").html(xhr_error);
             }
         });
     });
@@ -478,4 +479,5 @@ function _down(sec){
         }
     },1000);
 }
+
 

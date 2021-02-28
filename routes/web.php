@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\PackageController;
+use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,15 +18,15 @@ use App\Http\Controllers\User\PackageController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-// Route::get('/test', function(){
-//     return view('user.layout');
-// });
+Route::get('/test', function(){
+    return dd(Auth::user());
+});
 
 Route::get('/',  [FrontController::class, 'index'])->name('front.index');
 Route::get('/about',  [FrontController::class, 'about'])->name('front.about');
 Route::get('/how-it-works',  [FrontController::class, 'how_works'])->name('front.how_works');
 Route::get('/services',  [FrontController::class, 'services'])->name('front.services');
-
+Route::get('/terms-and-condition', [FrontController::class, 'terms'])->name('front.terms');
 #store
 Route::get('/store', [StoreController::class, 'index'])->name('store.index');
 #login
@@ -34,9 +35,8 @@ Route::post('/login', [LoginController::class, 'login'])->name('login');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 #pass reset
-Route::get('/reset', [LoginController::class, 'showEmailForm'])->name('pass.showEmailForm');
 Route::post('/reset', [LoginController::class, 'sendResetLink'])->name('pass.sendResetLink');
-Route::get('/password/reset/{token}/{email}', [LoginController::class, 'showUpdateForm'])->name('pass.showUpdateForm');
+Route::get('/password/reset/{token}/{email}', [LoginController::class, 'showUpdatePassForm'])->name('pass.showUpdateForm');
 Route::post('/password/update', [LoginController::class, 'updatePassword'])->name('pass.updatePass');
 
 #registration

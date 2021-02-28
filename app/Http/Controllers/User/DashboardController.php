@@ -8,13 +8,22 @@ use Illuminate\Http\Request;
 class DashboardController extends Controller
 {
     /**
+    * Creates a new controller instance
+    *
+    * @return void
+    */
+   public function __construct()
+   {
+     $this->middleware('auth');
+   }
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        return view('user.dasbhoard.index');
+        return view('user.dashboard.index');
     }
 
     /**

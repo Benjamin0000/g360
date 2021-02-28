@@ -9,14 +9,22 @@ class PasswordReset extends Model
 {
     use HasFactory;
 
+    public $incrementing = false;
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
+        'id',
         'user_id',
         'token',
         'email',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

@@ -7,11 +7,11 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title>{{$title}} | GetSupport360</title>
-    <link href="/assets/images/favicon.png" rel="shortcut icon" type="image/ico" />
+    <link rel="icon" type="image/png" href="/assets/frontpage/img/favicon.png">
     <link href="/assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="/assets/css/style.css" rel="stylesheet" type="text/css" />
     <link href="/assets/css/colors/blue.css" rel="stylesheet" type="text/css" />
-    <script>var baseurl = "/";</script>
+    <script>var baseurl = "/";</script> 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -125,63 +125,63 @@
                         <img src="/assets/images/default.png" alt="user" /> 
                     </div>
                     <!-- User profile text-->
-                    <div class="profile-text"> <a href="#" class="dropdown-toggle link u-dropdown" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">Hero hey Dash<span class="caret"></span></a>
+                    <div class="profile-text"> <a href="#" class="dropdown-toggle link u-dropdown" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">@ {{Auth::user()->username}}<span class="caret"></span></a>
                         <div class="dropdown-menu animated flipInY">
                             <a href="/user/profile" class="dropdown-item"><i class="ti-user"></i> My Profile</a>
                             <div class="dropdown-divider"></div> <a href="/user/setting" class="dropdown-item"><i class="ti-settings"></i> Account Setting</a>
-                            <div class="dropdown-divider"></div> <a href="/user/logout" class="dropdown-item"><i class="fa fa-power-off"></i> Logout</a>
+                            <div class="dropdown-divider"></div> <a href="javascript:void(0)" class="dropdown-item lou_btn"><i class="fa fa-power-off"></i> Logout</a>
                         </div>
                     </div>
-                    <h6>G- No. :123456789 </h6>
+                    <h6>G- No. : {{Auth::user()->gnumber}} </h6>
                 </div>
                 <!-- End User profile text-->
                 <!-- Sidebar navigation-->
                 <nav class="sidebar-nav">
                     <ul id="sidebarnav">
                         <li>
-                            <a href="/user" >
+                            <a href="{{route('dasbhoard.index')}}" >
                                 <i class="mdi mdi-gauge"></i>
                                 <span class="hide-menu">Dashboard </span>
                             </a>
                         </li>
                         <li>
-                            <a href="" aria-expanded="false" >
+                            <a href="/kdkd" aria-expanded="false" >
                                 <i class="mdi mdi-trending-up"></i>
                                 <span class="hide-menu">G - Funds </span>
                             </a>
                         </li>
                         <li>
-                            <a href="" aria-expanded="false" >
+                            <a href="dd" aria-expanded="false" >
                                 <i class="mdi mdi-trending-up"></i>
                                 <span class="hide-menu">Investment </span>
                             </a>
                         </li>
                         <li >
-                            <a href="" >
+                            <a href="dddd" >
                                 <i class="mdi mdi-textbox"></i>
                                 <span class="hide-menu">Loan </span>
                             </a>
                         </li>
                         <li >
-                            <a href="" >
+                            <a href="dddd" >
                                 <i class="mdi mdi-ticket"></i>
                                 <span class="hide-menu">Bonus Reward </span>
                             </a>
                         </li>
                         <li >
-                            <a href="" >
+                            <a href="fff" >
                                 <i class="mdi mdi-vector-arrange-above"></i>
                                 <span class="hide-menu">E - Pin </span>
                             </a>
                         </li>
                         <li>
-                            <a href="" >
+                            <a href="ddd" >
                                 <i class="fa  fa-medkit"></i>
                                 <span class="hide-menu">Insurrance</span>
                             </a>
                         </li>
                         <li>
-                            <a href="" >
+                            <a href="ddd" >
                                 <i class="fa  fa-medkit"></i>
                                 <span class="hide-menu">My Orders</span>
                             </a>
@@ -190,28 +190,28 @@
                                                 <li> 
                             <a class="has-arrow " href="#" aria-expanded="false"><i class="mdi mdi-vector-polyline"></i><span class="hide-menu">My Store</span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="">Overview</a></li>
-                                <li><a href="">Add Product</a></li>
-                                <li><a href="">Manage Products</a></li>
-                                <li><a href="">Product Request</a></li>
-                                <li><a href="">Storefront</a></li>
+                                <li><a href="dd">Overview</a></li>
+                                <li><a href="dd">Add Product</a></li>
+                                <li><a href="dd">Manage Products</a></li>
+                                <li><a href="dd">Product Request</a></li>
+                                <li><a href="dd">Storefront</a></li>
                             </ul>
                         </li>
                                                 
                         <li>
                             <a class="has-arrow " href="#" aria-expanded="false"><i class="mdi mdi-vector-polyline"></i><span class="hide-menu">Downline</span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="">Direct Referals</a></li>
-                                <li><a href="">Indirect Referal</a></li>
+                                <li><a href="dd">Direct Referals</a></li>
+                                <li><a href="dd">Indirect Referal</a></li>
                             </ul>
                         </li>
 
                         <li>
                             <a class="has-arrow " href="#" aria-expanded="false"><i class="mdi mdi-history"></i><span class="hide-menu">Transaction History</span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="">E - wallet</a></li>
-                                <li><a href="">Point Value</a></li>
-                                <li><a href="">Deca Unit</a></li>
+                                <li><a href="dd">E - wallet</a></li>
+                                <li><a href="dd">Point Value</a></li>
+                                <li><a href="dd">Deca Unit</a></li>
                             </ul>
                         </li>
                         
@@ -223,7 +223,7 @@
                         </li>-->
 
                         <li>
-                            <a href="" >
+                            <a href="dd" >
                                 <i class="mdi mdi-help"></i>
                                 <span class="hide-menu">Support </span>
                             </a>
@@ -241,11 +241,13 @@
                 <!-- item-->
                 <a href="" class="link" data-toggle="tooltip" title="Notification"><i class=" far fa-bell"></i></a>
                 <!-- item-->
-                <a href="" class="link" data-toggle="tooltip" title="Logout"><i class="mdi mdi-power"></i></a>
+                <a href="javascript:void(0)" class="link lou_btn" data-toggle="tooltip" title="Logout"><i class="mdi mdi-power"></i></a>
             </div>
             <!-- End Bottom points-->
         </aside>
-
+        <form action="{{route('logout')}}" method="post" id='lou_f'>
+            @csrf
+         </form>
 <div class="page-wrapper">
     <!-- ============================================================== -->
     <!-- Container fluid  -->
