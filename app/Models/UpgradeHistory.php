@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class WalletHistory extends Model
+class UpgradeHistory extends Model
 {
     use HasFactory;
 
@@ -18,12 +18,10 @@ class WalletHistory extends Model
      */
     protected $fillable = [
         'id',
-        'amount',
         'user_id',
         'gnumber',
-        'name',
-        'type',
-        'value',
-        'description'
+        'from',
+        'to',
+        'pay_method',
     ];
 }

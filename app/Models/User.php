@@ -51,4 +51,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function canEarnFromLevel($level)
+    {
+        $package = Package::find($this->pkg_id);
+        if($package){   
+            if($package->gen >= $level)
+                return true;
+        }
+        return false;
+    }
 }

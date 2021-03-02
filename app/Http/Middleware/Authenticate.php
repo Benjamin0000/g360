@@ -34,8 +34,10 @@ class Authenticate extends Middleware
     {
         $this->authenticate($request, $guards);
         $currentUrl = url()->current();
-        if($currentUrl == route('package.index'))
-            return $next($request);
+        if($currentUrl == route('package.index') || 
+           $currentUrl == route('package.select_free') ||
+           $currentUrl == route('package.show_premium')
+        )return $next($request);
         if(Auth::user()->pkg)
             return $next($request);
         return redirect(route('package.index'))->with('select_a_pkg', 'not empty');

@@ -8,10 +8,32 @@
     <meta name="author" content="">
     <title>{{$title}} | GetSupport360</title>
     <link rel="icon" type="image/png" href="/assets/frontpage/img/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/css/nice-select.min.css" integrity="sha512-CruCP+TD3yXzlvvijET8wV5WxxEh5H8P4cmz0RFbKK6FlZ2sYl3AEsKlLPHbniXKSrDdFewhbmBK5skbdsASbQ==" crossorigin="anonymous" />
     <link href="/assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="/assets/css/style.css" rel="stylesheet" type="text/css" />
     <link href="/assets/css/colors/blue.css" rel="stylesheet" type="text/css" />
-    <script>var baseurl = "/";</script> 
+    <script>
+    var baseurl = "/";
+    function onReady(yourMethod) {
+    var readyStateCheckInterval = setInterval(function() {
+        if (document && document.readyState === 'complete') { // Or 'interactive'
+        clearInterval(readyStateCheckInterval);
+        yourMethod();
+        }
+    }, 10);
+    }
+    </script> 
+    <style>
+        .pricing-box:hover{
+            background:#0a4c72;
+            color:white !important;
+            transition: 0.3s ease;
+        }
+        .pricing-header > div{
+            font-size:20px;
+            font-weight: bold;
+        }
+    </style>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -256,7 +278,7 @@
     @yield('content')
 </div>
 <footer class="footer">
-    © {{date('Y')}} Getsupport360 Team
+    © {{date('Y')}} GETsupport360 Team
 </footer>
 </div>
 </div>
@@ -271,7 +293,11 @@
 <script type='text/javascript' src='/assets/plugins/styleswitcher/jQuery.style.switcher.js'></script>   
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js" integrity="sha512-efUTj3HdSPwWJ9gjfGR71X9cvsrthIA78/Fvd/IN+fttQVy7XWkOAXb295j8B3cmm/kFKVxjiNYzKw9IQJHIuQ==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/js/jquery.nice-select.min.js" integrity="sha512-NqYds8su6jivy1/WLoW8x1tZMRD7/1ZfhWG/jcRQLOzV1k1rIODCpMgoBnar5QXshKJGV7vi0LXLNXPoFsM5Zg==" crossorigin="anonymous"></script>
 <script>
+$(document).ready(function() {
+  $('select').niceSelect();
+});
 $(".lou_btn").click(function(){
   $("#lou_f").submit();
 });

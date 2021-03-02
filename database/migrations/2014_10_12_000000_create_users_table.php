@@ -27,11 +27,13 @@ class CreateUsersTable extends Migration
             $table->integer('pkg_id')->default(0);
             $table->decimal('w_balance', 10, 2)->default(0); // withdrawal wallet
             $table->decimal('t_balance', 10, 2)->default(0); // transaction wallet
-            $table->decimal('p_balance', 10, 2)->default(0); // pending wallet
-            $table->bigInteger('h_token')->default(0);
+            $table->decimal('p_balance',10, 2)->default(0); //  pending balance
+            $table->decimal('pkg_balance',10, 2)->default(0); //  package balance
+            $table->bigInteger('h_token')->default(0); // health token
             $table->bigInteger('pv')->default(0); // point value
             $table->bigInteger('deca')->default(0);
             $table->boolean('def_user')->default(0); // Default user that refers other users without a sponsor
+            $table->boolean('status')->default(1); // Void users account
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

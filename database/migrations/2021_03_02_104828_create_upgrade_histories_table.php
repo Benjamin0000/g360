@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateWalletHistoriesTable extends Migration
+class CreateUpgradeHistoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,13 @@ class CreateWalletHistoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('wallet_histories', function (Blueprint $table) {
+        Schema::create('upgrade_histories', function (Blueprint $table) {
             $table->string('id', 30)->primary();
-            $table->double('amount', 10, 2);
             $table->string('user_id', 30);
             $table->bigInteger('gnumber');
-            $table->string('name');
-            $table->string('type');
-            $table->string('description', 300);
+            $table->integer('from');
+            $table->integer('to');
+            $table->string('pay_method');
             $table->timestamps();
         });
     }
@@ -32,6 +31,6 @@ class CreateWalletHistoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('wallet_histories');
+        Schema::dropIfExists('upgrade_histories');
     }
 }

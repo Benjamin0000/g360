@@ -48,4 +48,8 @@ Route::get('/verify-email/{token}/{email}', [RegisterController::class, 'verifyE
 Route::group(['prefix'=>'portal'],  function(){
     Route::get('/', [DashboardController::class, 'index'])->name('dasbhoard.index');
     Route::get('/packages', [PackageController::class, 'index'])->name('package.index');
+    Route::get('/packages/premium', [PackageController::class, 'showPremiumPackages'])->name('package.show_premium');
+    Route::post('/packages/premium', [PackageController::class, 'selectPremiumPackage'])->name('package.select_premium');
+    Route::post('/packages/free', [PackageController::class, 'selectFreePackage'])->name('package.select_free');
+    
 });

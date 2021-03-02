@@ -5071,7 +5071,9 @@ Pricing Page
   border-bottom: 5px solid rgba(120, 130, 140, 0.13);
   vertical-align: middle;
   padding: 30px 0;
-  position: relative; }
+  position: relative; 
+  min-height: 410px;
+}
 
 .pricing-body h2 {
   position: relative;

@@ -7,11 +7,13 @@ use App\Models\PasswordReset;
 use App\Models\User;
 use App\Models\Email;
 use App\Models\Error;
+use App\Models\Package;
+use App\Models\WalletHistory;
 use libphonenumber\PhoneNumberUtil;
 use libphonenumber\NumberParseException;
-
 use Exception;
-/**
+
+  /**
   *  Helpers Class for Helpers methods
   */
   class Helpers 
@@ -268,6 +270,90 @@ use Exception;
         }
         return json_encode($m);
     }
+    /**
+      * Share referal earning
+      * @param  void 
+      * @return void
+    */
+    public static function shareRefCommission($pkg_id, $amount, $gnumber)
+    {
+        $free_pkg = 1;
+        $package = Package::find($pkg_id);
+        if($package){
+            $user = User::where([ ['gnumber', $gnumber], ['status', 1] ])->first();
+            if($user && $user->pkg_id == $package->id && $package->id > $free_pkg)
+                refTree($pkg_id, $amount, $user->ref_gnum);
+        }
+        return;
+    }
 
-  } 
+    public static function refTree($pkg_id, $amount, $ref_gnum, $level=1)
+    {
+        $last_level = 15;
+        if($level > $last_level)return;
+        $user = User::where([ ['gnumber', $ref_gnum], ['status', 1] ])->first();
+        if($user){
+            self::getRefLevelAndCredit($pkg_id, $amount, $ref_gnum, $level);
+            return self::refTree($pkg_id, $amount, $user->ref_gnum, $level+1);
+        }
+    }
+
+    private static function getRefLevelAndCredit($pkg_id, $amount, $gnumber, $level)
+    {
+        $package = Package::find($pkg_id);
+        $user = User::where([ ['gnumber', $gnumber], ['status', 1] ])->first();
+        if($package && $user){
+            $ref_percent = (array)$package->ref_percent;
+            $ref_h_token = (array)$package->ref_h_token;
+            $ref_pv = (array)$package->ref_pv;
+            $ref_basic_pv = current($ref_pv);
+            if($user->canEarnFromLevel($level)){
+                if($level > count($ref_percent)){
+                    $cash_profit = (end($ref_percent) / 100) * $amount;
+                    $h_token_profit = end($ref_h_token);
+                    $pv_profit = ($ref_basic_pv*$package->id) - end($ref_pv);
+                }
+                else{
+                    $cash_profit = ($ref_percent[$level-1] / 100) * $amount;
+                    $h_token_profit = $ref_h_token[$level-1];
+                    $pv_profit = ($ref_basic_pv*$package->id) - $ref_pv[$level-1];
+                }
+                $user->p_wallet += $cash_profit;
+                $user->h_token += $h_token_profit;
+                $user->pv += $pv_profit;
+                WalletHistory::create([
+                    'id'=>self::genTableId(WalletHistory::class),
+                    'amount'=>$cash_profit,
+                    'user_id'=>$user->id,
+                    'gnumber'=>$user->gnumber,
+                    'name'=>'p_wallet',
+                    'type'=>'credit',
+                    'description'=>$cash_profit.' received from '.ucfirst($package->name).
+                    ' package '.'level '.$level.' referal commission' 
+                ]);
+                WalletHistory::create([
+                    'id'=>self::genTableId(WalletHistory::class),
+                    'amount'=>$h_token_profit,
+                    'user_id'=>$user->id,
+                    'gnumber'=>$user->gnumber,
+                    'name'=>'h_token',
+                    'type'=>'credit',
+                    'description'=>$h_token_profit.' Health token received from '.ucfirst($package->name).
+                    ' package '.'level '.$level.' referal commission' 
+                ]);
+                WalletHistory::create([
+                    'id'=>self::genTableId(WalletHistory::class),
+                    'amount'=>$pv_profit,
+                    'user_id'=>$user->id,
+                    'gnumber'=>$user->gnumber,
+                    'name'=>'pv',
+                    'type'=>'credit',
+                    'description'=>$pv_profit.' point value received from '.ucfirst($package->name).
+                    ' package '.'level '.$level.' referal commission' 
+                ]);
+                $user->save();
+            }
+        }
+    }
+} 
  ?>
