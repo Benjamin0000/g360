@@ -38,15 +38,16 @@ class Package extends Model
         $free_pkg_id = 1;
         $basic_pkg = 2;
         $cash_back_percent = 8;
-        $basic_pv = self::where('id', 2)->first()->pv;
+        $basic_pv = self::where('id', $basic_pkg)->first()->pv;
         $user = Auth::user();
         if($user->pkg_id == $last_pkg_id) return false; // user has reached the last package
         if($this->id <= $user->pkg_id) return false; // can't upgrade to the same package or less
+        $from = $user->pkg_id?:1;
         $upgh = UpgradeHistory::create([
             'id'=>Helpers::genTableId(UpgradeHistory::class),
             'user_id'=>$user->id,
             'gnumber'=>$user->gnumber,
-            'from'=>$user->pkg_id,
+            'from'=>$from,
             'to'=>$this->id,
             'pay_method'=>$paymethod
         ]);
@@ -55,6 +56,7 @@ class Package extends Model
             $user->save();
             return true;
         }
+
         $user->h_token+=$this->h_token; //asign health token
         $pv_value = ($basic_pv*$this->id) - $this->pv; 
         $user->pv+=$pv_value; //asign pv
@@ -66,7 +68,7 @@ class Package extends Model
             'gnumber'=>$user->gnumber,
             'name'=>'h_token',
             'type'=>'credit',
-            'description'=>$this->h_token .' Health token received from '.ucfirst($this->name).' package'
+            'description'=>$this->h_token.' Health token received from '.ucfirst($this->name).' package'
         ]);
         WalletHistory::create([
             'id'=>Helpers::genTableId(WalletHistory::class),
@@ -82,11 +84,13 @@ class Package extends Model
             $amount = $this->amount - $old_package->amount;
         else
             $amount = $this->amount;
-        Helpers::shareRefCommission($this->id, $amount, $user->gnumber);
-        if($insurance == 1){
+        
+        if($insurance == 'yes'){
             //activate insurance
         }else{
             $cash_back = ($cash_back_percent/100)*$amount;
+            $user->p_balance+=$cash_back;
+            $user->save();
             WalletHistory::create([
                 'id'=>Helpers::genTableId(WalletHistory::class),
                 'user_id'=>$user->id,
@@ -94,11 +98,10 @@ class Package extends Model
                 'gnumber'=>$user->gnumber,
                 'name'=>'p_wallet',
                 'type'=>'credit',
-                'description'=>$cash_back.'received from '.ucfirst($this->name).' package cashback'
+                'description'=>Helpers::LOCAL_CURR_SYMBOL.$cash_back.' received from '.ucfirst($this->name).' package cashback'
             ]);
-            $user->p_wallet+=$cash_back;
-            $user->save();
         }
+        Helpers::shareRefCommission($this->id, $amount, $user->gnumber);
         return true;
     }
 }

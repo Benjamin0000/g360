@@ -282,11 +282,14 @@ use Exception;
         if($package){
             $user = User::where([ ['gnumber', $gnumber], ['status', 1] ])->first();
             if($user && $user->pkg_id == $package->id && $package->id > $free_pkg)
-                refTree($pkg_id, $amount, $user->ref_gnum);
+                self::refTree($pkg_id, $amount, $user->ref_gnum);
         }
-        return;
     }
-
+    /**
+      * Get the referal tree
+      * @param  void 
+      * @return void
+    */
     public static function refTree($pkg_id, $amount, $ref_gnum, $level=1)
     {
         $last_level = 15;
@@ -303,22 +306,25 @@ use Exception;
         $package = Package::find($pkg_id);
         $user = User::where([ ['gnumber', $gnumber], ['status', 1] ])->first();
         if($package && $user){
-            $ref_percent = (array)$package->ref_percent;
-            $ref_h_token = (array)$package->ref_h_token;
-            $ref_pv = (array)$package->ref_pv;
-            $ref_basic_pv = current($ref_pv);
+            $ref_percent = explode(',', $package->ref_percent);
+            $ref_h_token = explode(',', $package->ref_h_token);
+            $ref_pv = explode(',', $package->ref_pv);
+            // $ref_basic_pv = current($ref_pv);
+            
             if($user->canEarnFromLevel($level)){
                 if($level > count($ref_percent)){
-                    $cash_profit = (end($ref_percent) / 100) * $amount;
-                    $h_token_profit = end($ref_h_token);
-                    $pv_profit = ($ref_basic_pv*$package->id) - end($ref_pv);
+                    $cash_profit = (floatval(end($ref_percent)) / 100) * $amount;
+                    $h_token_profit = (int)end($ref_h_token);
+                    // $pv_profit = ($ref_basic_pv*$package->id) - end($ref_pv);
+                    $pv_profit = (int)end($ref_pv);
                 }
                 else{
-                    $cash_profit = ($ref_percent[$level-1] / 100) * $amount;
-                    $h_token_profit = $ref_h_token[$level-1];
-                    $pv_profit = ($ref_basic_pv*$package->id) - $ref_pv[$level-1];
+                    $cash_profit = (floatval($ref_percent[$level-1]) / 100) * $amount;
+                    $h_token_profit = (int)$ref_h_token[$level-1];
+                    // $pv_profit = ($ref_basic_pv*$package->id) - $ref_pv[$level-1];
+                    $pv_profit = (int)$ref_pv[$level-1];
                 }
-                $user->p_wallet += $cash_profit;
+                $user->p_balance += $cash_profit;
                 $user->h_token += $h_token_profit;
                 $user->pv += $pv_profit;
                 WalletHistory::create([
@@ -328,8 +334,8 @@ use Exception;
                     'gnumber'=>$user->gnumber,
                     'name'=>'p_wallet',
                     'type'=>'credit',
-                    'description'=>$cash_profit.' received from '.ucfirst($package->name).
-                    ' package '.'level '.$level.' referal commission' 
+                    'description'=>self::LOCAL_CURR_SYMBOL.$cash_profit.' received from '.ucfirst($package->name).
+                    ' package '.'level ' .$level.' referal commission' 
                 ]);
                 WalletHistory::create([
                     'id'=>self::genTableId(WalletHistory::class),
@@ -349,7 +355,7 @@ use Exception;
                     'name'=>'pv',
                     'type'=>'credit',
                     'description'=>$pv_profit.' point value received from '.ucfirst($package->name).
-                    ' package '.'level '.$level.' referal commission' 
+                    ' package '.'level '.$level. ' referal commission' 
                 ]);
                 $user->save();
             }

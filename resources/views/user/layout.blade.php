@@ -25,13 +25,16 @@
     </script> 
     <style>
         .pricing-box:hover{
-            background:#0a4c72;
+            background:#41a1da;
             color:white !important;
             transition: 0.3s ease;
         }
         .pricing-header > div{
             font-size:20px;
             font-weight: bold;
+        }
+        .form-control{
+            box-shadow: none !important;
         }
     </style>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -275,6 +278,9 @@
     <!-- Container fluid  -->
     <!-- ============================================================== -->
 <div class="container-fluid" style="padding:20px 20px;">
+    @if(session('pkg_activated'))
+    <div class="alert alert-success">{!!session('pkg_activated')!!}</div>
+    @endif
     @yield('content')
 </div>
 <footer class="footer">

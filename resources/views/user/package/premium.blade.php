@@ -1,5 +1,6 @@
 @extends('user.layout', ['title'=>'Premium Packages'])
 @section('content')
+<style>.epin_show{display:none;}</style>
 @php 
  $cur = App\Http\Helpers::LOCAL_CURR_SYMBOL;
 @endphp
@@ -40,37 +41,47 @@
     </div>
 </div>
 <script>
-    function selectP(id){
-        var xhr_error = "<div class='alert alert-danger'><i class='fa fa-info-circle'></i>Transaction could not be completed</div>";
-        $('#pkge'+id).html('');
-        var $ele = $('#pkgcbtn'+id);
-        $ele.data('text',$ele.text());
-        $ele.html(get_loader());
-        $ele.prop('disabled',true);
-        $.ajax({
-            url:'{{route('package.select_premium')}}',
-            type:'post',
-            data:$('#pkgf'+id).serialize(),
-            success:function(data){
-                console.log(data);
-                if(data.status){
-                    $('#pkge'+id).html("<div class='alert alert-success'> Upgrade successfull</div>");
-                    setTimeout(function(){
-                        window.loaction.href = '{{route('dasbhoard.index')}}';
-                    },2000);
-                }else{
-                    $ele.text($ele.data('text'));
-                    $ele.prop('disabled',false);
-                    $('#pkge'+id).html("<div class='alert alert-danger'> <i class='alert alert-info-circle'></i> "+data.msg+"</div>");
-                }
-            },
-            error: function(xhr, status, error) {
-                console.log('error',xhr.responseText);
+function selectP(id){
+    var xhr_error = "<div class='alert alert-danger'><i class='fa fa-info-circle'></i>Transaction could not be completed</div>";
+    $('#pkge'+id).html('');
+    var $ele = $('#pkgcbtn'+id);
+    $ele.data('text',$ele.text());
+    $ele.html(get_loader());
+    $ele.prop('disabled',true);
+    $.ajax({
+        url:'{{route('package.select_premium')}}',
+        type:'post',
+        data:$('#pkgf'+id).serialize(),
+        success:function(data){
+            if(data.status){
+                $('#pkge'+id).html("<div class='alert alert-success'> Upgrade successfull</div>");
+                setTimeout(function(){
+                    window.location.href = '{{route('dasbhoard.index')}}';
+                },2000);
+            }else{
                 $ele.text($ele.data('text'));
                 $ele.prop('disabled',false);
-                $('#pkge'+id).html(xhr_error);
+                $('#pkge'+id).html("<div class='alert alert-danger'> <i class='alert alert-info-circle'></i> "+data.msg+"</div>");
             }
-        });
+        },
+        error: function(xhr, status, error) {
+            $ele.text($ele.data('text'));
+            $ele.prop('disabled',false);
+            $('#pkge'+id).html(xhr_error);
+        }
+    });
+}
+onReady(function(){
+ $('.pay_select').on('change', function(){
+    var val = $(this).attr('tel');  
+    if(this.value == 'e-pin'){
+        $('#epin_show'+val).show();
+        $('#space_epin'+val).hide();
+    }else{
+        $('#epin_show'+val).hide();
+        $('#space_epin'+val).show();
     }
+ });
+});
 </script>
 @endsection

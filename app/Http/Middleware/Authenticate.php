@@ -38,7 +38,7 @@ class Authenticate extends Middleware
            $currentUrl == route('package.select_free') ||
            $currentUrl == route('package.show_premium')
         )return $next($request);
-        if(Auth::user()->pkg)
+        if(Auth::user()->pkg_id)
             return $next($request);
         return redirect(route('package.index'))->with('select_a_pkg', 'not empty');
     }

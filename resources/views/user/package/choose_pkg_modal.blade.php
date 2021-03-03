@@ -10,8 +10,8 @@
         <div class="modal-body">
             <h4 class="text-center">Select a payment method</h4>
             <form id="pkgf{{$package->id}}">
-                <div class="form-group">
-                    <select class="wide" name="pay_method" id="">
+                <div class="form-group" style="">
+                    <select class="wide pay_select" name="pay_method" tel='{{$package->id}}'>
                         <option value="">Choose method</option>
                         <option value="e-pin">E-pin</option>
                         <option value="card">Debit or Credit card</option>
@@ -19,7 +19,15 @@
                         <option value="pkg_w">Package Wallet</option>
                     </select>
                 </div>
-                <br><br>
+                <div class="epin_show" id="epin_show{{$package->id}}">
+                  <br>
+                  <br>
+                  <br>
+                  <div class="form-group">
+                      <input type="text" name="epin" class="form-control" placeholder="Enter E-pin">
+                  </div>
+                </div>
+                <div id="space_epin{{$package->id}}"><br><br></div>
                 <div class="form-group text-center">
                     <div><label for="">Sign up for Health Insurance?</label></div>
                     <div class="form-control">
@@ -28,7 +36,7 @@
                     </div>
                 </div>
                 <input type="hidden" name='p' value="{{rand(10,20).$package->id}}">
-                @csrf
+                @csrf 
                 <div class="text-center" id="pkge{{$package->id}}"></div>
                 <div class="form-group text-center">
                     <button class="btn btn-success" id='pkgcbtn{{$package->id}}'>Continue</button>
@@ -44,5 +52,5 @@
         e.preventDefault();
         selectP({{$package->id}});
     });
-  } );
+  });
 </script>
