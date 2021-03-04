@@ -9,6 +9,7 @@ use App\Models\Email;
 use App\Models\Error;
 use App\Models\Package;
 use App\Models\WalletHistory;
+use App\Models\Epin;
 use libphonenumber\PhoneNumberUtil;
 use libphonenumber\NumberParseException;
 use Exception;
@@ -20,6 +21,12 @@ use Exception;
   {
 
     public const LOCAL_CURR_SYMBOL = '₦';
+    public const TRX_BALANCE = 't_balance';
+    public const PKG_BALANCE = 'pkg_balance';
+    public const PEND_BALANCE = 'p_balance';
+    public const WITH_BALANCE = 'w_balance';
+    public const HEALTH_TOKEN = 'h_token';
+    public const POINT_VALUE = 'pv';
 
 	/**
      * Store Email Addresses
@@ -230,7 +237,6 @@ use Exception;
             return $id;
         return self::genGnumber();
     } 
-
     /**
       * Generate user id for new users
       * @param  void 
@@ -243,7 +249,35 @@ use Exception;
             return $id;
         return self::genTableId($class);
     }
-
+    /**
+      * Generate epin
+      * @param  void 
+      * @return int 
+    */
+    public static function genEpin()
+    {
+        $pin = mt_rand(1000000000,9999999999);
+        $check = Epin::where('code', $pin)->first();
+        if(!$check)
+            return $pin;
+        return self::genEpin();
+    }
+    /**
+      * Generate epin
+      * @param  void 
+      * @return int 
+    */
+    public static function countUserEpin($user_id, $type, $pkg)
+    {
+        switch($type){
+            case 'used': 
+                return Epin::where([ ['user_id', $user_id], ['status', 1], ['pkg_id', $pkg] ])->count();
+            case 'open': 
+                return Epin::where([ ['user_id', $user_id], ['status', 0], ['pkg_id', $pkg] ])->count();
+            default: 
+                throw Exception('Invalid Epin search value');
+        }
+    }
     /**
       * Ajax request ouput format
       * for login and registratoin
@@ -264,7 +298,7 @@ use Exception;
             $m['msg'] = $out;
             $m['status'] = $status;
         }
-        else if(is_null($out)){
+        elseif(is_null($out)){
             $m['status'] = $status;
             $m['msg'] = null;
         }
@@ -332,7 +366,7 @@ use Exception;
                     'amount'=>$cash_profit,
                     'user_id'=>$user->id,
                     'gnumber'=>$user->gnumber,
-                    'name'=>'p_wallet',
+                    'name'=>self::PEND_BALANCE,
                     'type'=>'credit',
                     'description'=>self::LOCAL_CURR_SYMBOL.$cash_profit.' received from '.ucfirst($package->name).
                     ' package '.'level ' .$level.' referal commission' 
@@ -342,7 +376,7 @@ use Exception;
                     'amount'=>$h_token_profit,
                     'user_id'=>$user->id,
                     'gnumber'=>$user->gnumber,
-                    'name'=>'h_token',
+                    'name'=>self::HEALTH_TOKEN,
                     'type'=>'credit',
                     'description'=>$h_token_profit.' Health token received from '.ucfirst($package->name).
                     ' package '.'level '.$level.' referal commission' 
@@ -352,7 +386,7 @@ use Exception;
                     'amount'=>$pv_profit,
                     'user_id'=>$user->id,
                     'gnumber'=>$user->gnumber,
-                    'name'=>'pv',
+                    'name'=>self::POINT_VALUE,
                     'type'=>'credit',
                     'description'=>$pv_profit.' point value received from '.ucfirst($package->name).
                     ' package '.'level '.$level. ' referal commission' 

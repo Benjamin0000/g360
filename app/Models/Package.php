@@ -66,7 +66,7 @@ class Package extends Model
             'user_id'=>$user->id,
             'amount'=>$this->h_token,
             'gnumber'=>$user->gnumber,
-            'name'=>'h_token',
+            'name'=>Helpers::HEALTH_TOKEN,
             'type'=>'credit',
             'description'=>$this->h_token.' Health token received from '.ucfirst($this->name).' package'
         ]);
@@ -75,7 +75,7 @@ class Package extends Model
             'user_id'=>$user->id,
             'amount'=>$pv_value,
             'gnumber'=>$user->gnumber,
-            'name'=>'pv',
+            'name'=>Helpers::POINT_VALUE,
             'type'=>'credit',
             'description'=>$pv_value.' point value received from '.ucfirst($this->name).' package'
         ]);
@@ -89,14 +89,14 @@ class Package extends Model
             //activate insurance
         }else{
             $cash_back = ($cash_back_percent/100)*$amount;
-            $user->p_balance+=$cash_back;
+            $user->p_balance += $cash_back;
             $user->save();
             WalletHistory::create([
                 'id'=>Helpers::genTableId(WalletHistory::class),
                 'user_id'=>$user->id,
                 'amount'=>$cash_back,
                 'gnumber'=>$user->gnumber,
-                'name'=>'p_wallet',
+                'name'=>Helpers::PEND_BALANCE,
                 'type'=>'credit',
                 'description'=>Helpers::LOCAL_CURR_SYMBOL.$cash_back.' received from '.ucfirst($this->name).' package cashback'
             ]);

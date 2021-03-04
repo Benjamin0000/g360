@@ -158,7 +158,7 @@
 									@else			
 									<div class="others-option">
 										<div class="get-quote">
-											<a href="{{route('dasbhoard.index')}}" class="default-btn">
+											<a href="{{route('user.dasbhoard.index')}}" class="default-btn">
 												My Dashboard
 											</a>
 										</div>

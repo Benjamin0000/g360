@@ -12,6 +12,7 @@
     <link href="/assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="/assets/css/style.css" rel="stylesheet" type="text/css" />
     <link href="/assets/css/colors/blue.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/plugins/datatables.net-bs4/css/dataTables.bootstrap4.css" rel="stylesheet" type="text/css" />
     <script>
     var baseurl = "/";
     function onReady(yourMethod) {
@@ -25,7 +26,7 @@
     </script> 
     <style>
         .pricing-box:hover{
-            background:#41a1da;
+            background:#5c9abe;
             color:white !important;
             transition: 0.3s ease;
         }
@@ -164,7 +165,7 @@
                 <nav class="sidebar-nav">
                     <ul id="sidebarnav">
                         <li>
-                            <a href="{{route('dasbhoard.index')}}" >
+                            <a href="{{route('user.dasbhoard.index')}}" >
                                 <i class="mdi mdi-gauge"></i>
                                 <span class="hide-menu">Dashboard </span>
                             </a>
@@ -194,7 +195,7 @@
                             </a>
                         </li>
                         <li >
-                            <a href="fff" >
+                            <a href="{{route('user.epin.index')}}" >
                                 <i class="mdi mdi-vector-arrange-above"></i>
                                 <span class="hide-menu">E - Pin </span>
                             </a>
@@ -279,7 +280,13 @@
     <!-- ============================================================== -->
 <div class="container-fluid" style="padding:20px 20px;">
     @if(session('pkg_activated'))
-    <div class="alert alert-success">{!!session('pkg_activated')!!}</div>
+        <div class="alert alert-success">{!!session('pkg_activated')!!}</div>
+    @elseif(session('error'))
+        <div class="alert alert-danger"><i class="fa fa-info-circle"></i> {!!session('error')!!}</div>
+    @elseif(session('success'))
+        <div class="alert alert-success"><i class="fa fa-check-circle"></i> {!!session('success')!!}</div>
+    @elseif(session('warning'))
+        <div class="alert alert-warning"><i class="fa fa-info-circle"></i> {!!session('warning')!!}</div>
     @endif
     @yield('content')
 </div>
@@ -300,6 +307,7 @@
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js" integrity="sha512-efUTj3HdSPwWJ9gjfGR71X9cvsrthIA78/Fvd/IN+fttQVy7XWkOAXb295j8B3cmm/kFKVxjiNYzKw9IQJHIuQ==" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/js/jquery.nice-select.min.js" integrity="sha512-NqYds8su6jivy1/WLoW8x1tZMRD7/1ZfhWG/jcRQLOzV1k1rIODCpMgoBnar5QXshKJGV7vi0LXLNXPoFsM5Zg==" crossorigin="anonymous"></script>
+<script type='text/javascript' src='/assets/plugins/datatables.net/js/jquery.dataTables.min.js'></script>    
 <script>
 $(document).ready(function() {
   $('select').niceSelect();
@@ -315,6 +323,10 @@ $(".lou_btn").click(function(){
     button: "Thank you",
   });
 @endif
+$('#table_id').DataTable({
+    "aLengthMenu": [[ 50, 75, -1], [ 50, 75, "All"]],
+    "responsive" : true,
+});
 </script>
 </body>
 </html>

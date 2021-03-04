@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Helpers;
+use App\Models\TrackFreeUser;
 use App\Models\WalletHistory;
 use App\Models\Package;
 use App\Models\Epin;
@@ -31,6 +32,11 @@ class PackageController extends Controller
      */
     public function index()
     {
+        $no_pkg = 0;
+        $free_pkg_id = 1;
+        $user = Auth::user();
+        if($user->pkg_id > $no_pkg)
+            return redirect(route('user.dasbhoard.index'))->with('error', 'Sorry you can\'t access that page');
         return view('user.package.index');
     }
 
@@ -40,7 +46,10 @@ class PackageController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function showPremiumPackages()
-    {
+    {   $last_pkg = 7;
+        $user = Auth::user();
+        if($user->pkg_id == $last_pkg)
+            return redirect(route('user.dasbhoard.index'))->with('error', 'Sorry you can\'t access that page');
         $packages = Package::where('name', '<>', 'free')->get();
         return view('user.package.premium', compact('packages'));
     }
@@ -53,7 +62,22 @@ class PackageController extends Controller
      */
     public function selectFreePackage(Request $request)
     {
-        //
+        $no_pkg = 0;
+        $package = Package::where('name', 'free')->first();
+        if(!$package)
+            return back()->with('error', 'free package not available at the moment');
+        $user = Auth::user();
+        if($user->pkg_id == $no_pkg){
+            TrackFreeUser::create([
+                'id'=>Helpers::genTableId(TrackFreeUser::class),
+                'user_id'=>$user->id,
+                'gnumber'=>$user->gnumber,
+            ]);
+            $user->pkg_id = $package->id;
+            $user->save();
+            return redirect(route('user.dasbhoard.index'))->with('success', 'Free package has been activated'); 
+        }
+        return redirect(route('user.dasbhoard.index'))->with('error', 'Sorry you can\'t access that page'); 
     }
 
     /**
@@ -71,19 +95,33 @@ class PackageController extends Controller
            strlen($request->p) != 3 ||
            !in_array($request->h, ['yes', 'no'])
         )return['msg'=>'<i class=\'fa fa-info-circle\'></i> Can\'t process request at the moment'];
+
+        $free_pkg_id = 1;
+        $last_pkg_id = 7;
+        $cur = Helpers::LOCAL_CURR_SYMBOL;
+        $user = Auth::user();
+        $fee = 0;
         #check selected package
         $id = substr($request->p, 2, 1);
         $package = Package::find($id);
-        if($id == 1 || !$package) 
+        if($package->id == $free_pkg_id || !$package) 
         return ['msg'=>'<i class=\'fa fa-info-circle\'></i> Invalid package'];
 
-        $cur = Helpers::LOCAL_CURR_SYMBOL;
-        $user = Auth::user();
+        if($user->pkg_id == $last_pkg_id || $user->pkg_id >= $package->id)
+            return;
+
         $prev_package = Package::find($user->pkg_id);
         if($prev_package)
             $amount = $package->amount - $prev_package->amount;
         else 
             $amount = $package->amount;
+        
+        if($percent = $user->free_t_fee){
+            $fee = ($percent/100)*$amount;
+            if($user->t_balance < $fee){
+                return ['msg'=>'<i class=\'fa fa-info-circle\'></i> Insufficient fund for your 20% package fee'];
+            }
+        }
 
         switch($request->pay_method){
             case 'e-pin':
@@ -109,6 +147,29 @@ class PackageController extends Controller
             break;
             case 'trx_w': 
                 if($user->t_balance > $amount){
+                    if($fee){
+                        $total = $amount+$fee;
+                        if($user->t_balance < $total){
+                            if($user->pkg_balance >= $fee){
+                                $user->pkg_balance-=$fee;
+                                $user->free_t_fee = '';
+                                $user->save();
+                                WalletHistory::create([
+                                    'id'=>Helpers::genTableId(WalletHistory::class),
+                                    'user_id'=>$user->id,
+                                    'amount'=>$fee,
+                                    'gnumber'=>$user->gnumber,
+                                    'name'=>Helpers::PKG_BALANCE,
+                                    'type'=>'debit',
+                                    'description'=>$cur.number_format($fee).' Debited for '.ucfirst($this->name).' package '.$percent.'% fee'
+                                ]);
+                            }else{
+                                return ['msg'=>'<i class=\'fa fa-info-circle\'></i> Insufficient fund for your 20% package fee'];
+                            }
+                        }else{
+                            $amount = $total;
+                        }
+                    }
                     $pay_method = 'Transaction wallet';
                     $user->t_balance-=$amount;
                     $user->save();
@@ -117,7 +178,7 @@ class PackageController extends Controller
                         'user_id'=>$user->id,
                         'amount'=>$amount,
                         'gnumber'=>$user->gnumber,
-                        'name'=>'t_balance',
+                        'name'=>Helpers::TRX_BALANCE,
                         'type'=>'debit',
                         'description'=>$cur.number_format($amount).' Debited for '.ucfirst($this->name).' package'
                     ]);
@@ -126,6 +187,27 @@ class PackageController extends Controller
             break;
             case 'pkg_w': 
                 if($user->pkg_balance > $amount){
+                    if($fee){
+                        $total = $amount+$fee;
+                        if($user->pkg_balance < $total){
+                            if($user->t_balance >= $fee){
+                                $user->t_balance-=$fee;
+                                $user->free_t_fee = '';
+                                $user->save();
+                                WalletHistory::create([
+                                    'id'=>Helpers::genTableId(WalletHistory::class),
+                                    'user_id'=>$user->id,
+                                    'amount'=>$fee,
+                                    'gnumber'=>$user->gnumber,
+                                    'name'=>Helpers::TRX_BALANCE,
+                                    'type'=>'debit',
+                                    'description'=>$cur.number_format($fee).' Debited for '.ucfirst($this->name).' package '.$percent.'% fee'
+                                ]);
+                            }else
+                                return ['msg'=>'<i class=\'fa fa-info-circle\'></i> Insufficient fund for your 20% package fee'];
+                        }else
+                            $amount = $total;
+                    }
                     $pay_method = 'Package wallet';
                     $user->pkg_balance-=$amount;
                     $user->save();
@@ -134,7 +216,7 @@ class PackageController extends Controller
                         'user_id'=>$user->id,
                         'amount'=>$amount,
                         'gnumber'=>$user->gnumber,
-                        'name'=>'pkg_balance',
+                        'name'=>Helpers::PKG_BALANCE,
                         'type'=>'debit',
                         'description'=>$cur.number_format($amount).' Debited for '.ucfirst($this->name).' package'
                     ]);
@@ -152,5 +234,6 @@ class PackageController extends Controller
             return ['msg'=>'<i class=\'fa fa-info-circle\'></i> package could not be activated'];
         }
     }
+    
 
 }

@@ -61,4 +61,9 @@ class User extends Authenticatable
         }
         return false;
     }
+
+    public function package()
+    {
+        return $this->belongsTo(Package::class, 'pkg_id');
+    }
 }

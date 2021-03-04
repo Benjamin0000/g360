@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\PackageController;
+use App\Http\Controllers\User\EpinController;
 use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
@@ -43,13 +44,17 @@ Route::post('/password/update', [LoginController::class, 'updatePassword'])->nam
 Route::get('/register', [RegisterController::class, 'index'])->name('register');
 Route::post('/register', [RegisterController::class, 'store'])->name('register');
 Route::get('/verify-email/{token}/{email}', [RegisterController::class, 'verifyEmail'])->name('register.verify');
-
+ 
 #user
 Route::group(['prefix'=>'portal'],  function(){
-    Route::get('/', [DashboardController::class, 'index'])->name('dasbhoard.index');
-    Route::get('/packages', [PackageController::class, 'index'])->name('package.index');
-    Route::get('/packages/premium', [PackageController::class, 'showPremiumPackages'])->name('package.show_premium');
-    Route::post('/packages/premium', [PackageController::class, 'selectPremiumPackage'])->name('package.select_premium');
-    Route::post('/packages/free', [PackageController::class, 'selectFreePackage'])->name('package.select_free');
-    
+    Route::get('/', [DashboardController::class, 'index'])->name('user.dasbhoard.index');
+    Route::get('/packages', [PackageController::class, 'index'])->name('user.package.index');
+    Route::get('/packages/premium', [PackageController::class, 'showPremiumPackages'])->name('user.package.show_premium');
+    Route::post('/packages/premium', [PackageController::class, 'selectPremiumPackage'])->name('user.package.select_premium');
+    Route::post('/packages/free', [PackageController::class, 'selectFreePackage'])->name('user.package.select_free');
+    #Epin
+    Route::get('/epin', [EpinController::class, 'index'])->name('user.epin.index');
+    Route::get('/epin/buy', [EpinController::class, 'buy'])->name('user.epin.buy');
+    Route::post('/epin/buy', [EpinController::class, 'issueBuy'])->name('user.epin.buy');
+    Route::get('/epin/{pkg}', [EpinController::class, 'show'])->name('user.epin.show');
 });

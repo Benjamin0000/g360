@@ -5,29 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Epin extends Model
+class TrackFreeUser extends Model
 {
     use HasFactory;
 
-    public $incrementing = false;
-    protected $keyType = 'string';
-     /**
+        /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'id', 
-        'pkg_id',
-        'code',
+        'id',
         'user_id',
-        'gnumber',
-        'used_by',
-        'used_date'
+        'gnumber'
     ];
 
-    public function package()
+    public function user()
     {
-        return $this->belongsTo(Package::class, 'pkg_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

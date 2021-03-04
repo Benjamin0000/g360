@@ -25,12 +25,12 @@
                                             the fixed package wallet or the account will be suspended.
                                             Once you have performed any of the above transactions, 
                                             you can sponsor and earn from only your first
-                                            generation  and you can be on starter
+                                            generation  and you can be on the free
                                             package for a maximum period of 45 business days or
                                             you will be charged additional 30% of the premium package you want to sign up to.
                                         </div>
                                         <div class="price-row">
-                                            <form action="{{route('package.select_free')}}" method="POST">
+                                            <form action="{{route('user.package.select_free')}}" method="POST">
                                                 @csrf
                                                 <button class="btn btn-success waves-effect waves-light mt-3">Select</button>
                                             </form>
@@ -55,7 +55,7 @@
                                             deep according to your sign up package.
                                         </div>
                                         <div class="price-row" style="margin-top:96px;">
-                                            <a href="{{route('package.show_premium')}}" class="btn btn-success waves-effect waves-light mt-3">Select</a>
+                                            <a href="{{route('user.package.show_premium')}}" class="btn btn-success waves-effect waves-light mt-3">Select</a>
                                         </div>
                                     </div>
                                 </div>
