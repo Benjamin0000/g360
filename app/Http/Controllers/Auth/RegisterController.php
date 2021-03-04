@@ -119,14 +119,13 @@ class RegisterController extends Controller
                         if( $user->email_verified_at == '' ){
                             $user->email_verified_at = Carbon::now();
                             $r_to = 'pkg';
-                            #create wallet
                         }else 
                             $r_to = 'dash';
                         $user->save();
 
                         if($r_to == 'pkg'){
                             Auth::login($user);
-                            return redirect( route('package.index') )->with('choose_pkg', 'select pkg');
+                            return redirect( route('user.package.index') )->with('choose_pkg', 'select pkg');
                         }
                         else
                             return redirect( route('login') )->with('email_verified', 'vefified');
