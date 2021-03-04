@@ -43,7 +43,7 @@ class LoginController extends Controller
         if( $check = User::where('username', $request->username)->first() ){
             if( password_verify($request->password, $check->password) ){
                 $d = [
-                    'd'=>  ['r'=>route('dasbhoard.index')]
+                    'd'=>  ['r'=>route('user.dasbhoard.index')]
                 ];
                 $rem = $request->rem ? true : false;
                 Auth::login($check, $rem);
