@@ -54,7 +54,7 @@
             @csrf
             <div class="form-group">
                 <label for="password">Confirm Password </label> 
-                <input type="password" class="form-control" name="password_confirmation" placeholder="Retype password" required>
+                <input type="password" class="form-control password" name="password_confirmation" placeholder="Retype password" required>
             </div>
             <div class="form-group text-center mt-3">
               <div class="col-xs-12">

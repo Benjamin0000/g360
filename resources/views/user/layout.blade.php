@@ -287,6 +287,8 @@
         <div class="alert alert-success"><i class="fa fa-check-circle"></i> {!!session('success')!!}</div>
     @elseif(session('warning'))
         <div class="alert alert-warning"><i class="fa fa-info-circle"></i> {!!session('warning')!!}</div>
+    @elseif(session('choose_pkg'))
+        <div class="alert alert-success"><i class="fa fa-check-circle"></i> Account activated, please select a package to continue</div>
     @endif
     @yield('content')
 </div>
