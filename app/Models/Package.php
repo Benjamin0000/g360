@@ -42,7 +42,7 @@ class Package extends Model
         $user = Auth::user();
         if($user->pkg_id == $last_pkg_id) return false; // user has reached the last package
         if($this->id <= $user->pkg_id) return false; // can't upgrade to the same package or less
-        $from = $user->pkg_id?:1;
+        $from = $user->pkg_id;
         $upgh = UpgradeHistory::create([
             'id'=>Helpers::genTableId(UpgradeHistory::class),
             'user_id'=>$user->id,

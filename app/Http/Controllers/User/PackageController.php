@@ -33,7 +33,6 @@ class PackageController extends Controller
     public function index()
     {
         $no_pkg = 0;
-        $free_pkg_id = 1;
         $user = Auth::user();
         if($user->pkg_id > $no_pkg)
             return redirect(route('user.dasbhoard.index'))->with('error', 'Sorry you can\'t access that page');
