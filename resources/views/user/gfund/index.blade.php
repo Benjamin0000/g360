@@ -46,6 +46,41 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="tab-pane p-3 pt-5" id="w" role="tabpanel">
+                            <div class="row">
+                                <div class="col-md-6">
+                                     <form class="" action="index.html" method="post">
+                                       <div class="form-group">
+                                         <input type="text" name="amount" placeholder="amount" class="form-control" value="">
+                                       </div>
+                                       <div class="row">
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                 <label for="">From</label>
+                                                 <select class="sselect form-control" name="">
+                                                     <option value="">W-Wallet</option>
+                                                     <option value="">T-Wallet</option>
+                                                 </select>
+                                               </div>
+                                           </div>
+
+                                           <div class="col-md-6">
+                                               <div class="form-group">
+                                                 <label for="">To</label>
+                                                  <select class="sselect form-control" name="">
+                                                      <option value="">T-Wallet</option>
+                                                      <option value="">PKG-Wallet</option>
+                                                  </select>
+                                               </div>
+                                           </div>
+                                       <div class="form-group">
+                                          <button  class="btn btn-primary btn-block">Transfer</button>
+                                       </div>
+                                     </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

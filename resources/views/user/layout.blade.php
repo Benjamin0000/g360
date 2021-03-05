@@ -312,7 +312,7 @@
 <script type='text/javascript' src='/assets/plugins/datatables.net/js/jquery.dataTables.min.js'></script>
 <script>
 $(document).ready(function() {
-  $('select').niceSelect();
+  $('.sselect').niceSelect();
 });
 $(".lou_btn").click(function(){
   $("#lou_f").submit();

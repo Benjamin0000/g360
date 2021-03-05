@@ -11,7 +11,7 @@
             <h4 class="text-center">Select a payment method</h4>
             <form id="pkgf{{$package->id}}">
                 <div class="form-group" style="">
-                    <select class="wide pay_select" name="pay_method" tel='{{$package->id}}'>
+                    <select class="wide pay_select sselect" name="pay_method" tel='{{$package->id}}'>
                         <option value="">Choose method</option>
                         <option value="e-pin">E-pin</option>
                         <option value="trx_w">Transaction Wallet</option>

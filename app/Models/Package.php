@@ -53,9 +53,9 @@ class Package extends Model
             $user->save();
             return true;
         }
-        
+
         if($from > 0)
-            $from - 1;
+            $from-=1;
 
         $user->h_token+=$this->h_token; //asign health token
         $pv_value = $this->pv - ($basic_pv * $from);
