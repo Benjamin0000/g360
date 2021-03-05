@@ -87,7 +87,8 @@ class EpinController extends Controller
                     'gnumber'=>$user->gnumber,
                 ]);
             }
-            return redirect(route('user.epin.show', $package->name))->with('success', 'E-pin has been purchased successfully');
+            return redirect(route('user.epin.show', $package->name))
+            ->with('success', 'E-pin has been purchased successfully');
         }
         return back()->with('error', 'Insufficent fund in your T-wallet for this epin purchase');
     }

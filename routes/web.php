@@ -55,6 +55,7 @@ Route::group(['prefix'=>'portal'],  function(){
     Route::post('/packages/free', [PackageController::class, 'selectFreePackage'])->name('user.package.select_free');
     #Gfund
     Route::get('/gfund', [GfundController::class, 'index'])->name('user.gfund.index');
+    Route::post('/wtransf', [GfundController::class, 'walletTransfer'])->name('user.gfund.wtranfer');
     #Epin
     Route::get('/epin', [EpinController::class, 'index'])->name('user.epin.index');
     Route::get('/epin/buy', [EpinController::class, 'buy'])->name('user.epin.buy');

@@ -1,7 +1,7 @@
 @extends('user.layout', ['title'=>'Premium Packages'])
 @section('content')
 <style>.epin_show{display:none;}</style>
-@php 
+@php
  $cur = App\Http\Helpers::LOCAL_CURR_SYMBOL;
  $user = Auth::user();
 @endphp
@@ -30,7 +30,7 @@
                                                     @if($user->pkg_id == $package->id)
                                                         <button class="btn btn-primary waves-effect waves-light mt-3"> <i class="fa fa-check-circle"></i> Current</button>
                                                     @elseif($user->pkg_id < $package->id)
-                                                        <button data-toggle='modal' data-target='#choosem{{$package->id}}'  class="btn btn-success waves-effect waves-light mt-3">Sign up</button>                                                 
+                                                        <button data-toggle='modal' data-target='#choosem{{$package->id}}'  class="btn btn-success waves-effect waves-light mt-3">Sign up</button>
                                                     @else
                                                         <button class="btn btn-info waves-effect waves-light mt-3"> <i class="fa fa-check-circle"></i> Completed</button>
                                                     @endif
@@ -39,7 +39,7 @@
                                         </div>
                                     </div>
                                 </div>
-                        @if($user->pkg_id < $package->id)       
+                        @if($user->pkg_id < $package->id)
                             @include('user.package.choose_pkg_modal')
                         @endif
                         @endforeach
@@ -63,14 +63,14 @@ function selectP(id){
         data:$('#pkgf'+id).serialize(),
         success:function(data){
             if(data.status){
-                $('#pkge'+id).html("<div class='alert alert-success'> Upgrade successfull</div>");
+                $('#pkge'+id).html("<div class='alert alert-success'><i class='fa fa-check-circle'></i> Upgrade successfull</div>");
                 setTimeout(function(){
                     window.location.href = '{{route('user.dasbhoard.index')}}';
                 },2000);
             }else{
                 $ele.text($ele.data('text'));
                 $ele.prop('disabled',false);
-                $('#pkge'+id).html("<div class='alert alert-danger'> <i class='alert alert-info-circle'></i> "+data.msg+"</div>");
+                $('#pkge'+id).html("<div class='alert alert-danger'> <i class='fa fa-info-circle'></i> "+data.msg+"</div>");
             }
         },
         error: function(xhr, status, error) {
@@ -82,7 +82,7 @@ function selectP(id){
 }
 onReady(function(){
  $('.pay_select').on('change', function(){
-    var val = $(this).attr('tel');  
+    var val = $(this).attr('tel');
     if(this.value == 'e-pin'){
         $('#epin_show'+val).show();
         $('#space_epin'+val).hide();

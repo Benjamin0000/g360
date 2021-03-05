@@ -280,7 +280,7 @@
     <!-- ============================================================== -->
 <div class="container-fluid" style="padding:20px 20px;">
     @if(session('pkg_activated'))
-        <div class="alert alert-success">{!!session('pkg_activated')!!}</div>
+        <div class="alert alert-success"><i class="fa fa-check-circle"></i> {!!session('pkg_activated')!!}</div>
     @elseif(session('error'))
         <div class="alert alert-danger"><i class="fa fa-info-circle"></i> {!!session('error')!!}</div>
     @elseif(session('success'))

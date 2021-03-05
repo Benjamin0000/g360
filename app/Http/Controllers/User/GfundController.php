@@ -5,6 +5,8 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Helpers;
+use App\Models\WalletHistory;
 
 class GfundController extends Controller
 {
@@ -29,68 +31,66 @@ class GfundController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Wallet transfer
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        //
+    public function walletTransfer(Request $request)
+    { 
+        if(!$request->ajax())
+            return;
+        $cur = Helpers::LOCAL_CURR_SYMBOL;
+        $amount = (float)$request->amount;
+        $min = 1000;
+        if($amount <= 0)
+            return ['msg'=>"Please enter a valid amount"];
+        if($amount < $min)
+            return ['msg'=>"minimum transfer amount is ".$cur.$min];
+
+        $user = Auth::user();
+        if($user->w_balance < $amount)
+            return ['msg'=>"Insufficient fund for transfer"];
+
+        $wallet_transfer = 'w_transfer';
+        $amount = abs($amount); #👈 no need for this line, it's just for fun sake 😄
+        switch($request->wallet){
+            case 'tw': 
+                $type = 'trx_transfer';
+                $wallet = 'Transaction wallet';
+                $sent = Helpers::TRX_BALANCE;
+                $user->t_balance += $amount;
+            break; 
+            case 'pkg': 
+                $type = 'pkg_transfer';
+                $wallet = 'Package wallet';
+                $sent = Helpers::PKG_BALANCE;
+                $user->pkg_balance += $amount;
+            break;
+            default: 
+                return ['msg'=>"Please select a valid wallet"];
+        }
+        $user->w_balance -= $amount;
+        $user->save();
+        WalletHistory::create([
+            'id'=>Helpers::genTableId(WalletHistory::class),
+            'user_id'=>$user->id,
+            'amount'=>$amount,
+            'gnumber'=>$user->gnumber,
+            'name'=>Helpers::WITH_BALANCE,
+            'type'=>$type,
+            'description'=>$cur.$amount.' transfered to '.$wallet
+        ]);
+        WalletHistory::create([
+            'id'=>Helpers::genTableId(WalletHistory::class),
+            'user_id'=>$user->id,
+            'amount'=>$amount,
+            'gnumber'=>$user->gnumber,
+            'name'=>$sent,
+            'type'=>$wallet_transfer,
+            'description'=>$cur.$amount.' transfered from Withdrawal wallet'
+        ]);
+        return ['status'=>1, 'msg'=>"Transfer successful", 'bal'=>$user->w_balance];
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

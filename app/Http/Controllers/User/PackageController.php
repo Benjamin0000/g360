@@ -46,7 +46,8 @@ class PackageController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function showPremiumPackages()
-    {   $last_pkg = 7;
+    {  
+        $last_pkg = 7;
         $user = Auth::user();
         if($user->pkg_id == $last_pkg)
             return redirect(route('user.dasbhoard.index'))
@@ -96,10 +97,10 @@ class PackageController extends Controller
            !$request->p || 
            strlen($request->p) != 3 ||
            !in_array($request->h, ['yes', 'no'])
-        )return['msg'=>'<i class=\'fa fa-info-circle\'></i> Can\'t process request at the moment'];
+        )return['msg'=>'Can\'t process request at the moment'];
 
         if(!$request->pay_method)
-            return['msg'=>'<i class=\'fa fa-info-circle\'></i> Please select a payment method'];
+            return['msg'=>'Please select a payment method'];
         
         $free_pkg_id = 1;
         $last_pkg_id = 7;
@@ -112,16 +113,16 @@ class PackageController extends Controller
         $package = Package::find($id);
 
         if($package->id == $free_pkg_id || !$package) 
-            return ['msg'=>'<i class=\'fa fa-info-circle\'></i> Invalid package'];
+            return ['msg'=>'Invalid package'];
 
         if($user->pkg_id == $last_pkg_id)
-            return ['msg'=>'<i class=\'fa fa-info-circle\'></i> You are already in the the last package'];
+            return ['msg'=>'You are already in the the last package'];
 
         if($user->pkg_id == $package->id)
-            return ['msg'=>'<i class=\'fa fa-info-circle\'></i> You are already in this package'];
+            return ['msg'=>'You are already in this package'];
             
         if($package->id < $user->pkg_id)
-            return ['msg'=>'<i class=\'fa fa-info-circle\'></i> You can\'t downgrade to a lower package'];
+            return ['msg'=>'You can\'t downgrade to a lower package'];
         
         $prev_package = Package::find($user->pkg_id);
         if($prev_package)
@@ -137,7 +138,7 @@ class PackageController extends Controller
             case 'e-pin':
                 $pay_method = 'E-pin';
                 if(!$code = $request->epin)
-                    return ['msg'=>'<i class=\'fa fa-info-circle\'></i> Please enter an e-pin'];
+                    return ['msg'=>'Please enter an e-pin'];
                 $epin = Epin::where([ ['code', $code], ['status', 0] ])->first();
                 if($epin){
                     if($epin->pkg_id == $package->id){
@@ -145,7 +146,7 @@ class PackageController extends Controller
                             $user->free_t_fee = 0; #clear fee
                             if($user->t_balance < $fee){
                                 if($user->pkg_balance < $fee)
-                                    return ['msg'=>'<i class=\'fa fa-info-circle\'></i> Insufficient fund for your 20% package fee'];
+                                    return ['msg'=>'Insufficient fund for your 20% package fee'];
                                 else{
                                     $user->pkg_balance-=$fee;
                                     $user->save();
@@ -156,7 +157,8 @@ class PackageController extends Controller
                                         'gnumber'=>$user->gnumber,
                                         'name'=>Helpers::PKG_BALANCE,
                                         'type'=>'debit',
-                                        'description'=>$cur.number_format($fee).' Debited for '.ucfirst($package->name).' package '.$percent.'% fee'
+                                        'description'=>$cur.number_format($fee).' Debited for '
+                                        .ucfirst($package->name).' package '.$percent.'% fee'
                                     ]);
                                 }
                             }else{
@@ -169,7 +171,8 @@ class PackageController extends Controller
                                     'gnumber'=>$user->gnumber,
                                     'name'=>Helpers::TRX_BALANCE,
                                     'type'=>'debit',
-                                    'description'=>$cur.number_format($fee).' Debited for '.ucfirst($package->name).' package '.$percent.'% fee'
+                                    'description'=>$cur.number_format($fee).' Debited for '
+                                    .ucfirst($package->name).' package '.$percent.'% fee'
                                 ]);
                             }
                         }
@@ -178,9 +181,9 @@ class PackageController extends Controller
                         $epin->used_date = Carbon::now();
                         $epin->save();
                     }else
-                        return ['msg'=>'<i class=\'fa fa-info-circle\'></i> E-pin not compatible with this package'];
+                        return ['msg'=>'E-pin not compatible with this package'];
                 }else
-                    return ['msg'=>'<i class=\'fa fa-info-circle\'></i> E-pin does not exist or may have been used.'];
+                    return ['msg'=>'E-pin does not exist or may have been used.'];
             break;
             case 'trx_w': 
                 $pay_method = 'Transaction wallet';
@@ -189,7 +192,7 @@ class PackageController extends Controller
                         $total = $amount+$fee;
                         if($user->t_balance < $total){
                             if($user->pkg_balance < $fee)
-                                return ['msg'=>'<i class=\'fa fa-info-circle\'></i> Insufficient fund for your 20% package fee'];
+                                return ['msg'=>'Insufficient fund for your 20% package fee'];
                             else{
                                 $user->pkg_balance-=$fee;
                                 $user->save();
@@ -200,7 +203,8 @@ class PackageController extends Controller
                                     'gnumber'=>$user->gnumber,
                                     'name'=>Helpers::PKG_BALANCE,
                                     'type'=>'debit',
-                                    'description'=>$cur.number_format($fee).' Debited for '.ucfirst($package->name).' package '.$percent.'% fee'
+                                    'description'=>$cur.number_format($fee).' Debited for '
+                                    .ucfirst($package->name).' package '.$percent.'% fee'
                                 ]);
                             }
                         }else{
@@ -213,7 +217,8 @@ class PackageController extends Controller
                                 'gnumber'=>$user->gnumber,
                                 'name'=>Helpers::TRX_BALANCE,
                                 'type'=>'debit',
-                                'description'=>$cur.number_format($fee).' Debited for '.ucfirst($package->name).' package '.$percent.'% fee'
+                                'description'=>$cur.number_format($fee).' Debited for '
+                                .ucfirst($package->name).' package '.$percent.'% fee'
                             ]);
                         }
                     }
@@ -227,22 +232,23 @@ class PackageController extends Controller
                         'gnumber'=>$user->gnumber,
                         'name'=>Helpers::TRX_BALANCE,
                         'type'=>'debit',
-                        'description'=>$cur.number_format($amount).' Debited for '.ucfirst($package->name).' package'
+                        'description'=>$cur.number_format($amount).' Debited for '
+                        .ucfirst($package->name).' package'
                     ]);
                 }else
-                    return ['msg'=>'<i class=\'fa fa-info-circle\'></i> Insufficient fund in your transaction wallet for the '.
+                    return ['msg'=>'Insufficient fund in your transaction wallet for the '.
                     ucfirst($package->name).' package'];
             break;
             default: 
-                return ['msg'=>'<i class=\'fa fa-info-circle\'></i> Invalid package'];
+                return ['msg'=>'Invalid package'];
         }
         $done = $package->activate($user, $request->h, $pay_method);
         if($done){
-            $request->session()->flash('pkg_activated', '<i class=\'fa fa-check-circle\'></i> '.ucfirst($package->name).
+            $request->session()->flash('pkg_activated', ucfirst($package->name).
             ' package has been activated successfully');
             return ['status'=>1, 'msg'=>'package successful'];
         }else{
-            return ['msg'=>'<i class=\'fa fa-info-circle\'></i> package could not be activated'];
+            return ['msg'=>'package could not be activated'];
         }
     }
     
