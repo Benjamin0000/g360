@@ -38,7 +38,7 @@ class Task extends Controller
     }
     /**
      * Track free users;
-     *
+     * 
      * @return Void
      */
     public static function sharePendingWallet()
@@ -101,5 +101,20 @@ class Task extends Controller
                 }
             }
         }
+    }
+        /**
+     * Track free users;
+     * 
+     * @return Void
+     */
+    public static function autoUpgrade()
+    {
+        // $users = User::where([ 
+        //     ['pkg_id', ], 
+        //     [] 
+        // ]);
+        // if($users->count()){
+
+        // }
     }
 }

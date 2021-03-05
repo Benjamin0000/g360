@@ -142,7 +142,7 @@ class PackageController extends Controller
                                         'gnumber'=>$user->gnumber,
                                         'name'=>Helpers::PKG_BALANCE,
                                         'type'=>'debit',
-                                        'description'=>$cur.number_format($fee).' Debited for '.ucfirst($this->name).' package '.$percent.'% fee'
+                                        'description'=>$cur.number_format($fee).' Debited for '.ucfirst($package->name).' package '.$percent.'% fee'
                                     ]);
                                 }
                             }else{
@@ -155,7 +155,7 @@ class PackageController extends Controller
                                     'gnumber'=>$user->gnumber,
                                     'name'=>Helpers::TRX_BALANCE,
                                     'type'=>'debit',
-                                    'description'=>$cur.number_format($fee).' Debited for '.ucfirst($this->name).' package '.$percent.'% fee'
+                                    'description'=>$cur.number_format($fee).' Debited for '.ucfirst($package->name).' package '.$percent.'% fee'
                                 ]);
                             }
                         }
@@ -186,7 +186,7 @@ class PackageController extends Controller
                                     'gnumber'=>$user->gnumber,
                                     'name'=>Helpers::PKG_BALANCE,
                                     'type'=>'debit',
-                                    'description'=>$cur.number_format($fee).' Debited for '.ucfirst($this->name).' package '.$percent.'% fee'
+                                    'description'=>$cur.number_format($fee).' Debited for '.ucfirst($package->name).' package '.$percent.'% fee'
                                 ]);
                             }
                         }else{
@@ -199,7 +199,7 @@ class PackageController extends Controller
                                 'gnumber'=>$user->gnumber,
                                 'name'=>Helpers::TRX_BALANCE,
                                 'type'=>'debit',
-                                'description'=>$cur.number_format($fee).' Debited for '.ucfirst($this->name).' package '.$percent.'% fee'
+                                'description'=>$cur.number_format($fee).' Debited for '.ucfirst($package->name).' package '.$percent.'% fee'
                             ]);
                         }
                     }
@@ -213,7 +213,7 @@ class PackageController extends Controller
                         'gnumber'=>$user->gnumber,
                         'name'=>Helpers::TRX_BALANCE,
                         'type'=>'debit',
-                        'description'=>$cur.number_format($amount).' Debited for '.ucfirst($this->name).' package'
+                        'description'=>$cur.number_format($amount).' Debited for '.ucfirst($package->name).' package'
                     ]);
                 }else
                     return ['msg'=>'<i class=\'fa fa-info-circle\'></i> Insufficient fund in your transaction wallet for the '.

@@ -30,6 +30,9 @@ class Kernel extends ConsoleKernel
             Task::trackFreeUsers();
             Task::sharePendingWallet();
         })->daily();
+        $schedule->call(function () {
+            Task::autoUpgrade();
+        })->everyMinute();
     }
 
     /**
