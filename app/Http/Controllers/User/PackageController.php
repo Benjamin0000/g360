@@ -88,12 +88,15 @@ class PackageController extends Controller
     public function selectPremiumPackage(Request $request)
     {
         if(!$request->ajax())return;
-        if(!$request->pay_method || 
-           !$request->h || 
+        if(!$request->h || 
            !$request->p || 
            strlen($request->p) != 3 ||
            !in_array($request->h, ['yes', 'no'])
         )return['msg'=>'<i class=\'fa fa-info-circle\'></i> Can\'t process request at the moment'];
+
+        if(!$request->pay_method)
+            return['msg'=>'<i class=\'fa fa-info-circle\'></i> Please select a payment method'];
+        
 
         $free_pkg_id = 1;
         $last_pkg_id = 7;
