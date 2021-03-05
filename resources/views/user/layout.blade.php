@@ -23,7 +23,7 @@
         }
     }, 10);
     }
-    </script> 
+    </script>
     <style>
         .pricing-box:hover{
             background:#5c9abe;
@@ -83,13 +83,13 @@
                         <!-- This is  -->
                         <li class="nav-item"> <a class="nav-link nav-toggler hidden-md-up text-muted waves-effect waves-dark" href="javascript:void(0)"><i class="ti-menu"></i></a> </li>
                         <li class="nav-item"> <a class="nav-link sidebartoggler hidden-sm-down text-muted waves-effect waves-dark" href="javascript:void(0)"><i class="icon-arrow-left-circle"></i></a> </li>
-                        
+
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-muted text-muted waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="mdi mdi-message"></i>
-                                <div class="notify"> 
+                                <div class="notify">
                                                                     </div>
                             </a>
-                            
+
                             <div class="dropdown-menu mailbox animated bounceInDown">
                                 <ul>
                                     <li>
@@ -100,19 +100,19 @@
                                             <!-- Message -->
                                                                                         <a href="/user/notification/b4c7dd4cad860d4718cdfdce36380bd3">
                                                 <div class="mail-contnet">
-                                                    <span class="mail-desc">Maintaince for homemade tile and frontage</span> 
+                                                    <span class="mail-desc">Maintaince for homemade tile and frontage</span>
                                                     <span class="time">05:22PM</span>
                                                 </div>
                                             </a>
                                                                                         <a href="/user/notification/a539e9d79d351f93cc4c43e241d0275c">
                                                 <div class="mail-contnet">
-                                                    <span class="mail-desc">Maintaince for homemade tile and frontage</span> 
+                                                    <span class="mail-desc">Maintaince for homemade tile and frontage</span>
                                                     <span class="time">09:36PM</span>
                                                 </div>
                                             </a>
                                                                                         <a href="/user/notification/c8819280ab0da9e0dddd4bf945ea24f7">
                                                 <div class="mail-contnet">
-                                                    <span class="mail-desc">0</span> 
+                                                    <span class="mail-desc">0</span>
                                                     <span class="time">08:08PM</span>
                                                 </div>
                                             </a>
@@ -123,20 +123,20 @@
                                     </li>
                                 </ul>
                             </div>
-                            
+
                         </li>
 
                         <li class="nav-item">
                             <a class="nav-link text-muted text-muted waves-effect waves-dark" href="/user/store/request"> <i class="mdi mdi-shopping"></i>
-                                <div class="notify"> 
+                                <div class="notify">
                                                                     </div>
                             </a>
                         </li>
 
                         <li class="nav-item hide"> <a class="nav-link text-muted " href="javascript:void(0)"><i class="ti-user"></i> 123456789 </a> </li>
-                       
+
                     </ul>
-                    
+
                 </div>
             </nav>
         </header>
@@ -147,8 +147,8 @@
                 <!-- User profile -->
                 <div class="user-profile">
                     <!-- User profile image -->
-                    <div class="profile-img"> 
-                        <img src="/assets/images/default.png" alt="user" /> 
+                    <div class="profile-img">
+                        <img src="/assets/images/default.png" alt="user" />
                     </div>
                     <!-- User profile text-->
                     <div class="profile-text"> <a href="#" class="dropdown-toggle link u-dropdown" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">@ {{Auth::user()->username}}<span class="caret"></span></a>
@@ -171,7 +171,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="/kdkd" aria-expanded="false" >
+                            <a href="{{route('user.gfund.index')}}" aria-expanded="false" >
                                 <i class="mdi mdi-trending-up"></i>
                                 <span class="hide-menu">G - Funds </span>
                             </a>
@@ -213,7 +213,7 @@
                             </a>
                         </li>
 
-                                                <li> 
+                                                <li>
                             <a class="has-arrow " href="#" aria-expanded="false"><i class="mdi mdi-vector-polyline"></i><span class="hide-menu">My Store</span></a>
                             <ul aria-expanded="false" class="collapse">
                                 <li><a href="dd">Overview</a></li>
@@ -223,7 +223,7 @@
                                 <li><a href="dd">Storefront</a></li>
                             </ul>
                         </li>
-                                                
+
                         <li>
                             <a class="has-arrow " href="#" aria-expanded="false"><i class="mdi mdi-vector-polyline"></i><span class="hide-menu">Downline</span></a>
                             <ul aria-expanded="false" class="collapse">
@@ -240,7 +240,7 @@
                                 <li><a href="dd">Deca Unit</a></li>
                             </ul>
                         </li>
-                        
+
                         <!--<li>
                             <a href="/user/bank" >
                                 <i class="mdi mdi-widgets"></i>
@@ -305,11 +305,11 @@
 <script type='text/javascript' src='/assets/js/sidebarmenu.js'></script>
 <script type='text/javascript' src='/assets/plugins/sticky-kit-master/dist/sticky-kit.min.js'></script>
 <script type='text/javascript' src='/assets/js/custom.js'></script>
-<script type='text/javascript' src='/assets/plugins/styleswitcher/jQuery.style.switcher.js'></script>   
+<script type='text/javascript' src='/assets/plugins/styleswitcher/jQuery.style.switcher.js'></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js" integrity="sha512-efUTj3HdSPwWJ9gjfGR71X9cvsrthIA78/Fvd/IN+fttQVy7XWkOAXb295j8B3cmm/kFKVxjiNYzKw9IQJHIuQ==" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/js/jquery.nice-select.min.js" integrity="sha512-NqYds8su6jivy1/WLoW8x1tZMRD7/1ZfhWG/jcRQLOzV1k1rIODCpMgoBnar5QXshKJGV7vi0LXLNXPoFsM5Zg==" crossorigin="anonymous"></script>
-<script type='text/javascript' src='/assets/plugins/datatables.net/js/jquery.dataTables.min.js'></script>    
+<script type='text/javascript' src='/assets/plugins/datatables.net/js/jquery.dataTables.min.js'></script>
 <script>
 $(document).ready(function() {
   $('select').niceSelect();

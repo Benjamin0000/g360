@@ -4,9 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
-use App\Models\UpgradeHistory;
-use App\Models\WalletHistory;
 use App\Http\Helpers;
 class Package extends Model
 {
@@ -32,14 +29,14 @@ class Package extends Model
         'gen'
     ];
 
-    public function activate($insurance = 'none', $paymethod = 'free')
+    public function activate(User $user, $insurance = 'none', $paymethod = 'free')
     {
         $last_pkg_id = 7;
         $free_pkg_id = 1;
         $basic_pkg = 2;
         $cash_back_percent = 8;
         $basic_pv = self::where('id', $basic_pkg)->first()->pv;
-        $user = Auth::user();
+        // $user = Auth::user();
         if($user->pkg_id == $last_pkg_id) return false; // user has reached the last package
         if($this->id <= $user->pkg_id) return false; // can't upgrade to the same package or less
         $from = $user->pkg_id;

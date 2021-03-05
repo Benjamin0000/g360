@@ -232,7 +232,7 @@ use Exception;
     */
     public static function genGnumber()
     {
-        $id = mt_rand(1000000000,9999999999);
+        $id = mt_rand(10000000,99999999);
         if(!User::where('gnumber', $id)->exists())
             return $id;
         return self::genGnumber();

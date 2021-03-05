@@ -50,7 +50,7 @@ class LoginController extends Controller
                 Session::flash('login_success', 'not empty');
                 return Helpers::ajaxOut($d, true);
             }else
-                die(Helpers::ajaxOut("G-number or password don't match", false));
+                die(Helpers::ajaxOut("username or password don't match", false));
         }
         die(Helpers::ajaxOut("Account don't exist", false));
     }

@@ -35,7 +35,8 @@ class PackageController extends Controller
         $no_pkg = 0;
         $user = Auth::user();
         if($user->pkg_id > $no_pkg)
-            return redirect(route('user.dasbhoard.index'))->with('error', 'Sorry you can\'t access that page');
+            return redirect(route('user.dasbhoard.index'))
+            ->with('error', 'Sorry you can\'t access that page');
         return view('user.package.index');
     }
 
@@ -48,7 +49,8 @@ class PackageController extends Controller
     {   $last_pkg = 7;
         $user = Auth::user();
         if($user->pkg_id == $last_pkg)
-            return redirect(route('user.dasbhoard.index'))->with('error', 'Sorry you can\'t access that page');
+            return redirect(route('user.dasbhoard.index'))
+            ->with('error', 'Sorry you can\'t access that page');
         $packages = Package::where('name', '<>', 'free')->get();
         return view('user.package.premium', compact('packages'));
     }
@@ -74,9 +76,11 @@ class PackageController extends Controller
             ]);
             $user->pkg_id = $package->id;
             $user->save();
-            return redirect(route('user.dasbhoard.index'))->with('success', 'Free package has been activated'); 
+            return redirect(route('user.dasbhoard.index'))
+            ->with('success', 'Free package has been activated'); 
         }
-        return redirect(route('user.dasbhoard.index'))->with('error', 'Sorry you can\'t access that page'); 
+        return redirect(route('user.dasbhoard.index'))
+        ->with('error', 'Sorry you can\'t access that page'); 
     }
 
     /**
@@ -97,7 +101,6 @@ class PackageController extends Controller
         if(!$request->pay_method)
             return['msg'=>'<i class=\'fa fa-info-circle\'></i> Please select a payment method'];
         
-
         $free_pkg_id = 1;
         $last_pkg_id = 7;
         $cur = Helpers::LOCAL_CURR_SYMBOL;
@@ -107,18 +110,26 @@ class PackageController extends Controller
         #check selected package & make sure not free
         $id = substr($request->p, 2, 1);
         $package = Package::find($id);
+
         if($package->id == $free_pkg_id || !$package) 
-        return ['msg'=>'<i class=\'fa fa-info-circle\'></i> Invalid package'];
+            return ['msg'=>'<i class=\'fa fa-info-circle\'></i> Invalid package'];
 
-        if($user->pkg_id == $last_pkg_id || $user->pkg_id >= $package->id)
-            return;
+        if($user->pkg_id == $last_pkg_id)
+            return ['msg'=>'<i class=\'fa fa-info-circle\'></i> You are already in the the last package'];
 
+        if($user->pkg_id == $package->id)
+            return ['msg'=>'<i class=\'fa fa-info-circle\'></i> You are already in this package'];
+            
+        if($package->id < $user->pkg_id)
+            return ['msg'=>'<i class=\'fa fa-info-circle\'></i> You can\'t downgrade to a lower package'];
+        
         $prev_package = Package::find($user->pkg_id);
         if($prev_package)
             $amount = $package->amount - $prev_package->amount;
         else 
             $amount = $package->amount;
-        #there is a fee
+
+        #check for fee
         if($percent = $user->free_t_fee)
             $fee = ($percent/100)*$amount;
 
@@ -225,8 +236,7 @@ class PackageController extends Controller
             default: 
                 return ['msg'=>'<i class=\'fa fa-info-circle\'></i> Invalid package'];
         }
-
-        $done = $package->activate($request->h, $pay_method);
+        $done = $package->activate($user, $request->h, $pay_method);
         if($done){
             $request->session()->flash('pkg_activated', '<i class=\'fa fa-check-circle\'></i> '.ucfirst($package->name).
             ' package has been activated successfully');

@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\PackageController;
 use App\Http\Controllers\User\EpinController;
+use App\Http\Controllers\User\GfundController;
 use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
@@ -52,6 +53,8 @@ Route::group(['prefix'=>'portal'],  function(){
     Route::get('/packages/premium', [PackageController::class, 'showPremiumPackages'])->name('user.package.show_premium');
     Route::post('/packages/premium', [PackageController::class, 'selectPremiumPackage'])->name('user.package.select_premium');
     Route::post('/packages/free', [PackageController::class, 'selectFreePackage'])->name('user.package.select_free');
+    #Gfund
+    Route::get('/gfund', [GfundController::class, 'index'])->name('user.gfund.index');
     #Epin
     Route::get('/epin', [EpinController::class, 'index'])->name('user.epin.index');
     Route::get('/epin/buy', [EpinController::class, 'buy'])->name('user.epin.buy');

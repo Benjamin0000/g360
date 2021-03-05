@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\TrackFreeUser;
 use App\Models\WalletHistory;
 use App\Models\User;
+use App\Models\Package;
 use App\Http\Helpers;
 
 class Task extends Controller
@@ -102,19 +103,79 @@ class Task extends Controller
             }
         }
     }
-        /**
-     * Track free users;
+    /**
+     * auto upgrade users plan
      * 
      * @return Void
      */
     public static function autoUpgrade()
     {
-        // $users = User::where([ 
-        //     ['pkg_id', ], 
-        //     [] 
-        // ]);
-        // if($users->count()){
-
-        // }
+        $cur = Helpers::LOCAL_CURR_SYMBOL;
+        $last_pkg_id = 7;
+        $inc_pkg_id = 1;
+        $fee = 0;
+        $users = User::where([
+            ['status', 1],
+            ['pkg_id', '<' , $last_pkg_id]
+        ]);
+        if($users->exists()){
+            $users = $users->get();
+            foreach($users as $user){
+                if($current_pkg = Package::find($user->pkg_id)){
+                    if($nxt_package = Package::find($user->pkg_id + $inc_pkg_id)){
+                        $amount = $nxt_package->amount - $current_pkg->amount;
+                        if($percent = $user->free_t_fee)
+                            $fee = ($percent/100)*$amount;
+                        if($user->pkg_balance >= $amount){
+                            if($fee){
+                                $total = $amount+$fee;
+                                if($user->pkg_balance < $total){
+                                    if($user->t_balance < $fee)
+                                       return;
+                                    else{
+                                        $user->t_balance-=$fee;
+                                        $user->save();
+                                        WalletHistory::create([
+                                            'id'=>Helpers::genTableId(WalletHistory::class),
+                                            'user_id'=>$user->id,
+                                            'amount'=>$fee,
+                                            'gnumber'=>$user->gnumber,
+                                            'name'=>Helpers::TRX_BALANCE,
+                                            'type'=>'debit',
+                                            'description'=>$cur.$fee.' Debited for '.ucfirst($nxt_package->name).' package '.$percent.'% fee'
+                                        ]);
+                                    }
+                                }else{
+                                    $user->pkg_balance-=$fee;
+                                    $user->save();
+                                    WalletHistory::create([
+                                        'id'=>Helpers::genTableId(WalletHistory::class),
+                                        'user_id'=>$user->id,
+                                        'amount'=>$fee,
+                                        'gnumber'=>$user->gnumber,
+                                        'name'=>Helpers::PKG_BALANCE,
+                                        'type'=>'debit',
+                                        'description'=>$cur.$fee.' Debited for '.ucfirst($nxt_package->name).' package '.$percent.'% fee'
+                                    ]);
+                                }
+                            }
+                            $user->free_t_fee = 0; #clear fee
+                            $user->pkg_balance-=$amount;
+                            $user->save();
+                            WalletHistory::create([
+                                'id'=>Helpers::genTableId(WalletHistory::class),
+                                'user_id'=>$user->id,
+                                'amount'=>$amount,
+                                'gnumber'=>$user->gnumber,
+                                'name'=>Helpers::PKG_BALANCE,
+                                'type'=>'debit',
+                                'description'=>$cur.$amount.' Debited for '.ucfirst($nxt_package->name).' package'
+                            ]);
+                            $nxt_package->activate($user, 'none', 'PKG Wallet auto upgrade');
+                        }    
+                    }
+                }
+            }
+        }
     }
 }
