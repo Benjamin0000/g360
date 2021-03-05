@@ -30,12 +30,12 @@ class CreatePackagesTable extends Migration
         $names = ['free', 'basic', 'standard', 'super', 'master', 'professional', 'vip'];
         $amount = [0, 18750, 54750, 104750, 174750, 254750, 354750];
         #this is levels against package
-        $rev_pv = [
+        $ref_pv = [
             '0',
             '60,50,40,30', 
             '120,100,80,60', 
             '180,150,120,90', 
-            '[240,200,160,120', 
+            '240,200,160,120', 
             '300,250,200,150', 
             '360,300,240,180'
         ];
@@ -70,7 +70,7 @@ class CreatePackagesTable extends Migration
                 'amount'=>$amount[$i-1],
                 'pv'=>$pv[$i-1],
                 'h_token'=>$h_token[$i-1],
-                'ref_pv'=>$rev_pv[$i-1],
+                'ref_pv'=>$ref_pv[$i-1],
                 'ref_h_token'=>$ref_h_token[$i-1],
                 'ref_percent'=>$ref_percent[$i-1],
                 'insurance'=>$insurance[$i-1],
