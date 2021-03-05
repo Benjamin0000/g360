@@ -101,7 +101,8 @@ class PackageController extends Controller
         $cur = Helpers::LOCAL_CURR_SYMBOL;
         $user = Auth::user();
         $fee = 0;
-        #check selected package
+
+        #check selected package & make sure not free
         $id = substr($request->p, 2, 1);
         $package = Package::find($id);
         if($package->id == $free_pkg_id || !$package) 
@@ -115,44 +116,69 @@ class PackageController extends Controller
             $amount = $package->amount - $prev_package->amount;
         else 
             $amount = $package->amount;
-        
-        if($percent = $user->free_t_fee){
+        #there is a fee
+        if($percent = $user->free_t_fee)
             $fee = ($percent/100)*$amount;
-            if($user->t_balance < $fee){
-                return ['msg'=>'<i class=\'fa fa-info-circle\'></i> Insufficient fund for your 20% package fee'];
-            }
-        }
 
         switch($request->pay_method){
             case 'e-pin':
-               $pay_method = 'E-pin';
-               if(!$code = $request->epin)
+                $pay_method = 'E-pin';
+                if(!$code = $request->epin)
                     return ['msg'=>'<i class=\'fa fa-info-circle\'></i> Please enter an e-pin'];
-               $epin = Epin::where([ ['code', $code], ['status', 0] ])->first();
-               if($epin){
+                $epin = Epin::where([ ['code', $code], ['status', 0] ])->first();
+                if($epin){
                     if($epin->pkg_id == $package->id){
+                        if($fee){
+                            $user->free_t_fee = 0; #clear fee
+                            if($user->t_balance < $fee){
+                                if($user->pkg_balance < $fee)
+                                    return ['msg'=>'<i class=\'fa fa-info-circle\'></i> Insufficient fund for your 20% package fee'];
+                                else{
+                                    $user->pkg_balance-=$fee;
+                                    $user->save();
+                                    WalletHistory::create([
+                                        'id'=>Helpers::genTableId(WalletHistory::class),
+                                        'user_id'=>$user->id,
+                                        'amount'=>$fee,
+                                        'gnumber'=>$user->gnumber,
+                                        'name'=>Helpers::PKG_BALANCE,
+                                        'type'=>'debit',
+                                        'description'=>$cur.number_format($fee).' Debited for '.ucfirst($this->name).' package '.$percent.'% fee'
+                                    ]);
+                                }
+                            }else{
+                                $user->t_balance-=$fee;
+                                $user->save();
+                                WalletHistory::create([
+                                    'id'=>Helpers::genTableId(WalletHistory::class),
+                                    'user_id'=>$user->id,
+                                    'amount'=>$fee,
+                                    'gnumber'=>$user->gnumber,
+                                    'name'=>Helpers::TRX_BALANCE,
+                                    'type'=>'debit',
+                                    'description'=>$cur.number_format($fee).' Debited for '.ucfirst($this->name).' package '.$percent.'% fee'
+                                ]);
+                            }
+                        }
                         $epin->status = 1;
                         $epin->used_by = $user->id;
                         $epin->used_date = Carbon::now();
                         $epin->save();
                     }else
                         return ['msg'=>'<i class=\'fa fa-info-circle\'></i> E-pin not compatible with this package'];
-               }else
+                }else
                     return ['msg'=>'<i class=\'fa fa-info-circle\'></i> E-pin does not exist or may have been used.'];
             break;
-            case 'card': 
-                $pay_method = 'Credit or Debit card';
-                // process card payment
-                return ['msg'=>'<i class=\'fa fa-info-circle\'></i> Card payments not available at the moment'];
-            break;
             case 'trx_w': 
-                if($user->t_balance > $amount){
+                $pay_method = 'Transaction wallet';
+                if($user->t_balance >= $amount){
                     if($fee){
                         $total = $amount+$fee;
                         if($user->t_balance < $total){
-                            if($user->pkg_balance >= $fee){
+                            if($user->pkg_balance < $fee)
+                                return ['msg'=>'<i class=\'fa fa-info-circle\'></i> Insufficient fund for your 20% package fee'];
+                            else{
                                 $user->pkg_balance-=$fee;
-                                $user->free_t_fee = '';
                                 $user->save();
                                 WalletHistory::create([
                                     'id'=>Helpers::genTableId(WalletHistory::class),
@@ -163,14 +189,22 @@ class PackageController extends Controller
                                     'type'=>'debit',
                                     'description'=>$cur.number_format($fee).' Debited for '.ucfirst($this->name).' package '.$percent.'% fee'
                                 ]);
-                            }else{
-                                return ['msg'=>'<i class=\'fa fa-info-circle\'></i> Insufficient fund for your 20% package fee'];
                             }
                         }else{
-                            $amount = $total;
+                            $user->t_balance-=$fee;
+                            $user->save();
+                            WalletHistory::create([
+                                'id'=>Helpers::genTableId(WalletHistory::class),
+                                'user_id'=>$user->id,
+                                'amount'=>$fee,
+                                'gnumber'=>$user->gnumber,
+                                'name'=>Helpers::TRX_BALANCE,
+                                'type'=>'debit',
+                                'description'=>$cur.number_format($fee).' Debited for '.ucfirst($this->name).' package '.$percent.'% fee'
+                            ]);
                         }
                     }
-                    $pay_method = 'Transaction wallet';
+                    $user->free_t_fee = 0; #clear fee
                     $user->t_balance-=$amount;
                     $user->save();
                     WalletHistory::create([
@@ -183,52 +217,17 @@ class PackageController extends Controller
                         'description'=>$cur.number_format($amount).' Debited for '.ucfirst($this->name).' package'
                     ]);
                 }else
-                    return ['msg'=>'<i class=\'fa fa-info-circle\'></i> Insufficient fund in your transaction wallet for the '.ucfirst($package->name).' package'];
-            break;
-            case 'pkg_w': 
-                if($user->pkg_balance > $amount){
-                    if($fee){
-                        $total = $amount+$fee;
-                        if($user->pkg_balance < $total){
-                            if($user->t_balance >= $fee){
-                                $user->t_balance-=$fee;
-                                $user->free_t_fee = '';
-                                $user->save();
-                                WalletHistory::create([
-                                    'id'=>Helpers::genTableId(WalletHistory::class),
-                                    'user_id'=>$user->id,
-                                    'amount'=>$fee,
-                                    'gnumber'=>$user->gnumber,
-                                    'name'=>Helpers::TRX_BALANCE,
-                                    'type'=>'debit',
-                                    'description'=>$cur.number_format($fee).' Debited for '.ucfirst($this->name).' package '.$percent.'% fee'
-                                ]);
-                            }else
-                                return ['msg'=>'<i class=\'fa fa-info-circle\'></i> Insufficient fund for your 20% package fee'];
-                        }else
-                            $amount = $total;
-                    }
-                    $pay_method = 'Package wallet';
-                    $user->pkg_balance-=$amount;
-                    $user->save();
-                    WalletHistory::create([
-                        'id'=>Helpers::genTableId(WalletHistory::class),
-                        'user_id'=>$user->id,
-                        'amount'=>$amount,
-                        'gnumber'=>$user->gnumber,
-                        'name'=>Helpers::PKG_BALANCE,
-                        'type'=>'debit',
-                        'description'=>$cur.number_format($amount).' Debited for '.ucfirst($this->name).' package'
-                    ]);
-                }else 
-                    return ['msg'=>'<i class=\'fa fa-info-circle\'></i> Insufficient fund in your package wallet for the '.ucfirst($package->name).' package'];
+                    return ['msg'=>'<i class=\'fa fa-info-circle\'></i> Insufficient fund in your transaction wallet for the '.
+                    ucfirst($package->name).' package'];
             break;
             default: 
                 return ['msg'=>'<i class=\'fa fa-info-circle\'></i> Invalid package'];
         }
+
         $done = $package->activate($request->h, $pay_method);
         if($done){
-            $request->session()->flash('pkg_activated', '<i class=\'fa fa-check-circle\'></i> '.ucfirst($package->name).' package has been activated successfully');
+            $request->session()->flash('pkg_activated', '<i class=\'fa fa-check-circle\'></i> '.ucfirst($package->name).
+            ' package has been activated successfully');
             return ['status'=>1, 'msg'=>'package successful'];
         }else{
             return ['msg'=>'<i class=\'fa fa-info-circle\'></i> package could not be activated'];

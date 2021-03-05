@@ -14,9 +14,7 @@
                     <select class="wide pay_select" name="pay_method" tel='{{$package->id}}'>
                         <option value="">Choose method</option>
                         <option value="e-pin">E-pin</option>
-                        <option value="card">Debit or Credit card</option>
                         <option value="trx_w">Transaction Wallet</option>
-                        <option value="pkg_w">Package Wallet</option>
                     </select>
                 </div>
                 <div class="epin_show" id="epin_show{{$package->id}}">
@@ -36,7 +34,7 @@
                     </div>
                 </div>
                 <input type="hidden" name='p' value="{{rand(10,20).$package->id}}">
-                @csrf 
+                @csrf
                 <div class="text-center" id="pkge{{$package->id}}"></div>
                 <div class="form-group text-center">
                     <button class="btn btn-success" id='pkgcbtn{{$package->id}}'>Continue</button>
