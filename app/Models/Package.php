@@ -53,9 +53,12 @@ class Package extends Model
             $user->save();
             return true;
         }
+        
+        if($from > 0)
+            $from - 1;
 
         $user->h_token+=$this->h_token; //asign health token
-        $pv_value = ($basic_pv*$this->id) - $this->pv; 
+        $pv_value = $this->pv - ($basic_pv * $from);
         $user->pv+=$pv_value; //asign pv
         $user->save();
         WalletHistory::create([

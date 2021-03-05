@@ -9,12 +9,13 @@
                     <h4 class="card-title">Transfer Funds</h4>
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
-                        <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#home" role="tab" aria-selected="false"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Local Bank</span></a> </li>
-                        <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#profile" role="tab" aria-selected="true"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Other Members</span></a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#b" role="tab" aria-selected="false"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Local Bank</span></a> </li>
+                        <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#o" role="tab" aria-selected="true"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Other Members</span></a> </li>
+                        <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#w" role="tab" aria-selected="true"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Wallet</span></a> </li>
                     </ul>
                     <!-- Tab panes -->
                     <div class="tab-content tabcontent-border">
-                        <div class="tab-pane p-3 pt-5" id="home" role="tabpanel">
+                        <div class="tab-pane active p-3 pt-5" id="b" role="tabpanel">
                             <form class="form-horizontal" method="post" action="">
                                 <div class="form-group">
                                     <label>Recipient G-Number </label>
@@ -29,9 +30,8 @@
                                 </div>
                             </form>
                         </div>
-                        <div class="tab-pane p-3 active pt-5" id="profile" role="tabpanel">
 
-
+                        <div class="tab-pane p-3 pt-5" id="o" role="tabpanel">
                             <div class="row">
                                 <div class="col-md-6">
                                     <h4 class="card-title">Recipient G-Number  </h4>
@@ -45,7 +45,6 @@
                                     </form>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
