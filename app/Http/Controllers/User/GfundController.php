@@ -56,13 +56,13 @@ class GfundController extends Controller
         switch($request->wallet){
             case 'tw': 
                 $type = 'trx_transfer';
-                $wallet = 'Transaction wallet';
+                $wallet = 'T-wallet';
                 $sent = Helpers::TRX_BALANCE;
                 $user->t_balance += $amount;
             break; 
             case 'pkg': 
                 $type = 'pkg_transfer';
-                $wallet = 'Package wallet';
+                $wallet = 'PKG-wallet';
                 $sent = Helpers::PKG_BALANCE;
                 $user->pkg_balance += $amount;
             break;
@@ -87,7 +87,7 @@ class GfundController extends Controller
             'gnumber'=>$user->gnumber,
             'name'=>$sent,
             'type'=>$wallet_transfer,
-            'description'=>$cur.$amount.' transfered from Withdrawal wallet'
+            'description'=>$cur.$amount.' received from T-wallet'
         ]);
         return ['status'=>1, 'msg'=>"Transfer successful", 'bal'=>$user->w_balance];
     }
