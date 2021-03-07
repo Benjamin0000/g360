@@ -55,7 +55,6 @@ class GfundController extends Controller
         $amount = abs($amount); #👈 no need for this line, it's just for fun sake 😄
         switch($request->wallet){
             case 'tw': 
-                $type = 'trx_transfer';
                 $wallet = 'T-wallet';
                 $sent = Helpers::TRX_BALANCE;
                 $user->t_balance += $amount;
@@ -63,8 +62,6 @@ class GfundController extends Controller
             case 'pkg':
                 if($user->pkg_id == $last_pkg_id)
                     return ['msg'=>"Can't make transfer to PKG-wallet"];
-                
-                $type = 'pkg_transfer';
                 $wallet = 'PKG-wallet';
                 $sent = Helpers::PKG_BALANCE;
                 $user->pkg_balance += $amount;
@@ -80,7 +77,7 @@ class GfundController extends Controller
             'amount'=>$amount,
             'gnumber'=>$user->gnumber,
             'name'=>Helpers::WITH_BALANCE,
-            'type'=>$type,
+            'type'=>'debit',
             'description'=>self::CUR.$amount.' transfered to '.$wallet
         ]);
         WalletHistory::create([
@@ -89,8 +86,8 @@ class GfundController extends Controller
             'amount'=>$amount,
             'gnumber'=>$user->gnumber,
             'name'=>$sent,
-            'type'=>$wallet_transfer,
-            'description'=>self::CUR.$amount.' received from T-wallet'
+            'type'=>'credit',
+            'description'=>self::CUR.$amount.' received from W-wallet'
         ]);
         return ['status'=>1, 'msg'=>"Transfer successful", 'bal'=>$user->w_balance];
     }
