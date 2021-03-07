@@ -45,8 +45,8 @@ Author: Themedesigner
 Email: niravjoshi87@gmail.com
 File: scss
 */
-/******************* 
-Global Styles 
+/*******************
+Global Styles
 *******************/
 * {
   outline: none; }
@@ -639,7 +639,7 @@ Table Cell
   vertical-align: middle; }
 
 /* .table td, .table th{
-    border-color:$table-border; 
+    border-color:$table-border;
 } */
 .table thead th, .table th {
   font-weight: 500; }
@@ -1475,7 +1475,7 @@ Checkbox
   color: #ffffff; }
 
 /*******************
-Radios 
+Radios
 *******************/
 .radio {
   padding-left: 20px; }
@@ -1612,7 +1612,7 @@ Radios
   cursor: pointer; }
 
 /*******************
-File Upload 
+File Upload
 ******************/
 .fileupload {
   overflow: hidden;
@@ -1733,7 +1733,7 @@ Layouts
 .card-no-border {
   /* .left-sidebar, .sidebar-nav{
         background:$sidebar-white;
-        
+
     }
     .sidebar-nav>ul>li>a.active{
         background:$light;
@@ -1808,8 +1808,8 @@ Author: Themedesigner
 Email: niravjoshi87@gmail.com
 File: scss
 */
-/*============================================================== 
- For all pages 
+/*==============================================================
+ For all pages
  ============================================================== */
 #main-wrapper {
   width: 100%; }
@@ -2264,7 +2264,7 @@ ul#themecolors {
   background: #01c0c8;
   border-color: #01c0c8; }
 
-/*============================================================== 
+/*==============================================================
  Buttons page
  ============================================================== */
 .button-group .btn {
@@ -2284,7 +2284,7 @@ ul#themecolors {
 .btn.active .text {
   display: none; }
 
-/*============================================================== 
+/*==============================================================
  Cards page
  ============================================================== */
 .card-actions {
@@ -2350,7 +2350,7 @@ ul#themecolors {
     background: #7460ee;
     border-color: #7460ee; }
 
-/*============================================================== 
+/*==============================================================
 Breadcrumb
  ============================================================== */
 .bc-colored .breadcrumb-item,
@@ -2366,7 +2366,7 @@ Breadcrumb
 .breadcrumb {
   margin-bottom: 0px; }
 
-/*============================================================== 
+/*==============================================================
  Ui-bootstrap
  ============================================================== */
 ul.list-icons {
@@ -2400,7 +2400,7 @@ ul.two-part {
 html body .accordion .card {
   margin-bottom: 0px; }
 
-/*============================================================== 
+/*==============================================================
  flot chart
  ============================================================== */
 .flot-chart {
@@ -2419,8 +2419,8 @@ html body .flotTip {
   color: #ffffff;
   padding: 5px 10px; }
 
-/*============================================================== 
-Easy pie chart 
+/*==============================================================
+Easy pie chart
  ============================================================== */
 .chart {
   position: relative;
@@ -2476,7 +2476,7 @@ Easy pie chart
     margin-left: 0.1em;
     font-size: .8em; }
 
-/*============================================================== 
+/*==============================================================
 Dashboard1 chart
  ============================================================== */
 .total-revenue,
@@ -2564,7 +2564,7 @@ Dashboard1 chart
     line-height: 12px;
     white-space: nowrap; }
 
-/*============================================================== 
+/*==============================================================
 Dashboard2 chart
  ============================================================== */
 .total-revenue2 .ct-series-a .ct-area {
@@ -2573,7 +2573,7 @@ Dashboard2 chart
 .total-revenue2 .ct-series-b .ct-area {
   fill: #e8fdeb; }
 
-/*============================================================== 
+/*==============================================================
 Dashboard3 chart
  ============================================================== */
 .total-sales {
@@ -2612,7 +2612,7 @@ Dashboard3 chart
 #calendar .fc-today-button {
   display: none; }
 
-/*============================================================== 
+/*==============================================================
 Dashboard4 chart
  ============================================================== */
 .total-revenue4 {
@@ -2636,13 +2636,13 @@ Dashboard4 chart
     fill: #55ce63;
     fill-opacity: 0.2; }
 
-/*============================================================== 
+/*==============================================================
 Widget-data
  ============================================================== */
 .sparkchart {
   margin-bottom: -2px; }
 
-/*============================================================== 
+/*==============================================================
 File upload
  ============================================================== */
 .btn-file {
@@ -2709,7 +2709,7 @@ File upload
 .fileinput.input-group > .btn-file {
   z-index: 1; }
 
-/*============================================================== 
+/*==============================================================
 widget-chart-page product review
  ============================================================== */
 .product-review {
@@ -2738,7 +2738,7 @@ widget-chart-page product review
   .profile-tab li a.nav-link:hover, .customtab li a.nav-link:hover {
     color: #009efb; }
 
-/*============================================================== 
+/*==============================================================
 Form addons page
 ============================================================== */
 /*Bootstrap select*/
@@ -2778,7 +2778,7 @@ Form addons page
 .input-form .btn {
   padding: 7px 12px; }
 
-/*============================================================== 
+/*==============================================================
 Form Material page
  ============================================================== */
 /*Material inputs*/
@@ -5071,7 +5071,7 @@ Pricing Page
   border-bottom: 5px solid rgba(120, 130, 140, 0.13);
   vertical-align: middle;
   padding: 30px 0;
-  position: relative; 
+  position: relative;
   min-height: 410px;
 }
 
@@ -5464,7 +5464,9 @@ sidebar footer
 sidebar navigation
 ******************/
 .scroll-sidebar {
-  padding-top: 30px; }
+  padding-top: 30px;
+  overflow: scroll !important;
+}
 
 .collapse.in {
   display: block; }
@@ -5590,7 +5592,8 @@ When click on sidebar toggler and also for tablet
     width: 60px; }
   .mini-sidebar .scroll-sidebar {
     padding-bottom: 0px;
-    position: absolute; }
+    position: absolute; 
+  }
   .mini-sidebar .hide-menu,
   .mini-sidebar .nav-small-cap,
   .mini-sidebar .sidebar-footer,
@@ -6543,24 +6546,24 @@ Author: Themedesigner
 Email: niravjoshi87@gmail.com
 File: scss
 */
-/*============================================================== 
- For Laptop & above all (1650px) 
+/*==============================================================
+ For Laptop & above all (1650px)
  ============================================================== */
 @media (min-width: 1650px) {
   .widget-app-columns {
     -webkit-column-count: 3;
     column-count: 3; } }
 
-/*============================================================== 
- For Laptop & above all (1370px) 
+/*==============================================================
+ For Laptop & above all (1370px)
  ============================================================== */
 @media (max-width: 1370px) {
   .widget-app-columns {
     -webkit-column-count: 2;
     column-count: 2; } }
 
-/*-- ============================================================== 
- Small Desktop & above all (1024px) 
+/*-- ==============================================================
+ Small Desktop & above all (1024px)
  ============================================================== */
 @media (min-width: 1024px) {
   .page-wrapper {
@@ -6582,8 +6585,8 @@ File: scss
   .inbox-center a {
     width: 200px; } }
 
-/*-- ============================================================== 
- Ipad & above all(768px) 
+/*-- ==============================================================
+ Ipad & above all(768px)
  ============================================================== */
 @media (min-width: 768px) {
   .navbar-header {
@@ -6605,8 +6608,8 @@ File: scss
     flex-wrap: no-wrap !important;
     -webkit-flex-wrap: no-wrap !important; } }
 
-/*-- ============================================================== 
- Phone and below ipad(767px) 
+/*-- ==============================================================
+ Phone and below ipad(767px)
  ============================================================== */
 @media (max-width: 767px) {
   /*Header*/
