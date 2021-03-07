@@ -196,7 +196,7 @@
                         <thead>
                             <tr>
                                 <th>S/N</th>
-                                {{-- <th>Amount</th> --}}
+                                <th>Amount</th>
                                 <th>Wallet</th>
                                 <th>Desc.</th>
                                 <th>Time</th>
@@ -208,18 +208,14 @@
                             @foreach($histories as $history)
                               <tr>
                                 <td>{{$count++}}</td>
-                                {{-- <td>--}}
-                                  {{-- {{$cur.$history->amount}} --}}
-                                  {{-- @if($history->type == 'debit')
+                                <td>
+                                  {{$cur.number_format($history->amount,2,'.',',')}}
+                                  @if($history->type == 'debit')
                                       <span class="badge badge-danger">Debit</span>
-                                  @elseif($history->type == 'w_transfer')
-                                      <span class="badge badge-danger">Credit</span>
-                                  @elseif($history->type == 'pkg_transfer' || $history->type == 'trx_transfer')
-                                    <span class="badge badge-warning">Transfer</span>
-                                  @else
+                                  @elseif($history->type == 'credit')
                                       <span class="badge badge-success">Credit</span>
-                                  @endif --}}
-                                {{-- </td>  --}}
+                                  @endif
+                                </td>
                                 <td>
                                   @if($history->name == 't_balance')
                                     T-wallet

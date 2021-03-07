@@ -44,11 +44,11 @@ class Task extends Controller
      */
     public static function sharePendingWallet()
     {
+        return ;
         $cur = Helpers::LOCAL_CURR_SYMBOL;
         $free_pkg_id = 1;
-               //[pkg, with, trx]
-        $free_p = [40,    0,   60];
-        $prem_p = [30,   20,   50];
+                # [g_pt, with, pkg, trx]
+        $prem_p = [20, 5,  25, 50];
         $users = User::all();
         if($users->count()){
             foreach($users as $user){

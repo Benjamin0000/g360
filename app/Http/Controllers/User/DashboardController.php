@@ -29,7 +29,8 @@ class DashboardController extends Controller
         $user = Auth::user();
         $histories = WalletHistory::where([ 
             ['user_id', $user->id],
-            ['name', '<>', 'h_token']
+            ['name', '<>', 'h_token'],
+            ['name', '<>', 'pv']
         ])
         ->latest()->take(15)->get();
         $referals = [];

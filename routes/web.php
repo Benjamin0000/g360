@@ -9,6 +9,8 @@ use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\PackageController;
 use App\Http\Controllers\User\EpinController;
 use App\Http\Controllers\User\GfundController;
+use App\Http\Controllers\User\WalletHistoryController;
+use App\Http\Controllers\User\DownlineController;
 use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
@@ -64,4 +66,13 @@ Route::group(['prefix'=>'portal'],  function(){
     Route::get('/epin/buy', [EpinController::class, 'buy'])->name('user.epin.buy');
     Route::post('/epin/buy', [EpinController::class, 'issueBuy'])->name('user.epin.buy');
     Route::get('/epin/{pkg}', [EpinController::class, 'show'])->name('user.epin.show');
-});
+
+    #Transaction history
+    Route::get('/history/W-wallet', [WalletHistoryController::class, 'w_wallet'])->name('user.history.w_wallet');
+    Route::get('/history/T-wallet', [WalletHistoryController::class, 't_wallet'])->name('user.history.t_wallet');
+    Route::get('/history/P-wallet', [WalletHistoryController::class, 'p_wallet'])->name('user.history.p_wallet');
+    Route::get('/history/G-wallet', [WalletHistoryController::class, 'g_wallet'])->name('user.history.g_wallet');
+    #downline
+    Route::get('/downline/direct', [DownlineController::class, 'direct'])->name('user.downline.direct');
+    Route::get('/downline/indirect', [DownlineController::class, 'indirect'])->name('user.downline.indirect');
+});  

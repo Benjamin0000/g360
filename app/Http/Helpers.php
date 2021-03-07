@@ -27,7 +27,8 @@ use Exception;
     public const WITH_BALANCE = 'w_balance';
     public const HEALTH_TOKEN = 'h_token';
     public const POINT_VALUE = 'pv';
-
+    public const GIFT_POINT = 'g_point';
+    
 	/**
      * Store Email Addresses
 	 * 

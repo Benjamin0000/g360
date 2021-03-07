@@ -231,13 +231,12 @@
                                 <li><a href="dd">Indirect Referal</a></li>
                             </ul>
                         </li>
-
                         <li>
                             <a class="has-arrow " href="#" aria-expanded="false"><i class="mdi mdi-history"></i><span class="hide-menu">Transaction History</span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="dd">E - wallet</a></li>
-                                <li><a href="dd">Point Value</a></li>
-                                <li><a href="dd">Deca Unit</a></li>
+                                <li><a href="{{route('user.history.w_wallet')}}">W-Wallet</a></li>
+                                <li><a href="{{route('user.history.p_wallet')}}">P-wallet</a></li>
+                                <li><a href="{{route('user.history.t_wallet')}}">T-Wallet</a></li>
                             </ul>
                         </li>
 
