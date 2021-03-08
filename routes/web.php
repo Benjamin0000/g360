@@ -22,9 +22,10 @@ use Illuminate\Support\Facades\Auth;
 | contains the "web" middleware group. Now create something great!
 |
 */
-// Route::get('/test', function(){
-//     return view('mail.reset_password');
-// });
+Route::get('/test', function(){
+    $user = Auth::user();
+    return $user->upgrade;
+});
 
 Route::get('/',  [FrontController::class, 'index'])->name('front.index');
 Route::get('/about',  [FrontController::class, 'about'])->name('front.about');

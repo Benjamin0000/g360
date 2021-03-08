@@ -227,8 +227,8 @@
                         <li>
                             <a class="has-arrow " href="#" aria-expanded="false"><i class="mdi mdi-vector-polyline"></i><span class="hide-menu">Downline</span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="dd">Direct Referals</a></li>
-                                <li><a href="dd">Indirect Referal</a></li>
+                                <li><a href="{{route('user.downline.direct')}}">Direct Referals</a></li>
+                                <li><a href="{{route('user.downline.indirect')}}">Indirect Referal</a></li>
                             </ul>
                         </li>
                         <li>

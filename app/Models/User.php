@@ -66,4 +66,10 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Package::class, 'pkg_id');
     }
+
+    
+    public function upgrade()
+    {
+        return $this->belongsTo(UpgradeHistory::class, 'id', 'user_id');
+    }
 }

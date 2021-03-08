@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -24,9 +24,9 @@ class DownlineController extends Controller
      */
     public function direct()
     {
-        // $user = Auth::user();
-        // $dReferals = User::where();
-        // return view('user.downline.direct');
+        $user = Auth::user();
+        $referals = User::where('ref_gnum', $user->gnumber)->latest()->paginate(10);
+        return view('user.downline.direct', compact('referals'));
     }
 
     /**
