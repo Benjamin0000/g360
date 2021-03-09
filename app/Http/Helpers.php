@@ -21,13 +21,13 @@ use Exception;
   {
 
     public const LOCAL_CURR_SYMBOL = '₦';
-    public const TRX_BALANCE = 't_balance';
-    public const PKG_BALANCE = 'pkg_balance';
-    public const PEND_BALANCE = 'p_balance';
-    public const WITH_BALANCE = 'w_balance';
+    public const TRX_BALANCE = 'trx_balance';
+    public const LOAN_PKG_BALANCE = 'loan_pkg_balance';
+    public const PEND_BALANCE = 'pend_balance';
+    public const WITH_BALANCE = 'with_balance';
     public const HEALTH_TOKEN = 'h_token';
-    public const POINT_VALUE = 'pv';
-    public const GIFT_POINT = 'g_point';
+    public const CUM_POINT_VALUE = 'cpv'; #cumulative point value
+    public const AWARD_POINT = 'award_point';
     
 	/**
      * Store Email Addresses
@@ -338,6 +338,11 @@ use Exception;
 
     private static function getRefLevelAndCredit($pkg_id, $amount, $gnumber, $level)
     {
+        $cur = self::LOCAL_CURR_SYMBOL;
+        $pend_balance = self::PEND_BALANCE;
+        $cpv = self::CUM_POINT_VALUE;
+        $h_token = self::HEALTH_TOKEN;
+
         $package = Package::find($pkg_id);
         $user = User::where([ ['gnumber', $gnumber], ['status', 1] ])->first();
         if($package && $user){
@@ -359,17 +364,17 @@ use Exception;
                     // $pv_profit = ($ref_basic_pv*$package->id) - $ref_pv[$level-1];
                     $pv_profit = (int)$ref_pv[$level-1];
                 }
-                $user->p_balance += $cash_profit;
-                $user->h_token += $h_token_profit;
-                $user->pv += $pv_profit;
+                $user->$pend_balance += $cash_profit;
+                $user->$h_token += $h_token_profit;
+                $user->$cpv += $pv_profit;
                 WalletHistory::create([
                     'id'=>self::genTableId(WalletHistory::class),
                     'amount'=>$cash_profit,
                     'user_id'=>$user->id,
                     'gnumber'=>$user->gnumber,
-                    'name'=>self::PEND_BALANCE,
+                    'name'=>$pend_balance,
                     'type'=>'credit',
-                    'description'=>self::LOCAL_CURR_SYMBOL.$cash_profit.' received from '.ucfirst($package->name).
+                    'description'=>$cur.$cash_profit.' received from '.ucfirst($package->name).
                     ' package '.'level ' .$level.' referal commission' 
                 ]);
                 WalletHistory::create([
@@ -377,20 +382,20 @@ use Exception;
                     'amount'=>$h_token_profit,
                     'user_id'=>$user->id,
                     'gnumber'=>$user->gnumber,
-                    'name'=>self::HEALTH_TOKEN,
+                    'name'=>$h_token,
                     'type'=>'credit',
                     'description'=>$h_token_profit.' Health token received from '.ucfirst($package->name).
-                    ' package '.'level '.$level.' referal commission' 
+                    ' package '.'level '.$level.' referral commission' 
                 ]);
                 WalletHistory::create([
                     'id'=>self::genTableId(WalletHistory::class),
                     'amount'=>$pv_profit,
                     'user_id'=>$user->id,
                     'gnumber'=>$user->gnumber,
-                    'name'=>self::POINT_VALUE,
+                    'name'=>$cpv,
                     'type'=>'credit',
                     'description'=>$pv_profit.' point value received from '.ucfirst($package->name).
-                    ' package '.'level '.$level. ' referal commission' 
+                    ' package '.'level '.$level. ' referral commission' 
                 ]);
                 $user->save();
             }

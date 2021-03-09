@@ -72,4 +72,13 @@ class User extends Authenticatable
     {
         return $this->belongsTo(UpgradeHistory::class, 'id', 'user_id');
     }
+
+    public function haveUnPaidLoan()
+    {
+        return Loan::where([
+             ['user_id', $this->id], 
+             ['status', 0] 
+        ])->exists();
+        
+    }
 }

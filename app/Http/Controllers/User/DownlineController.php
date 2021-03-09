@@ -28,7 +28,20 @@ class DownlineController extends Controller
         $referals = User::where('ref_gnum', $user->gnumber)->latest()->paginate(10);
         return view('user.downline.direct', compact('referals'));
     }
-
+    /**
+     * Recursively get all indirect referrals
+     *
+     * @return \Illuminate\Http\Response
+     */   
+    private static function getIndirectRef($gnumber, &$referals, $level=1)
+    {
+        if($level > 15) return;
+        $user = User::where('ref_gnum', $gnumber)->first();
+        if($user){
+            array_push($referals, $user);
+            self::getRef($user->gnumber, $referals, $level+1);
+        }
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -36,8 +49,7 @@ class DownlineController extends Controller
      */
     public function indirect()
     {
-        // $user = Auth::user();
-        // return view('user.downline.indirect');
+       
     }
 
 }

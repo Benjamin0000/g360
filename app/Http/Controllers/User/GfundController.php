@@ -21,7 +21,6 @@ class GfundController extends Controller
     {
       $this->middleware('auth');
     }
-
     /**
      * Display a listing of the resource.
      *
@@ -32,51 +31,55 @@ class GfundController extends Controller
         return view('user.gfund.index');
     }
     /**
-     * Internal Wallet transfer
+     * Transfer from withdrawal wallet
      *
      * @return \Illuminate\Http\Response
      */
-    public function walletTransfer(Request $request)
+    public function withdrawalWalletTransfer(Request $request)
     { 
         if(!$request->ajax())return;
+
+        $trx_balance = Helpers::TRX_BALANCE;
+        $loan_pkg_balance = Helpers::LOAN_PKG_BALANCE;
+        $with_balance = Helpers::WITH_BALANCE;
+
         $last_pkg_id = 7;
         $amount = (float)$request->amount;
         $min = 1000;
         if($amount <= 0)
             return ['msg'=>"Please enter a valid amount"];
         if($amount < $min)
-            return ['msg'=>"minimum transfer amount is ".self::CUR.$min];
+            return ['msg'=>"Minimum transfer amount is ".self::CUR.$min];
 
         $user = Auth::user();
-        if($user->w_balance < $amount)
+        if($user->$with_balance < $amount)
             return ['msg'=>"Insufficient fund for transfer"];
 
-        $wallet_transfer = 'w_transfer';
         $amount = abs($amount); #👈 no need for this line, it's just for fun sake 😄
         switch($request->wallet){
             case 'tw': 
-                $wallet = 'T-wallet';
-                $sent = Helpers::TRX_BALANCE;
-                $user->t_balance += $amount;
+                $wallet = 'TRX-wallet';
+                $sent = $trx_balance;
+                $user->$trx_balance += $amount;
             break; 
             case 'pkg':
                 if($user->pkg_id == $last_pkg_id)
-                    return ['msg'=>"Can't make transfer to PKG-wallet"];
-                $wallet = 'PKG-wallet';
-                $sent = Helpers::PKG_BALANCE;
-                $user->pkg_balance += $amount;
+                    return ['msg'=>"Can't make transfer to LOAN-PKG-wallet"];
+                $wallet = 'LOAN-PKG-wallet';
+                $sent = $loan_pkg_balance;
+                $user->$loan_pkg_balance += $amount;
             break;
             default: 
                 return ['msg'=>"Please select a valid wallet"];
         }
-        $user->w_balance -= $amount;
+        $user->$with_balance -= $amount;
         $user->save();
         WalletHistory::create([
             'id'=>Helpers::genTableId(WalletHistory::class),
             'user_id'=>$user->id,
             'amount'=>$amount,
             'gnumber'=>$user->gnumber,
-            'name'=>Helpers::WITH_BALANCE,
+            'name'=>$with_balance,
             'type'=>'debit',
             'description'=>self::CUR.$amount.' transfered to '.$wallet
         ]);
@@ -89,7 +92,74 @@ class GfundController extends Controller
             'type'=>'credit',
             'description'=>self::CUR.$amount.' received from W-wallet'
         ]);
-        return ['status'=>1, 'msg'=>"Transfer successful", 'bal'=>$user->w_balance];
+        return [
+            'status'=>1, 
+            'msg'=>"Transfer successful", 
+            'bal'=>number_format($user->$with_balance, 2, '.', ','),
+            'bal3'=>number_format($user->$trx_balance, 2, '.', ',')
+        ];
+    }
+    /**
+     * Transfer from transaction wallet
+     *
+     * @return \Illuminate\Http\Response
+     */ 
+    public function trxWalletTransfer(Request $request)
+    {
+        if(!$request->ajax())return;
+        $trx_balance = Helpers::TRX_BALANCE;
+        $with_balance = Helpers::WITH_BALANCE;
+        $amount = (float)$request->amount;
+        $min = 1000;
+
+        if($amount <= 0)
+            return ['msg'=>"Please enter a valid amount"];
+        if($amount < $min)
+            return ['msg'=>"Minimum transfer amount is ".self::CUR.$min];
+        if(!$request->wallet)
+            return ['msg'=>"Select a wallet to transfer to"];
+
+        $user = Auth::user();
+        if($user->$trx_balance < $amount)
+            return ['msg'=>"Insufficient fund for transfer"];
+
+        $fee = 0.05 * $amount; # 5% fee charge
+        $total = $amount + $fee;
+        if($user->$trx_balance < $total)
+            return ['msg'=>"Insufficient fund for the 5% fee"];
+
+        
+        if($request->wallet == 'w')
+            $user->$with_balance += $amount;
+        else 
+            return ['msg'=>"Wallet option not supported "];
+
+        $user->$trx_balance -= $total;
+        $user->save();
+        WalletHistory::create([
+            'id'=>Helpers::genTableId(WalletHistory::class),
+            'user_id'=>$user->id,
+            'amount'=>$amount,
+            'gnumber'=>$user->gnumber,
+            'name'=>$with_balance,
+            'type'=>'credit',
+            'description'=>self::CUR.$amount.' transfered from TRX-wallet'
+        ]);
+        WalletHistory::create([
+            'id'=>Helpers::genTableId(WalletHistory::class),
+            'user_id'=>$user->id,
+            'amount'=>$amount,
+            'gnumber'=>$user->gnumber,
+            'name'=>$trx_balance,
+            'type'=>'debit',
+            'description'=>self::CUR.$amount.' transfered to W-wallet'
+        ]);
+        return [
+            'status'=>1, 
+            'msg'=>"Transfer successful", 
+            'bal'=>number_format($user->$trx_balance, 2, '.', ','),
+            'bal2'=>number_format($user->$with_balance, 2, '.', ',')
+        ];
     }
     /**
      * Validate Transaction before transfer
@@ -99,6 +169,9 @@ class GfundController extends Controller
     private static function validateTransfer(Request $request)
     {
         if(!$request->ajax())return;
+
+        $with_balance = Helpers::WITH_BALANCE;
+
         $min = 1000; 
         if(!$amount = (float)$request->amount)
             return ['msg'=>"Please enter a valid amount"];
@@ -107,10 +180,10 @@ class GfundController extends Controller
             return ['msg'=>"Please enter a valid amount"];
 
         if($amount < $min)
-            return ['msg'=>"minimum transfer amount is ".self::CUR.$min];
+            return ['msg'=>"Minimum transfer amount is ".self::CUR.$min];
 
         $sender = Auth::user();
-        if($sender->w_balance < $amount)
+        if($sender->$with_balance < $amount)
             return ['msg'=>"Insufficient fund for transfer"];
             
         if($gnumber = $request->gnumber){
@@ -149,6 +222,11 @@ class GfundController extends Controller
     public function transMembers(Request $request)
     {
         if(!$request->ajax())return;
+
+        $trx_balance = Helpers::TRX_BALANCE;
+        $loan_pkg_balance = Helpers::LOAN_PKG_BALANCE;
+        $with_balance = Helpers::WITH_BALANCE;
+
         $data = self::validateTransfer($request);
         if(isset($data['gnumber'])){
             $gnumber = $data['gnumber'];
@@ -156,17 +234,17 @@ class GfundController extends Controller
             $receiver = User::where('gnumber', $gnumber)->first();
             if($receiver){
                 $amount = abs($data['amount']);
-                if($sender->w_balance >= $amount){
-                    $sender->w_balance-=$amount;
+                if($sender->$with_balance >= $amount){
+                    $sender->$with_balance-=$amount;
                     $sender->save();
-                    $receiver->w_balance+=$amount;
+                    $receiver->$with_balance+=$amount;
                     $receiver->save();
                     WalletHistory::create([
                         'id'=>Helpers::genTableId(WalletHistory::class),
                         'user_id'=>$sender->id,
                         'amount'=>$amount,
                         'gnumber'=>$sender->gnumber,
-                        'name'=>Helpers::WITH_BALANCE,
+                        'name'=>$with_balance,
                         'type'=>'debit',
                         'description'=>self::CUR.$amount.' sent to '.
                         $receiver->fname.' '.$receiver->lname.' ['.$receiver->gnumber.']'
@@ -176,14 +254,14 @@ class GfundController extends Controller
                         'user_id'=>$receiver->id,
                         'amount'=>$amount,
                         'gnumber'=>$receiver->gnumber,
-                        'name'=>Helpers::WITH_BALANCE,
+                        'name'=>$with_balance,
                         'type'=>'credit',
                         'description'=>self::CUR.$amount.' received from '.
                         $sender->fname.' '.$sender->lname.' ['.$sender->gnumber.']'
                     ]);
                     return [
                         'status'=>true, 
-                        'bal'=>$sender->w_balance,
+                        'bal'=>$sender->$with_balance,
                         'amount'=>$amount,
                         'receiver'=>$receiver->fname.' '.$receiver->lname
                     ];

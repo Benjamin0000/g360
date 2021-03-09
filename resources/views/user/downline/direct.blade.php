@@ -37,6 +37,7 @@
                         </tbody>
                     </table>
                 </div>
+                {{$referals->links()}}
             </div>
         </div>
     </div>

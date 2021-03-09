@@ -26,7 +26,6 @@ class RegisterController extends Controller
     {
         $this->middleware('guest')->except('verifyEmail');
     }
-    
     /**
      * Display a listing of the resource.
      *
@@ -36,7 +35,6 @@ class RegisterController extends Controller
     {
         return view('auth.register');
     }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -95,7 +93,6 @@ class RegisterController extends Controller
             return Helpers::ajaxOut($out, $noError);
         }
     }
-
     /**
      * Registation confirmation
      *

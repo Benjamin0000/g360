@@ -11,11 +11,12 @@
         e.preventDefault();
         $.ajax({
           type:'POST',
-          url:'{{route('user.gfund.walletTransfer')}}',
+          url:'{{route('user.gfund.withdrawalTransfer')}}',
           data:$(this).serialize(),
           success:function(data){
             if(data.status){
-                $('.bal').html(data.bal.toLocaleString());
+                $('.bal').html(data.bal);
+                $('#bal3').html(data.bal3);
                 $('#intTe').html("<div class='alert alert-success'><i class='fa fa-check-circle'></i> "+data.msg+"</div>");
                 $('.amt').val('');
             }else{
@@ -111,6 +112,38 @@
       $('#cancel_int_t').on('click', function(){
           $('#trf1_others').show();
           $('#sec_f_to_sh').hide();
+      });
+      $('#wtt').on('submit', function(e){
+        $('#intTte').html('');
+        var $ele = $('#ittb');
+        $ele.data('text',$ele.text());
+        $ele.html(get_loader());
+        $ele.prop('disabled',true);
+        e.preventDefault();
+        $.ajax({
+          type:'POST',
+          url:'{{route('user.gfund.trxWalletTransfer')}}',
+          data:$(this).serialize(),
+          success:function(data){
+            if(data.status){
+                $('#bal3').html(data.bal);
+                $('.bal').html(data.bal2);
+                $('#intTte').html("<div class='alert alert-success'><i class='fa fa-check-circle'></i> "+data.msg+"</div>");
+                $('.amt').val('');
+            }else{
+                $ele.text($ele.data('text'));
+                $ele.prop('disabled',false);
+                $('#intTte').html("<div class='alert alert-danger'> <i class='fa fa-info-circle'></i> "+data.msg+"</div>");
+            }
+            $ele.text($ele.data('text'));
+            $ele.prop('disabled',false);
+          },
+          error: function(xhr, status, error) {
+              $ele.text($ele.data('text'));
+              $ele.prop('disabled',false);
+              $('#intTte').html(xhr_error);
+          }
+        });
       });
   });
 </script>

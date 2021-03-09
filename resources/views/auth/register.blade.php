@@ -26,16 +26,16 @@
 <body>
     <div class="preloader">
         <svg class="circular" viewBox="25 25 50 50">
-          <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" /> 
+          <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
         </svg>
     </div>
     <section id="wrapper" class="login-register login-sidebar"  style="background-image:url(/assets/images/background/login-register.jpg);">
       <div class="login-box card">
         <div class="card-body">
-          <a href="/" class="text-center db"><img src="/assets/images/logo.png" alt="logo" style="width:140px" /></a>  
+          <a href="/" class="text-center db"><img src="/assets/images/logo.png" alt="logo" style="width:140px" /></a>
           <form id="signupform" class="form-horizontal needs-validation" style="display:block" action="#">
             <h3 class="box-title mt-3 mb-0">Register Now</h3>
-            <small>Create your account and enjoy</small> 
+            <small>Create your account and enjoy</small>
             <div style="margin:6px;"></div>
             <div class="form-group">
               <label for="username">Username</label>
@@ -49,7 +49,7 @@
                 <label class="radio-inline"><input type="radio" id="title" name="title" value="miss"> Miss</label>
               </div>
             </div>
-            
+
             <div class="form-row">
                 <div class="col-md-6 mb-3">
                     <label for="fname">First name</label>
@@ -77,7 +77,7 @@
                 <input type="password" class="form-control password" id="password" name="password" required>
             </div>
             <div class="form-group">
-              <label for="confirm_password">Confirm password</label> 
+              <label for="confirm_password">Confirm password</label>
               <input type="password" class="form-control password" id="confirm_password" name="confirm_password" placeholder="Retype your password" required>
             </div>
             <h6><small id="err_zone" class="text-danger"></small></h6>
@@ -129,6 +129,6 @@
     <script type='text/javascript' src='/assets/plugins/sticky-kit-master/dist/sticky-kit.min.js'></script>
     <script type='text/javascript' src='/assets/js/custom.js?v={{time()}}'></script>
     <script type="text/javascript" src="/assets/js/p.js"></script>
-    <script type='text/javascript' src='/assets/plugins/styleswitcher/jQuery.style.switcher.js'></script>    
+    <script type='text/javascript' src='/assets/plugins/styleswitcher/jQuery.style.switcher.js'></script>
 </body>
 </html>

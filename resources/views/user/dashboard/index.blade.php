@@ -16,7 +16,7 @@
             <div class="card-body">
                 <h4 class="card-title">P-Wallet</h4>
                 <div class="text-right">
-                    <h2 class="font-light mb-0"><i class="mdi mdi-wallet text-success"></i>{{$cur.number_format($user->p_balance, 2, '.', ',')}}</h2>
+                    <h2 class="font-light mb-0"><i class="mdi mdi-wallet text-success"></i>{{$cur.number_format($user->pend_balance, 2, '.', ',')}}</h2>
                     <span class="text-muted">Current Balance</span>
                 </div>
                 <div class="progress">
@@ -28,9 +28,9 @@
     <div class="col-lg-3 col-md-6">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">PKG-Wallet</h4>
+                <h4 class="card-title">LOAN-PKG-Wallet</h4>
                 <div class="text-right">
-                    <h2 class="font-light mb-0"><i class="mdi mdi-wallet text-success"></i>{{$cur.number_format($user->pkg_balance, 2, '.', ',')}}</h2>
+                    <h2 class="font-light mb-0"><i class="mdi mdi-wallet text-success"></i>{{$cur.number_format($user->loan_pkg_balance, 2, '.', ',')}}</h2>
                     <span class="text-muted">Current Balance</span>
                 </div>
                 <div class="progress">
@@ -44,7 +44,7 @@
             <div class="card-body">
                 <h4 class="card-title">W-Wallet</h4>
                 <div class="text-right">
-                    <h2 class="font-light mb-0"><i class="mdi mdi-wallet text-success"></i>{{$cur.number_format($user->w_balance, 2, '.', ',')}}</h2>
+                    <h2 class="font-light mb-0"><i class="mdi mdi-wallet text-success"></i>{{$cur.number_format($user->with_balance, 2, '.', ',')}}</h2>
                     <span class="text-muted">Current Balance</span>
                 </div>
                 <div class="progress">
@@ -59,7 +59,7 @@
             <div class="card-body">
                 <h4 class="card-title">T-Wallet</h4>
                 <div class="text-right">
-                    <h2 class="font-light mb-0"><i class="mdi mdi-wallet text-success"></i>{{$cur.number_format($user->t_balance, 2, '.', ',')}}</h2>
+                    <h2 class="font-light mb-0"><i class="mdi mdi-wallet text-success"></i>{{$cur.number_format($user->trx_balance, 2, '.', ',')}}</h2>
                     <span class="text-muted">Current Balance</span>
                 </div>
                 <div class="progress">
@@ -68,7 +68,7 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-3 col-md-6">
+    {{-- <div class="col-lg-3 col-md-6">
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">Monthly Bonus</h4>
@@ -81,8 +81,8 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="col-lg-3 col-md-6">
+    </div> --}}
+    {{-- <div class="col-lg-3 col-md-6">
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">Circle Bonus</h4>
@@ -95,8 +95,8 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="col-lg-3 col-md-6">
+    </div> --}}
+    {{-- <div class="col-lg-3 col-md-6">
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">Laurel Bonus</h4>
@@ -109,8 +109,8 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="col-lg-3 col-md-6">
+    </div> --}}
+    {{-- <div class="col-lg-3 col-md-6">
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">Travel Bonus</h4>
@@ -123,13 +123,13 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
     <div class="col-lg-3 col-md-6">
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">Point Value</h4>
                 <div class="text-right">
-                    <h2 class="font-light mb-0"><i class="mdi mdi-trophy-award  text-info"></i>{{$user->pv}}</h2>
+                    <h2 class="font-light mb-0"><i class="mdi mdi-trophy-award  text-info"></i>{{$user->cpv}}</h2>
                     <span class="text-muted">Rank: </span>
                 </div>
                 <div class="progress">
@@ -209,6 +209,9 @@
                               <tr>
                                 <td>{{$count++}}</td>
                                 <td>
+                                  {{-- @if($history->name != "cpv" && $history->name != 'h_token') --}}
+                                    {{-- {{$cur}} --}}
+                                  {{-- @endif --}}
                                   {{$cur.number_format($history->amount,2,'.',',')}}
                                   @if($history->type == 'debit')
                                       <span class="badge badge-danger">Debit</span>
@@ -217,14 +220,20 @@
                                   @endif
                                 </td>
                                 <td>
-                                  @if($history->name == 't_balance')
-                                    T-wallet
-                                  @elseif($history->name == 'w_balance')
+                                  @if($history->name == 'trx_balance')
+                                    TRX-wallet
+                                  @elseif($history->name == 'with_balance')
                                     W-Wallet
-                                  @elseif($history->name = 'pkg_balance')
-                                    PKG-Wallet
-                                  @elseif($history->name == 'p_balance')
-                                    P-Wallet
+                                  @elseif($history->name == 'loan_pkg_balance')
+                                    LOAN-PKG-Wallet
+                                  @elseif($history->name == 'pend_balance')
+                                    PEND-Wallet
+                                  @elseif($history->name == 'cpv')
+                                    POINT VALUE
+                                  @elseif ($history->name = 'h_token')
+                                    HEALTH TOKEN
+                                  @elseif($history->name == 'award_point')
+                                    POINT AWARD
                                   @endif
                                 </td>
                                 <td>{{$history->description}}</td>

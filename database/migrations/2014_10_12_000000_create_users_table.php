@@ -25,13 +25,14 @@ class CreateUsersTable extends Migration
             $table->string('pic')->nullable();
             $table->bigInteger('ref_gnum');
             $table->integer('pkg_id')->default(0);
-            $table->decimal('w_balance', 30, 2)->default(0); // withdrawal wallet
-            $table->decimal('t_balance', 30, 2)->default(0); // transaction wallet
-            $table->decimal('p_balance', 30, 2)->default(0); //  pending balance
-            $table->decimal('pkg_balance', 30, 2)->default(0); //  package balance
+            $table->decimal('with_balance', 65, 2)->default(0); // withdrawal wallet
+            $table->decimal('trx_balance', 65, 2)->default(0); // transaction wallet
+            $table->decimal('pend_balance', 65, 2)->default(0); //  pending balance
+            $table->decimal('award_point', 65, 2)->default(0); //  package balance
+            $table->decimal('loan_pkg_balance', 65, 2)->default(0); //  package balance
             $table->bigInteger('h_token')->default(0); // health token
-            $table->bigInteger('pv')->default(0); // point value
-            $table->decimal('deca', 30, 2)->default(0);
+            $table->bigInteger('cpv')->default(0); // cumulative point value
+            $table->decimal('deca', 65, 2)->default(0);
             $table->boolean('def_user')->default(0); // Default user that refers other users without a sponsor
             $table->boolean('status')->default(1); // Void users account
             $table->timestamp('email_verified_at')->nullable();
@@ -41,7 +42,6 @@ class CreateUsersTable extends Migration
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      *

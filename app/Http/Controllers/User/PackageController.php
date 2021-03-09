@@ -25,7 +25,7 @@ class PackageController extends Controller
         $this->middleware('auth');
     }
     /**
-     * Display a listing of the resource.
+     * Display the select package page
      *
      * @return \Illuminate\Http\Response
      */
@@ -38,11 +38,10 @@ class PackageController extends Controller
             ->with('error', 'Sorry you can\'t access that page');
         return view('user.package.index');
     }
-
     /**
-     * Show the form for creating a new resource.
+     * Display the premium packages page
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function showPremiumPackages()
     {  
@@ -54,12 +53,11 @@ class PackageController extends Controller
         $packages = Package::where('name', '<>', 'free')->get();
         return view('user.package.premium', compact('packages'));
     }
-
     /**
-     * Store a newly created resource in storage.
+     * Issue the Free package selection
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function selectFreePackage(Request $request)
     {
@@ -82,12 +80,11 @@ class PackageController extends Controller
         return redirect(route('user.dasbhoard.index'))
         ->with('error', 'Sorry you can\'t access that page'); 
     }
-
     /**
-     * Store a newly created resource in storage.
+     * Issue the Premium package selection
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return array
      */
     public function selectPremiumPackage(Request $request)
     {
@@ -104,6 +101,8 @@ class PackageController extends Controller
         $free_pkg_id = 1;
         $last_pkg_id = 7;
         $cur = Helpers::LOCAL_CURR_SYMBOL;
+        $trx_balance = Helpers::TRX_BALANCE;
+        $loan_pkg_balance = Helpers::LOAN_PKG_BALANCE;
         $user = Auth::user();
         $fee = 0;
 
@@ -111,7 +110,7 @@ class PackageController extends Controller
         $id = substr($request->p, 2, 1);
         $package = Package::find($id);
 
-        if($package->id == $free_pkg_id || !$package) 
+        if(!$package || $package->id == $free_pkg_id) 
             return ['msg'=>'Invalid package'];
 
         if($user->pkg_id == $last_pkg_id)
@@ -143,32 +142,32 @@ class PackageController extends Controller
                     if($epin->pkg_id == $package->id){
                         if($fee){
                             $user->free_t_fee = 0; #clear fee
-                            if($user->t_balance < $fee){
-                                if($user->pkg_balance < $fee)
+                            if($user->$trx_balance < $fee){
+                                if($user->$loan_pkg_balance < $fee)
                                     return ['msg'=>'Insufficient fund for your 20% package fee'];
                                 else{
-                                    $user->pkg_balance-=$fee;
+                                    $user->$loan_pkg_balance-=$fee;
                                     $user->save();
                                     WalletHistory::create([
                                         'id'=>Helpers::genTableId(WalletHistory::class),
                                         'user_id'=>$user->id,
                                         'amount'=>$fee,
                                         'gnumber'=>$user->gnumber,
-                                        'name'=>Helpers::PKG_BALANCE,
+                                        'name'=>$loan_pkg_balance,
                                         'type'=>'debit',
                                         'description'=>$cur.number_format($fee).' Debited for '
                                         .ucfirst($package->name).' package '.$percent.'% fee'
                                     ]);
                                 }
                             }else{
-                                $user->t_balance-=$fee;
+                                $user->$trx_balance-=$fee;
                                 $user->save();
                                 WalletHistory::create([
                                     'id'=>Helpers::genTableId(WalletHistory::class),
                                     'user_id'=>$user->id,
                                     'amount'=>$fee,
                                     'gnumber'=>$user->gnumber,
-                                    'name'=>Helpers::TRX_BALANCE,
+                                    'name'=>$trx_balance,
                                     'type'=>'debit',
                                     'description'=>$cur.number_format($fee).' Debited for '
                                     .ucfirst($package->name).' package '.$percent.'% fee'
@@ -186,35 +185,35 @@ class PackageController extends Controller
             break;
             case 'trx_w': 
                 $pay_method = 'Transaction wallet';
-                if($user->t_balance >= $amount){
+                if($user->$trx_balance >= $amount){
                     if($fee){
                         $total = $amount+$fee;
-                        if($user->t_balance < $total){
-                            if($user->pkg_balance < $fee)
+                        if($user->$trx_balance < $total){
+                            if($user->$loan_pkg_balance < $fee)
                                 return ['msg'=>'Insufficient fund for your 20% package fee'];
                             else{
-                                $user->pkg_balance-=$fee;
+                                $user->$loan_pkg_balance-=$fee;
                                 $user->save();
                                 WalletHistory::create([
                                     'id'=>Helpers::genTableId(WalletHistory::class),
                                     'user_id'=>$user->id,
                                     'amount'=>$fee,
                                     'gnumber'=>$user->gnumber,
-                                    'name'=>Helpers::PKG_BALANCE,
+                                    'name'=>$loan_pkg_balance,
                                     'type'=>'debit',
                                     'description'=>$cur.number_format($fee).' Debited for '
                                     .ucfirst($package->name).' package '.$percent.'% fee'
                                 ]);
                             }
                         }else{
-                            $user->t_balance-=$fee;
+                            $user->$trx_balance-=$fee;
                             $user->save();
                             WalletHistory::create([
                                 'id'=>Helpers::genTableId(WalletHistory::class),
                                 'user_id'=>$user->id,
                                 'amount'=>$fee,
                                 'gnumber'=>$user->gnumber,
-                                'name'=>Helpers::TRX_BALANCE,
+                                'name'=>$trx_balance,
                                 'type'=>'debit',
                                 'description'=>$cur.number_format($fee).' Debited for '
                                 .ucfirst($package->name).' package '.$percent.'% fee'
@@ -222,14 +221,14 @@ class PackageController extends Controller
                         }
                     }
                     $user->free_t_fee = 0; #clear fee
-                    $user->t_balance-=$amount;
+                    $user->$trx_balance-=$amount;
                     $user->save();
                     WalletHistory::create([
                         'id'=>Helpers::genTableId(WalletHistory::class),
                         'user_id'=>$user->id,
                         'amount'=>$amount,
                         'gnumber'=>$user->gnumber,
-                        'name'=>Helpers::TRX_BALANCE,
+                        'name'=>$trx_balance,
                         'type'=>'debit',
                         'description'=>$cur.number_format($amount).' Debited for '
                         .ucfirst($package->name).' package'

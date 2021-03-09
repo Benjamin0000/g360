@@ -58,7 +58,8 @@ Route::group(['prefix'=>'portal'],  function(){
     Route::post('/packages/free', [PackageController::class, 'selectFreePackage'])->name('user.package.select_free');
     #Gfund
     Route::get('/gfund', [GfundController::class, 'index'])->name('user.gfund.index');
-    Route::post('/wtransf', [GfundController::class, 'walletTransfer'])->name('user.gfund.walletTransfer');
+    Route::post('/SaxRwepRJAHAIzG', [GfundController::class, 'withdrawalWalletTransfer'])->name('user.gfund.withdrawalTransfer');
+    Route::post('/tMsUqzRZTCSUuZh', [GfundController::class, 'trxWalletTransfer'])->name('user.gfund.trxWalletTransfer');
     Route::post('/1bCwyWnqlC8qzbL', [GfundController::class, 'getMemeberDetail'])->name('user.gfund.getMemeberDetail');
     Route::post('/LSF5Z9ozY3cwLGA', [GfundController::class, 'transMembers'])->name('user.gfund.transMembers');
     Route::post('/kKCQFLskAdHXQxs', [GfundController::class, 'transBankAccount'])->name('user.gfund.transBankAccount');

@@ -77,9 +77,7 @@ class CreatePackagesTable extends Migration
                 'gen'=>$gen[$i-1]
             ]);
         }
-
     }
-
     /**
      * Reverse the migrations.
      *

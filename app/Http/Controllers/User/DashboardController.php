@@ -15,10 +15,10 @@ class DashboardController extends Controller
     *
     * @return void
     */
-   public function __construct()
-   {
-     $this->middleware('auth');
-   }
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -30,7 +30,8 @@ class DashboardController extends Controller
         $histories = WalletHistory::where([ 
             ['user_id', $user->id],
             ['name', '<>', 'h_token'],
-            ['name', '<>', 'pv']
+            ['name', '<>', 'cpv'],
+            ['name', '<>', 'award_point']
         ])
         ->latest()->take(15)->get();
         $referals = [];

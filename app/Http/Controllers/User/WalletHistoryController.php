@@ -78,7 +78,7 @@ class WalletHistoryController extends Controller
         $user = Auth::user();
         $histories = WalletHistory::where([ 
             ['user_id', $user->id],
-            ['name', Helpers::PKG_BALANCE],
+            ['name', Helpers::LOAN_PKG_BALANCE],
         ]);
         $total = $histories->count();
         $histories = $histories->latest()->paginate(10);

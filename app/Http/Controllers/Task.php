@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\TrackFreeUser;
 use App\Models\WalletHistory;
+use App\Models\WeeklyBonus;
+use App\Models\CircleBonus;
 use App\Models\User;
 use App\Models\Package;
 use App\Http\Helpers;
@@ -44,60 +46,82 @@ class Task extends Controller
      */
     public static function sharePendingWallet()
     {
-        return ;
         $cur = Helpers::LOCAL_CURR_SYMBOL;
-        $free_pkg_id = 1;
-                # [g_pt, with, pkg, trx]
-        $prem_p = [20, 5,  25, 50];
+        $trx_balance = Helpers::TRX_BALANCE;
+        $with_balance = Helpers::WITH_BALANCE;
+        $pend_balance = Helpers::PEND_BALANCE;
+        $loan_pkg_balance = Helpers::LOAN_PKG_BALANCE;
+        $award_point = Helpers::AWARD_POINT;
+
+        $last_pkg_id = 7;
+                # [award_pt, with, pkg_loan, trx]
+        $share_p_one = [20, 5,  25, 50]; #no loan
+        $share_p_two = [20, 5,  0, 75]; #last_pkg
         $users = User::all();
         if($users->count()){
             foreach($users as $user){
-                $total = $user->p_balance;
-                $pkg_bal = 0;
+                $total = $user->$pend_balance;
+                $loan_pkg_bal = 0;
                 $trx_bal = 0;
                 $w_bal = 0;
+                $award_pt = 0;
+                $bill_pkg = true;
                 if($total > 0){
-                    if($user->pkg_id == $free_pkg_id){
-                        $pkg_bal = ($free_p[0] / 100) * $total;
-                        $trx_bal = ($free_p[2] / 100) * $total;
-                    }elseif($user->pkg_id > $free_pkg_id){
-                        $pkg_bal = ($prem_p[0] / 100) * $total;
-                        $w_bal = ($prem_p[1] / 100) * $total;
-                        $trx_bal = ($prem_p[2] / 100) * $total;
+                    if($user->pkg_id  == $last_pkg_id){
+                        if(!$user->haveUnPaidLoan())
+                            $bill_pkg = false;
                     }
-                    if($w_bal){
-                        $user->w_balance += $w_bal;
+                    if($bill_pkg == false)
+                        $trx_bal = ($share_p_two[3] / 100) * $total;
+                    else{
+                        $trx_bal = ($share_p_one[3] / 100) * $total;
+                        $loan_pkg_bal = ($share_p_one[2] / 100) * $total;
+                    }
+                    $award_pt = ($share_p_one[0] / 100) * $total;
+                    $w_bal = ($share_p_one[1] / 100) * $total;
+                    if($loan_pkg_bal){
+                        $user->$loan_pkg_balance += $loan_pkg_bal;
                         WalletHistory::create([
                             'id'=>Helpers::genTableId(WalletHistory::class),
                             'user_id'=>$user->id,
-                            'amount'=>$w_bal,
+                            'amount'=>$loan_pkg_bal,
                             'gnumber'=>$user->gnumber,
-                            'name'=>Helpers::WITH_BALANCE,
+                            'name'=>$loan_pkg_balance,
                             'type'=>'credit',
-                            'description'=>$cur.number_format($w_bal).' daily earning'
+                            'description'=>$cur.number_format($loan_pkg_bal).' daily earning'
                         ]);
                     }
                     WalletHistory::create([
                         'id'=>Helpers::genTableId(WalletHistory::class),
                         'user_id'=>$user->id,
-                        'amount'=>$pkg_bal,
+                        'amount'=>$award_pt,
                         'gnumber'=>$user->gnumber,
-                        'name'=>Helpers::PKG_BALANCE,
+                        'name'=>$award_point,
                         'type'=>'credit',
-                        'description'=>$cur.number_format($pkg_bal).' daily earning'
+                        'description'=>$award_pt.' award point from daily earning'
+                    ]);                    
+                    WalletHistory::create([
+                        'id'=>Helpers::genTableId(WalletHistory::class),
+                        'user_id'=>$user->id,
+                        'amount'=>$w_bal,
+                        'gnumber'=>$user->gnumber,
+                        'name'=>$with_balance,
+                        'type'=>'credit',
+                        'description'=>$cur.number_format($w_bal).' daily earning'
                     ]);
                     WalletHistory::create([
                         'id'=>Helpers::genTableId(WalletHistory::class),
                         'user_id'=>$user->id,
                         'amount'=>$trx_bal,
                         'gnumber'=>$user->gnumber,
-                        'name'=>Helpers::TRX_BALANCE,
+                        'name'=>$trx_balance,
                         'type'=>'credit',
                         'description'=>$cur.number_format($trx_bal).' daily earning'
-                    ]);                                        
-                    $user->pkg_balance += $pkg_bal;
-                    $user->t_balance += $trx_bal;
-                    $user->p_balance = 0;
+                    ]);
+                    $user->$award_point += $award_pt;
+                    $user->$with_balance += $w_bal;
+                    $user->$trx_balance += $trx_bal;
+                    $user->$pend_balance = 0;
                     $user->save();
                 }
             }
@@ -111,6 +135,8 @@ class Task extends Controller
     public static function autoUpgrade()
     {
         $cur = Helpers::LOCAL_CURR_SYMBOL;
+        $loan_pkg_balance = Helpers::LOAN_PKG_BALANCE;
+        $trx_balance = Helpers::TRX_BALANCE;
         $last_pkg_id = 7;
         $inc_pkg_id = 1;
         $fee = 0;
@@ -126,56 +152,126 @@ class Task extends Controller
                         $amount = $nxt_package->amount - $current_pkg->amount;
                         if($percent = $user->free_t_fee)
                             $fee = ($percent/100)*$amount;
-                        if($user->pkg_balance >= $amount){
+                        if($user->$loan_pkg_balance >= $amount){
                             if($fee){
                                 $total = $amount+$fee;
-                                if($user->pkg_balance < $total){
-                                    if($user->t_balance < $fee)
+                                if($user->$loan_pkg_balance < $total){
+                                    if($user->$trx_balance < $fee)
                                        return;
                                     else{
-                                        $user->t_balance-=$fee;
+                                        $user->$trx_balance-=$fee;
                                         $user->save();
                                         WalletHistory::create([
                                             'id'=>Helpers::genTableId(WalletHistory::class),
                                             'user_id'=>$user->id,
                                             'amount'=>$fee,
                                             'gnumber'=>$user->gnumber,
-                                            'name'=>Helpers::TRX_BALANCE,
+                                            'name'=>$trx_balance,
                                             'type'=>'debit',
                                             'description'=>$cur.$fee.' Debited for '.ucfirst($nxt_package->name).' package '.$percent.'% fee'
                                         ]);
                                     }
                                 }else{
-                                    $user->pkg_balance-=$fee;
+                                    $user->$loan_pkg_balance-=$fee;
                                     $user->save();
                                     WalletHistory::create([
                                         'id'=>Helpers::genTableId(WalletHistory::class),
                                         'user_id'=>$user->id,
                                         'amount'=>$fee,
                                         'gnumber'=>$user->gnumber,
-                                        'name'=>Helpers::PKG_BALANCE,
+                                        'name'=>$loan_pkg_balance,
                                         'type'=>'debit',
                                         'description'=>$cur.$fee.' Debited for '.ucfirst($nxt_package->name).' package '.$percent.'% fee'
                                     ]);
                                 }
                             }
                             $user->free_t_fee = 0; #clear fee
-                            $user->pkg_balance-=$amount;
+                            $user->$loan_pkg_balance-=$amount;
                             $user->save();
                             WalletHistory::create([
                                 'id'=>Helpers::genTableId(WalletHistory::class),
                                 'user_id'=>$user->id,
                                 'amount'=>$amount,
                                 'gnumber'=>$user->gnumber,
-                                'name'=>Helpers::PKG_BALANCE,
+                                'name'=>$loan_pkg_balance,
                                 'type'=>'debit',
                                 'description'=>$cur.$amount.' Debited for '.ucfirst($nxt_package->name).' package'
                             ]);
-                            $nxt_package->activate($user, 'none', 'PKG Wallet auto upgrade');
+                            $nxt_package->activate($user, 'none', 'LOAN-PKG Wallet auto upgrade');
                         }    
                     }
                 }
             }
         }
     }
+
+    public static function weeklyBonus()
+    {
+        $pv = 360;
+        $bonus = 500;
+        $cur = Helpers::LOCAL_CURR_SYMBOL;
+        $pend_balance = Helpers::PEND_BALANCE;
+        $users = User::all();
+        if($users->count()){
+            foreach($users as $user){
+                $cpv = $user->cpv;
+                $wBonus = WeeklyBonus::where('user_id', $user->id)->first();
+                if(!$wBonus)
+                    $wBonus = WeeklyBonus::create(['user_id'=>$user->id]);
+                
+                if( $cpv >= ($pv*$wBonus->times) ){
+                    $user->$pend_balance += $bonus;
+                    $user->save();
+                    WalletHistory::create([
+                        'id'=>Helpers::genTableId(WalletHistory::class),
+                        'user_id'=>$user->id,
+                        'amount'=>$bonus,
+                        'gnumber'=>$user->gnumber,
+                        'name'=>$pend_balance,
+                        'type'=>'credit',
+                        'description'=>$cur.$bonus.'earned from weekly bonus'
+                    ]);
+                    $wBonus->times+=1;
+                    $wBonus->save();
+                }
+            }
+        }
+    }
+
+    public static function circleBonus()
+    {
+        $pv = 3600;
+        $bonus = 4000;
+        $cur = Helpers::LOCAL_CURR_SYMBOL;
+        $pend_balance = Helpers::PEND_BALANCE;
+        $users = User::all();
+        if($users->count()){
+            foreach($users as $user){
+                $cpv = $user->cpv;
+                $cBonus = CircleBonus::where('user_id', $user->id)->first();
+                if(!$cBonus)
+                    $cBonus = CircleBonus::create(['user_id'=>$user->id]);
+                
+                if( $cpv >= ($pv*$cBonus->times) ){
+                    $user->$pend_balance += $bonus;
+                    $user->save();
+                    WalletHistory::create([
+                        'id'=>Helpers::genTableId(WalletHistory::class),
+                        'user_id'=>$user->id,
+                        'amount'=>$bonus,
+                        'gnumber'=>$user->gnumber,
+                        'name'=>$pend_balance,
+                        'type'=>'credit',
+                        'description'=>$cur.$bonus.'earned from Circle bonus'
+                    ]);
+                    $cBonus->times+=1;
+                    $cBonus->save();
+                }
+            }
+        }
+    }
+
+
+
+
 }
