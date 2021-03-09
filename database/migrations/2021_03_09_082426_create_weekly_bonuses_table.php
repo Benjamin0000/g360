@@ -17,6 +17,8 @@ class CreateWeeklyBonusesTable extends Migration
             $table->string('id', 30)->primary();
             $table->string('user_id', 30);
             $table->integer('times')->default(1);
+            $table->integer('earn_times')->default(0);
+            $table->timestamp('last_check')->nullable();
             $table->timestamps();
         });
     }

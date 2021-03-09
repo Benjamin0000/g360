@@ -10,6 +10,7 @@ use App\Models\CircleBonus;
 use App\Models\User;
 use App\Models\Package;
 use App\Http\Helpers;
+use Carbon\Carbon;
 
 class Task extends Controller
 {
@@ -214,12 +215,23 @@ class Task extends Controller
         $users = User::all();
         if($users->count()){
             foreach($users as $user){
-                $cpv = $user->cpv;
                 $wBonus = WeeklyBonus::where('user_id', $user->id)->first();
+                
                 if(!$wBonus)
                     $wBonus = WeeklyBonus::create(['user_id'=>$user->id]);
-                
-                if( $cpv >= ($pv*$wBonus->times) ){
+
+                $last_check = $wBonus->last_check;
+
+                if(!$last_check)
+                    $last_check = $wBonus->created_at;
+
+                $total_pv = WalletHistory::where([
+                    ['user_id', $user->id],
+                    ['name', 'cpv'],
+                    ['created_at', '>=', $last_check]
+                ])->sum('amount');
+
+                if( $total_pv >=  $pv){
                     $user->$pend_balance += $bonus;
                     $user->save();
                     WalletHistory::create([
@@ -231,9 +243,10 @@ class Task extends Controller
                         'type'=>'credit',
                         'description'=>$cur.$bonus.'earned from weekly bonus'
                     ]);
-                    $wBonus->times+=1;
-                    $wBonus->save();
                 }
+                $wBonus->last_check = Carbon::now();
+                $wBonus->times+=1;
+                $wBonus->save();
             }
         }
     }
@@ -271,7 +284,15 @@ class Task extends Controller
         }
     }
 
+    public static function laurelBonus()
+    {
 
+    }
+
+    public static function processRanking()
+    {
+        
+    }
 
 
 }
