@@ -401,5 +401,27 @@ use Exception;
             }
         }
     }
+    /**
+      * Check leg balance of user
+      * 
+      * @return boolen
+    */
+    public function checkLegBalance(User $user, $pv)
+    {
+        $legs = 4;
+        $referrals = User::where('ref_gnum', $user->gnumber)
+        ->orderBy('cpv', 'DESC')->take(4)->get();
+        $min = $pv/$legs;
+        if($referrals->count()){
+            foreach($referrals as $referral){
+                if($referral->cpv < $min){
+                    return false;
+                }
+            }
+            return true;
+        }else{
+            return false;
+        }
+    }
 } 
  ?>

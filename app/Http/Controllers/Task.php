@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\TrackFreeUser;
 use App\Models\WalletHistory;
-use App\Models\WeeklyBonus;
+use App\Models\MpPoint;
 use App\Models\CircleBonus;
+use App\Models\SuperAssociate;
 use App\Models\User;
 use App\Models\Package;
 use App\Http\Helpers;
@@ -205,33 +206,46 @@ class Task extends Controller
             }
         }
     }
-
-    public static function weeklyBonus()
+    /**
+     * Monthly performance point
+     *
+     * @return void
+     */
+    public static function mpPoint()
     {
         $pv = 360;
-        $bonus = 500;
-        $cur = Helpers::LOCAL_CURR_SYMBOL;
-        $pend_balance = Helpers::PEND_BALANCE;
         $users = User::all();
         if($users->count()){
             foreach($users as $user){
-                $wBonus = WeeklyBonus::where('user_id', $user->id)->first();
+                $cpv = $user->cpv;
+                $mpPoint = MpPoint::where('user_id', $user->id)->first();
+                if(!$mpPoint)
+                    $mpPoint = MpPoint::create(['user_id'=>$user->id]);
                 
-                if(!$wBonus)
-                    $wBonus = WeeklyBonus::create(['user_id'=>$user->id]);
+                if( $cpv >= ($pv*$mpPoint->times) ){
+                    $mpPoint->point+=1;
+                    $mpPoint->times+=1;
+                    $mpPoint->save();
+                }
+            }
+        }
+    }
+    /**
+     * Credit Monthly performance bonus
+     *
+     * @return void
+     */
+    public static function creditMpPoint()
+    {
+        $bonus = 600;
+        $cur = Helpers::LOCAL_CURR_SYMBOL;
+        $pend_balance = Helpers::PEND_BALANCE;
+        $mpPoints = MpPoint::all();
 
-                $last_check = $wBonus->last_check;
-
-                if(!$last_check)
-                    $last_check = $wBonus->created_at;
-
-                $total_pv = WalletHistory::where([
-                    ['user_id', $user->id],
-                    ['name', 'cpv'],
-                    ['created_at', '>=', $last_check]
-                ])->sum('amount');
-
-                if( $total_pv >=  $pv){
+        foreach($mpPoints as $mpPoint){
+            if($user = User::find($mpPoint->user_id)){
+                if($mpPoint->point > 0){
+                    $bonus = $bonus*$mpPoint->point;
                     $user->$pend_balance += $bonus;
                     $user->save();
                     WalletHistory::create([
@@ -241,20 +255,24 @@ class Task extends Controller
                         'gnumber'=>$user->gnumber,
                         'name'=>$pend_balance,
                         'type'=>'credit',
-                        'description'=>$cur.$bonus.'earned from weekly bonus'
+                        'description'=>$cur.$bonus.'earned from monthly perfomance bonus'
                     ]);
+                    $mpPoint->earn_times += 1;
                 }
-                $wBonus->last_check = Carbon::now();
-                $wBonus->times+=1;
-                $wBonus->save();
             }
+            $mpPoint->point = 0;
+            $mpPoint->save();
         }
     }
-
+     /**
+     * Circle bonus
+     *
+     * @return void
+     */   
     public static function circleBonus()
     {
-        $pv = 3600;
-        $bonus = 4000;
+        $pv = 18000;
+        $bonus = 100000;
         $cur = Helpers::LOCAL_CURR_SYMBOL;
         $pend_balance = Helpers::PEND_BALANCE;
         $users = User::all();
@@ -264,8 +282,11 @@ class Task extends Controller
                 $cBonus = CircleBonus::where('user_id', $user->id)->first();
                 if(!$cBonus)
                     $cBonus = CircleBonus::create(['user_id'=>$user->id]);
-                
-                if( $cpv >= ($pv*$cBonus->times) ){
+                $total_pv = ($pv*$cBonus->times);
+                if($cpv >= $total_pv){
+                    #check for leg balancing
+                    if(!Helpers::checkLegBalance($user, $total_pv))
+                        return;
                     $user->$pend_balance += $bonus;
                     $user->save();
                     WalletHistory::create([
@@ -275,19 +296,68 @@ class Task extends Controller
                         'gnumber'=>$user->gnumber,
                         'name'=>$pend_balance,
                         'type'=>'credit',
-                        'description'=>$cur.$bonus.'earned from Circle bonus'
+                        'description'=>$cur.$bonus.'earned from Circle bonus PV'
                     ]);
-                    $cBonus->times+=1;
-                    $cBonus->save();
+                    $cBonus->times += 1;
+                    $cBonus->point = 0;
+                }else{
+                    if($cpv >= $total_pv)
+                        $point = $total_pv;
+                    else 
+                        $point = $pv - ($total_pv - $cpv);
+                    $cBonus->point = $point;
+                }
+                $cBonus->save();
+            }
+        }
+    }
+     /**
+     * Super assoc. welcome reward
+     *
+     * @return void
+     */  
+    public static function superAssocReward()
+    {
+        $pv = 9000;
+        $days = 60;
+        $grace = 30;
+        $grace_trail = 3;
+        $std_pkg_id = 3;
+        $sAs = SuperAssociate::where('status', 0)->get();
+        foreach($sAs as $sA){
+            if($sA->grace >= $grace_trail){
+                $sA->status = 1;
+                $sA->save();
+            }else{
+                if($sA->created_at->diffInDays() >= $days){
+                    if($sA->last_grace != ''){
+                        if(Carbon::parse($sA->last_grace)->diffInDays() >= $grace){
+                            $sA->grace+=1;
+                            $sA->last_grace = Carbon::now();
+                            $sA->save();
+                        }
+                        return;
+                    }else{
+                        if($user = User::find($sA->user_id)){
+                            if($user->cpv >= $pv){
+                                if(Helpers::checkLegBalance($user, $pv))
+                                    $sA->status = 2; #won it
+                                else
+                                    $sA->status = 4; #balance leg
+                                $sA->save();
+                                return;
+                            }
+                        }else
+                            $sA->delete();
+                    }
+                    $sA->status = 1;
+                    $sA->save();
                 }
             }
         }
     }
 
-    public static function laurelBonus()
-    {
 
-    }
 
     public static function processRanking()
     {

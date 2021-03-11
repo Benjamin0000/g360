@@ -70,7 +70,7 @@ class User extends Authenticatable
     
     public function upgrade()
     {
-        return $this->belongsTo(UpgradeHistory::class, 'id', 'user_id');
+        return $this->hasOne(UpgradeHistory::class, 'user_id', 'id');
     }
 
     public function haveUnPaidLoan()
@@ -80,5 +80,23 @@ class User extends Authenticatable
              ['status', 0] 
         ])->exists();
         
+    }
+     /**
+     * Monthly perfomance bonus point
+     *
+     * @return void
+     */   
+    public function mpPoint()
+    {
+        return $this->hasOne(MpPoint::class, 'user_id', 'id');
+    }
+    /**
+     * Circle bonus point
+     *
+     * @return void
+     */   
+    public function circleBPoint()
+    {
+        return $this->hasOne(CircleBonus::class, 'user_id', 'id');
     }
 }

@@ -34,13 +34,19 @@ class Kernel extends ConsoleKernel
             Task::sharePendingWallet();
         })->timezone('Africa/Lagos')->dailyAt('00:30');
 
-        $schedule->call(function () {
-            Task::weeklyBonus();
-        })->timezone('Africa/Lagos')->weeklyOn(3,'8:00');
+
 
         $schedule->call(function () {
             Task::autoUpgrade();
         })->everyMinute();
+        
+        $schedule->call(function () {
+            Task::mpPoint();
+        })->everyTwoMinutes();
+
+        $schedule->call(function () {
+            Task::creditMpPoint();
+        })->monthlyOn(27, '00:00');
 
         $schedule->call(function () {
             Task::circleBonus();
