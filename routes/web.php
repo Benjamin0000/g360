@@ -52,10 +52,12 @@ Route::get('/verify-email/{token}/{email}', [RegisterController::class, 'verifyE
 #user
 Route::group(['prefix'=>'portal'],  function(){
     Route::get('/', [DashboardController::class, 'index'])->name('user.dasbhoard.index');
+    Route::post('/kAVRnEzhwNxKXuZ', [DashboardController::class, 'reactivateSuperAssoc'])->name('user.dashboard.rassoc');
     Route::get('/packages', [PackageController::class, 'index'])->name('user.package.index');
     Route::get('/packages/premium', [PackageController::class, 'showPremiumPackages'])->name('user.package.show_premium');
     Route::post('/packages/premium', [PackageController::class, 'selectPremiumPackage'])->name('user.package.select_premium');
     Route::post('/packages/free', [PackageController::class, 'selectFreePackage'])->name('user.package.select_free');
+
     #Gfund
     Route::get('/gfund', [GfundController::class, 'index'])->name('user.gfund.index');
     Route::post('/SaxRwepRJAHAIzG', [GfundController::class, 'withdrawalWalletTransfer'])->name('user.gfund.withdrawalTransfer');

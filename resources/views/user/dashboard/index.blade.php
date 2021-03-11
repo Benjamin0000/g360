@@ -1,6 +1,9 @@
 @extends('user.layout', ['title'=>'Dasbhoard'])
-@php $cur = App\Http\Helpers::LOCAL_CURR_SYMBOL @endphp
-@php $user = Auth::user() @endphp
+@php
+use Carbon\Carbon;
+ $cur = App\Http\Helpers::LOCAL_CURR_SYMBOL;
+ $user = Auth::user();
+@endphp
 @section('content')
 <div class="card">
     <div class="card-body">
@@ -159,19 +162,89 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-3 col-md-6">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">Promo</h4>
-                <div class="text-right">
-                    <h2 class="font-light mb-0">Days: 1</h2>
-                </div>
-                <div class="progress">
-                    <div class="progress-bar bg-purple" role="progressbar" style="width: 100%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+    @if($associate = $user->superAssoc)
+      @if($associate->status != 3 && $associate->grace < 3)
+        <div class="col-lg-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Super Associate</h4>
+                    <div class="text-center">
+                      @php $status = $associate->status @endphp
+                    @if($status == 1)
+                      <form  action="{{route('user.dashboard.rassoc')}}" method="post" onsubmit="return confirm('{{$cur}}5,000 will be charged as reactivation fee.')">
+                        @csrf
+                        <input type="hidden" name="type" value="ac">
+                        <button class="btn btn-primary btn-sm">Reactivate</button>
+                      </form>
+                    @elseif($status == 2)
+                          <button data-toggle='modal' data-target='#assoc' class="btn btn-success btn-sm blink"><i class="mdi mdi-trophy-award"></i> Claim now</button>
+                          <div class="modal" tabindex="-1" id="assoc">
+                            <div class="modal-dialog">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="modal-title">Super Associate Reward</h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <div class="modal-body">
+                                   <form  action="{{route('user.dashboard.rassoc')}}" method="post">
+                                     <div class="form-group">
+                                       <label for="">Select a reward type</label>
+                                       <select class="form-control" name="tp">
+                                          <option value="">Choose</option>
+                                          <option value="m">{{$cur}}12,500 monthly payment</option>
+                                          <option value="l">{{$cur}}100,000 loan</option>
+                                       </select>
+                                     </div>
+                                     @csrf
+                                     <input type="hidden" name="type" value="cl">
+                                     <div class="form-group">
+                                        <button class="btn btn-success">Continue</button>
+                                     </div>
+                                   </form>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                      @elseif($status == 4)
+                        balance leg
+                      @elseif($associate->last_grace != '')
+                          <h2 style="font-size:18px;" class="font-light mb-0">
+                            <b><span id="clock"></span></b>
+                          </h2>
+                          <script type="text/javascript">
+                              onReady(function(){
+                                var nextYear = moment.tz("{{Carbon::parse($associate->last_grace)->addDays(30)}}", 'Africa/Lagos');
+                                $('#clock').countdown(nextYear.toDate(), function(event) {
+                                  $(this).html(event.strftime('%D Days %H hrs : %M:%S'));
+                                });
+                              })
+                          </script>
+                      @else
+                        <h2 style="font-size:18px;" class="font-light mb-0">
+                          <b><span id="clock"></span></b>
+                        </h2>
+                        <script type="text/javascript">
+                            onReady(function(){
+                              var nextYear = moment.tz("{{$associate->created_at->addDays(60)}}", 'Africa/Lagos');
+                              $('#clock').countdown(nextYear.toDate(), function(event) {
+                                $(this).html(event.strftime('%D Days %H hrs : %M:%S'));
+                              });
+                            })
+                        </script>
+                      @endif
+                        <br>
+                    </div>
+
+                    <div class="progress">
+                        <div class="progress-bar bg-purple" role="progressbar" style="width: 100%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+      @endif
+    @endif
     <div class="col-lg-3 col-md-6">
         <div class="card">
             <div class="card-body">
@@ -281,6 +354,5 @@
             </div>
         </div>
     </div>
-
 </div>
 @endsection

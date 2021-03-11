@@ -51,6 +51,10 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             Task::circleBonus();
         })->hourly();
+
+        $schedule->call(function(){
+            Task::superAssocReward();
+        })->daily();
     } 
 
     /**

@@ -330,27 +330,22 @@ class Task extends Controller
                 $sA->save();
             }else{
                 if($sA->created_at->diffInDays() >= $days){
-                    if($sA->last_grace != ''){
-                        if(Carbon::parse($sA->last_grace)->diffInDays() >= $grace){
-                            $sA->grace+=1;
-                            $sA->last_grace = Carbon::now();
-                            $sA->save();
-                        }
-                        return;
-                    }else{
-                        if($user = User::find($sA->user_id)){
-                            if($user->cpv >= $pv){
-                                if(Helpers::checkLegBalance($user, $pv))
-                                    $sA->status = 2; #won it
-                                else
-                                    $sA->status = 4; #balance leg
-                                $sA->save();
-                                return;
-                            }
-                        }else
-                            $sA->delete();
-                    }
                     $sA->status = 1;
+                    if($sA->last_grace != ''){
+                        if(Carbon::parse($sA->last_grace)->diffInDays() < $grace)
+                            return;
+                    }
+                    if($user = User::find($sA->user_id)){
+                        if($user->cpv >= $pv){
+                            if(Helpers::checkLegBalance($user, $pv))
+                                $sA->status = 2; #won it
+                            else
+                                $sA->status = 4; #balance leg
+                        }
+                    }else{
+                        $sA->delete();
+                        return;
+                    } 
                     $sA->save();
                 }
             }

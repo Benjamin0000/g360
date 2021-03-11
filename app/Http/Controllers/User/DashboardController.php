@@ -5,7 +5,9 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Http\Helpers;
 use App\Models\WalletHistory;
+use App\Models\SuperAssociate;
 use App\Models\User;
 
 class DashboardController extends Controller
@@ -44,6 +46,11 @@ class DashboardController extends Controller
         }
         return view('user.dashboard.index',  compact('histories', 'referals'));
     }
+     /**
+     * Get referral levels
+     *
+     * @return \Illuminate\Http\Response
+     */   
     private static function getRef($gnumber, &$referals, $level=1)
     {
         if($level > 15 || count($referals) >= 15) return;
@@ -54,68 +61,61 @@ class DashboardController extends Controller
         }
     }
     /**
-     * Show the form for creating a new resource.
+     * Reactivate Supper assoc
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function reactivateSuperAssoc(Request $request)
     {
-        //
+        $user = Auth::user();
+        $trx_balance =  Helpers::TRX_BALANCE;
+        $fee = 5000;
+        $sA = SuperAssociate::where('user_id', $user->id)->first();
+        switch($request->type){
+            case 'ac': 
+                if($sA && $sA->status == 1 && $sA->grace < 3){
+                    if($user->$trx_balance >= $fee){
+                        $user->$trx_balance -= $fee;
+                        $user->save();
+                        WalletHistory::create([
+                            'id'=>Helpers::genTableId(WalletHistory::class),
+                            'user_id'=>$user->id,
+                            'amount'=>$fee,
+                            'gnumber'=>$user->gnumber,
+                            'name'=>$trx_balance,
+                            'type'=>'debit',
+                            'description'=>$cur.$fee.' debited for super Associate bonus reactivation'
+                        ]);
+                        $sA->status = 0;
+                        $sA->grace += 1;
+                        $sA->last_grace = Carbon::now();
+                        $sA->save();
+                        return redirect('user.dashboard.index')
+                        ->with('success', 'Super associate bonus has been reativated for another 30 days');
+                    }else{
+                        return redirect('user.dashboard.index')
+                        ->with('error', 'Insufficient fund in your Transaction wallet');
+                    }
+                }
+                break;
+            case 'cl': 
+                if($sA && $sA->status == 2){
+                    if($request->tp == 'm'){
+                        #issue monthly payment
+                    }elseif($request->tp == 'l'){
+                        #issue no coletral loan
+                    }
+                    return redirect('user.dashboard.index')
+                    ->with('success', 'Insufficient fund in your Transaction wallet');
+                }
+                break;
+            default: 
+                return redirect('user.dashboard.index')
+                ->with('error', 'You don\'t have permission to access that page');
+        }
+        return redirect('user.dashboard.index')
+        ->with('error', 'You don\'t have permission to access that page');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+  
 }

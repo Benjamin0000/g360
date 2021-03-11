@@ -99,4 +99,13 @@ class User extends Authenticatable
     {
         return $this->hasOne(CircleBonus::class, 'user_id', 'id');
     }
+    /**
+     * Super associate bonus
+     *
+     * @return void
+     */   
+    public function superAssoc()
+    {
+        return $this->hasOne(SuperAssociate::class, 'user_id', 'id');
+    }
 }
