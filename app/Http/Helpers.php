@@ -28,7 +28,8 @@ use Exception;
     public const HEALTH_TOKEN = 'h_token';
     public const CUM_POINT_VALUE = 'cpv'; #cumulative point value
     public const AWARD_POINT = 'award_point';
-    
+    public const PEND_TRX_BALANCE = 'pend_trx_balance';
+    public const LOAN_ELIG_BALANCE = 'loan_elig_balance';
 	/**
      * Store Email Addresses
 	 * 

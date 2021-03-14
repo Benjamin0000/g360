@@ -11,6 +11,8 @@ use App\Http\Controllers\User\EpinController;
 use App\Http\Controllers\User\GfundController;
 use App\Http\Controllers\User\WalletHistoryController;
 use App\Http\Controllers\User\DownlineController;
+use App\Http\Controllers\User\LoanController;
+use App\Http\Controllers\User\RewardController;
 use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
@@ -70,7 +72,6 @@ Route::group(['prefix'=>'portal'],  function(){
     Route::get('/epin/buy', [EpinController::class, 'buy'])->name('user.epin.buy');
     Route::post('/epin/buy', [EpinController::class, 'issueBuy'])->name('user.epin.buy');
     Route::get('/epin/{pkg}', [EpinController::class, 'show'])->name('user.epin.show');
-
     #Transaction history
     Route::get('/history/W-wallet', [WalletHistoryController::class, 'w_wallet'])->name('user.history.w_wallet');
     Route::get('/history/T-wallet', [WalletHistoryController::class, 't_wallet'])->name('user.history.t_wallet');
@@ -79,4 +80,11 @@ Route::group(['prefix'=>'portal'],  function(){
     #downline
     Route::get('/downline/direct', [DownlineController::class, 'direct'])->name('user.downline.direct');
     Route::get('/downline/indirect', [DownlineController::class, 'indirect'])->name('user.downline.indirect');
+    #loan
+    Route::get('/loan', [LoanController::class, 'index'])->name('user.loan.index');
+    Route::get('/loan/apply', [LoanController::class, 'apply'])->name('user.loan.apply');
+    #Reward
+    Route::get('/reward', [RewardController::class, 'index'])->name('user.reward.index');
+    Route::post('/reward/loan/{id}', [RewardController::class, 'selectLoan'])->name('user.reward.loan');
+    Route::post('/reward/lmp/{id}', [RewardController::class, 'selectLmp'])->name('user.reward.lmp');
 });  

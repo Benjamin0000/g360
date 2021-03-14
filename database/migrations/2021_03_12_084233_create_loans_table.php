@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSuperAssociatesTable extends Migration
+class CreateLoansTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,15 @@ class CreateSuperAssociatesTable extends Migration
      */
     public function up()
     {
-        Schema::create('super_associates', function (Blueprint $table) {
+        Schema::create('loans', function (Blueprint $table) {
             $table->string('id', 30)->primary();
             $table->string('user_id', 30);
-            $table->integer('grace')->default(0);
-            $table->timestamp('last_grace')->nullable();
-            $table->boolean('status')->default(0); // 1 if grace expired || 2 if won || 3 if claimed
-            $table->boolean('balance_leg')->default(0); // leg not balanced show become 1
+            $table->bigInteger('gnumber');
+            $table->decimal('amount', 64, 2);
+            $table->decimal('total_return', 64, 2); #amount + (amount*interest/100)
+            $table->integer('interest')->default(0);
+            $table->integer('exp_days'); // expiry days
+            $table->boolean('status')->default(0);
             $table->timestamps();
         });
     }
@@ -31,6 +33,6 @@ class CreateSuperAssociatesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('super_associates');
+        Schema::dropIfExists('loans');
     }
 }

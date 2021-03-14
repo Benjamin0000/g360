@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Loan extends Model
+class Reward extends Model
 {
     use HasFactory;
 
@@ -18,12 +18,15 @@ class Loan extends Model
      *
      * @var array
      */
-    protected $fillable = [ 
+    protected $fillable = [
         'id',
+        'name',
         'user_id',
         'gnumber',
-        'amount',
-        'total_return',
-        'exp_days',
+        'rank_id',
+        'loan_amount',
+        'loan_month',
+        'lmp_amount',
+        'lmp_month'
     ];
 }

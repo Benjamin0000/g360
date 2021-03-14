@@ -83,8 +83,6 @@ class User extends Authenticatable
     }
      /**
      * Monthly perfomance bonus point
-     *
-     * @return void
      */   
     public function mpPoint()
     {
@@ -92,8 +90,6 @@ class User extends Authenticatable
     }
     /**
      * Circle bonus point
-     *
-     * @return void
      */   
     public function circleBPoint()
     {
@@ -101,11 +97,16 @@ class User extends Authenticatable
     }
     /**
      * Super associate bonus
-     *
-     * @return void
      */   
     public function superAssoc()
     {
         return $this->hasOne(SuperAssociate::class, 'user_id', 'id');
+    }
+    /**
+     * Get users rank
+     */   
+    public function rank()
+    {
+        return $this->belongsTo(Rank::class, 'rank_id');
     }
 }

@@ -1,8 +1,9 @@
 @extends('user.layout', ['title'=>'Dasbhoard'])
 @php
 use Carbon\Carbon;
- $cur = App\Http\Helpers::LOCAL_CURR_SYMBOL;
- $user = Auth::user();
+use App\Http\Helpers;
+$cur = Helpers::LOCAL_CURR_SYMBOL;
+$user = Auth::user();
 @endphp
 @section('content')
 <div class="card">
@@ -19,7 +20,7 @@ use Carbon\Carbon;
             <div class="card-body">
                 <h4 class="card-title">P-Wallet</h4>
                 <div class="text-right">
-                    <h2 class="font-light mb-0"><i class="mdi mdi-wallet text-success"></i>{{$cur.number_format($user->pend_balance, 2, '.', ',')}}</h2>
+                    <h2 class="font-light mb-0"><i class="mdi mdi-wallet text-success"></i>{{$cur.number_format($user->pend_balance+$user->pend_trx_balance, 2, '.', ',')}}</h2>
                     <span class="text-muted">Current Balance</span>
                 </div>
                 <div class="progress">
@@ -133,7 +134,7 @@ use Carbon\Carbon;
                 <h4 class="card-title">Point Value</h4>
                 <div class="text-right">
                     <h2 class="font-light mb-0"><i class="mdi mdi-trophy-award  text-info"></i>{{$user->cpv}}</h2>
-                    <span class="text-muted">Rank: </span>
+                    <span class="text-muted">Rank:</span> <span>{{$user->rank ? ucwords($user->rank->name): 'Associate'}}</span>
                 </div>
                 <div class="progress">
                     <div class="progress-bar bg-info" role="progressbar" style="width: 100%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
@@ -163,13 +164,13 @@ use Carbon\Carbon;
         </div>
     </div>
     @if($associate = $user->superAssoc)
-      @if($associate->status != 3 && $associate->grace < 3)
+      @if($associate->status != 3)
         <div class="col-lg-3 col-md-6">
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">Super Associate</h4>
                     <div class="text-center">
-                      @php $status = $associate->status @endphp
+                    @php $status = $associate->status @endphp
                     @if($status == 1)
                       <form  action="{{route('user.dashboard.rassoc')}}" method="post" onsubmit="return confirm('{{$cur}}5,000 will be charged as reactivation fee.')">
                         @csrf
@@ -207,12 +208,13 @@ use Carbon\Carbon;
                               </div>
                             </div>
                           </div>
-                      @elseif($status == 4)
-                        balance leg
                       @elseif($associate->last_grace != '')
                           <h2 style="font-size:18px;" class="font-light mb-0">
                             <b><span id="clock"></span></b>
                           </h2>
+                          @if($associate->balance_leg)
+                            <div class="text-danger blink"><b>Balance your legs</b></div>
+                          @endif
                           <script type="text/javascript">
                               onReady(function(){
                                 var nextYear = moment.tz("{{Carbon::parse($associate->last_grace)->addDays(30)}}", 'Africa/Lagos');
@@ -225,6 +227,9 @@ use Carbon\Carbon;
                         <h2 style="font-size:18px;" class="font-light mb-0">
                           <b><span id="clock"></span></b>
                         </h2>
+                        @if($associate->balance_leg)
+                          <div class="text-danger blink"><b>Balance your legs</b></div>
+                        @endif
                         <script type="text/javascript">
                             onReady(function(){
                               var nextYear = moment.tz("{{$associate->created_at->addDays(60)}}", 'Africa/Lagos');
@@ -236,7 +241,6 @@ use Carbon\Carbon;
                       @endif
                         <br>
                     </div>
-
                     <div class="progress">
                         <div class="progress-bar bg-purple" role="progressbar" style="width: 100%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>

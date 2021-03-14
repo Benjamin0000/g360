@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Loan extends Model
+class Lmp extends Model
 {
     use HasFactory;
 
@@ -13,17 +13,19 @@ class Loan extends Model
     protected $primaryKey = 'id';
     protected $keyType = 'string';
 
-     /**
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = [ 
+    protected $fillable = [
         'id',
+        'name',
         'user_id',
         'gnumber',
+        'rank_id',
         'amount',
-        'total_return',
-        'exp_days',
+        'times',
+        'total_times'
     ];
 }

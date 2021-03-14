@@ -34,7 +34,7 @@ class Package extends Model
         $last_pkg_id = 7;
         $free_pkg_id = 1;
         $basic_pkg_id = 2;
-        $std_pkg_id = 3;
+        $super_pkg_id = 4;
         $cash_back_percent = 8;
         $pend_balance = Helpers::PEND_BALANCE;
         $h_token = Helpers::HEALTH_TOKEN;
@@ -109,7 +109,7 @@ class Package extends Model
         Helpers::shareRefCommission($this->id, $amount, $user->gnumber);
         #activate super associate reward
         $check = SuperAssociate::where('user_id', $user->id)->exists();
-        if(!$check && $this->id >= $std_pkg_id)
+        if(!$check && $this->id >= $super_pkg_id)
             SuperAssociate::create(['user_id'=>$user->id]);
         return true;
     }

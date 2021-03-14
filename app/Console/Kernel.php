@@ -34,8 +34,6 @@ class Kernel extends ConsoleKernel
             Task::sharePendingWallet();
         })->timezone('Africa/Lagos')->dailyAt('00:30');
 
-
-
         $schedule->call(function () {
             Task::autoUpgrade();
         })->everyMinute();
@@ -54,6 +52,8 @@ class Kernel extends ConsoleKernel
 
         $schedule->call(function(){
             Task::superAssocReward();
+            Task::ranking();
+            Task::lmp();
         })->daily();
     } 
 

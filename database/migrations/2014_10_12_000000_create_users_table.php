@@ -25,11 +25,14 @@ class CreateUsersTable extends Migration
             $table->string('pic')->nullable();
             $table->bigInteger('ref_gnum');
             $table->integer('pkg_id')->default(0);
+            $table->integer('rank_id')->default(0);
             $table->decimal('with_balance', 65, 2)->default(0); // withdrawal wallet
             $table->decimal('trx_balance', 65, 2)->default(0); // transaction wallet
             $table->decimal('pend_balance', 65, 2)->default(0); //  pending balance
+            $table->decimal('pend_trx_balance', 65, 2)->default(0); //  pending transaction balance
             $table->decimal('award_point', 65, 2)->default(0); //  package balance
             $table->decimal('loan_pkg_balance', 65, 2)->default(0); //  package balance
+            $table->decimal('loan_elig_balance', 65, 2)->default(0); // loan eligable balance
             $table->bigInteger('h_token')->default(0); // health token
             $table->bigInteger('cpv')->default(0); // cumulative point value
             $table->decimal('deca', 65, 2)->default(0);

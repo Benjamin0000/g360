@@ -183,15 +183,15 @@
                             </a>
                         </li>
                         <li >
-                            <a href="dddd" >
+                            <a href="{{route('user.loan.index')}}" >
                                 <i class="mdi mdi-textbox"></i>
                                 <span class="hide-menu">Loan </span>
                             </a>
                         </li>
                         <li >
-                            <a href="dddd" >
+                            <a href="{{route('user.reward.index')}}" >
                                 <i class="mdi mdi-ticket"></i>
-                                <span class="hide-menu">Bonus Reward </span>
+                                <span class="hide-menu">Reward </span>
                             </a>
                         </li>
                         <li >
