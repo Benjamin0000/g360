@@ -40,8 +40,8 @@ class RewardController extends G360
     */
     public function selectLoan(Request $request, $id)
     {
-        #store lmp amount in loan eligibility
         $user = Auth::user();
+        $month_end = 27;
         $reward = Reward::where([
             ['id', $id],
             ['user_id', $user->id],
@@ -63,19 +63,18 @@ class RewardController extends G360
         $reward->status = 1;
         $reward->save();
         #give loan
-
-        #store loan amount in loan eligibility
-        $user->self::$loan_elig_balance+=$reward->lmp_amount;
-        $user->save();
-        WalletHistory::create([
-            'id'=>Helpers::genTableId(WalletHistory::class),
-            'amount'=>$reward->lmp_amount,
+        $exp_days = $reward->loan_month*$month_end;
+        Loan::create([
+            'id'=>Helpers::genTableId(Loan::class),
             'user_id'=>$user->id,
             'gnumber'=>$user->gnumber,
-            'name'=>self::$loan_elig_balance,
-            'type'=>'credit',
-            'description'=>self::$cur.$reward->lmp_amount.' received from '
-            .$reward->name.' lmp'
+            'amount'=>$reward->loan_amount,
+            'total_return'=>$reward->loan_amount,
+            'interest'=>10,
+            'exp_months'=>$reward->loan_month,
+            'grace_months'=>3,
+            'extra'=>$reward->name.' Loan',
+            'expiry_date'=>Carbon::now()->addDays($exp_days)
         ]);
         return redirect(route('user.reward.index'))
         ->with('success', 'Loan has been activated');
@@ -111,16 +110,17 @@ class RewardController extends G360
         $reward->status = 1;
         $reward->save();
         #store loan amount in loan eligibility
-        $user->self::$loan_elig_balance+=$reward->loan_amount;
+        $amount = $reward->loan_amount-$reward->lmp_amount;
+        $user->self::$loan_elig_balance+=$amount;
         $user->save();
         WalletHistory::create([
             'id'=>Helpers::genTableId(WalletHistory::class),
-            'amount'=>$reward->loan_amount,
+            'amount'=>$amount,
             'user_id'=>$user->id,
             'gnumber'=>$user->gnumber,
             'name'=>self::$loan_elig_balance,
             'type'=>'credit',
-            'description'=>self::$cur.$reward->loan_amount.' received from '
+            'description'=>self::$cur.$amount.' received from '
             .$reward->name.' loan amount'
         ]);
         return redirect(route('user.reward.index'))

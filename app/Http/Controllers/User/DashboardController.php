@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Http\Controllers\User;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -9,7 +7,8 @@ use App\Http\Helpers;
 use App\Models\WalletHistory;
 use App\Models\SuperAssociate;
 use App\Models\User;
-
+use App\Models\Loan;
+use App\Models\Lmp;
 class DashboardController extends Controller
 {
     /**
@@ -102,11 +101,40 @@ class DashboardController extends Controller
                 if($sA && $sA->status == 2){
                     if($request->tp == 'm'){
                         #issue monthly payment
+                        $exp_months = 6;
+                        Lmp::create([
+                            'id'=>Helpers::genTableId(Lmp::class),
+                            'name'=>'Super associate Loan',
+                            'user_id'=>$user->id,
+                            'gnumber'=>$user->gnumber,
+                            'rank_id'=>1,
+                            'amount'=>10000,
+                            'total_times'=>$exp_months
+                        ]);
+                        return redirect('user.dashboard.index')
+                            ->with('success', 'Leadership monthly bonus activated');
                     }elseif($request->tp == 'l'){
-                        #issue no coletral loan
+                        #issue no interest loan
+                        $exp_months = 6;
+                        $month_end = 27;
+                        $exp_days = $exp_months*$month_end;
+                        $amount = 100000;
+                        $grace = 3;
+                        Loan::create([
+                            'id'=>Helpers::genTableId(Loan::class),
+                            'user_id'=>$user->id,
+                            'gnumber'=>$user->gnumber,
+                            'amount'=>$amount,
+                            'total_return'=>$amount,
+                            'interest'=>10,
+                            'exp_months'=>$exp_months,
+                            'grace_months'=>$grace,
+                            'extra'=>'Super associate Loan',
+                            'expiry_date'=>Carbon::now()->addDays($exp_days)
+                        ]);
+                        return redirect('user.dashboard.index')
+                            ->with('success', 'Loan activated');
                     }
-                    return redirect('user.dashboard.index')
-                    ->with('success', 'Insufficient fund in your Transaction wallet');
                 }
                 break;
             default: 

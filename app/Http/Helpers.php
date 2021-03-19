@@ -1,6 +1,5 @@
 <?php 
 namespace App\Http;
-
 use Illuminate\Http\Request;
 use App\Models\EmailVerify;
 use App\Models\PasswordReset;
@@ -13,16 +12,14 @@ use App\Models\Epin;
 use libphonenumber\PhoneNumberUtil;
 use libphonenumber\NumberParseException;
 use Exception;
-
   /**
   *  Helpers Class for Helpers methods
   */
   class Helpers 
   {
-
     public const LOCAL_CURR_SYMBOL = '₦';
     public const TRX_BALANCE = 'trx_balance';
-    public const LOAN_PKG_BALANCE = 'loan_pkg_balance';
+    public const PKG_BALANCE = 'pkg_balance';
     public const PEND_BALANCE = 'pend_balance';
     public const WITH_BALANCE = 'with_balance';
     public const HEALTH_TOKEN = 'h_token';
@@ -30,6 +27,7 @@ use Exception;
     public const AWARD_POINT = 'award_point';
     public const PEND_TRX_BALANCE = 'pend_trx_balance';
     public const LOAN_ELIG_BALANCE = 'loan_elig_balance';
+    public const TOTAL_LOAN_BALANCE = 'total_loan_balance';
 	/**
      * Store Email Addresses
 	 * 

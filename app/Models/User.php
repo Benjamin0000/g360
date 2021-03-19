@@ -51,6 +51,20 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    
+    public function loanBalance()
+    {
+        $loan = Loan::where([ 
+            ['user_id', $this->id],
+            ['status', 0]
+        ]);
+        if($loan->exists()){
+            $returned = $loan->sum('returned');
+            $total_return = $loan->sum('total_return');
+            return $returned - $total_return;
+        }   
+        return 0;
+    }
 
     public function canEarnFromLevel($level)
     {
@@ -108,5 +122,9 @@ class User extends Authenticatable
     public function rank()
     {
         return $this->belongsTo(Rank::class, 'rank_id');
+    }
+    public function loan()
+    {
+        return $this->hasOne(Loan::class, 'user_id', 'id');
     }
 }

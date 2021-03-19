@@ -30,9 +30,10 @@ class CreateUsersTable extends Migration
             $table->decimal('trx_balance', 65, 2)->default(0); // transaction wallet
             $table->decimal('pend_balance', 65, 2)->default(0); //  pending balance
             $table->decimal('pend_trx_balance', 65, 2)->default(0); //  pending transaction balance
-            $table->decimal('award_point', 65, 2)->default(0); //  package balance
-            $table->decimal('loan_pkg_balance', 65, 2)->default(0); //  package balance
+            $table->decimal('award_point', 65, 2)->default(0); //  award balance
+            $table->decimal('pkg_balance', 65, 2)->default(0); //  package balance
             $table->decimal('loan_elig_balance', 65, 2)->default(0); // loan eligable balance
+            $table->decimal('total_loan_balance', 65, 2)->default(0);
             $table->bigInteger('h_token')->default(0); // health token
             $table->bigInteger('cpv')->default(0); // cumulative point value
             $table->decimal('deca', 65, 2)->default(0);

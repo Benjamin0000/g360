@@ -13,6 +13,7 @@
     <link href="/assets/css/style.css?v=2" rel="stylesheet" type="text/css" />
     <link href="/assets/css/colors/blue.css" rel="stylesheet" type="text/css" />
     <link href="/assets/plugins/datatables.net-bs4/css/dataTables.bootstrap4.css" rel="stylesheet" type="text/css" />
+    <script src="https://kit.fontawesome.com/bb8f3fac95.js" crossorigin="anonymous"></script>
     <script>
     var baseurl = "/";
     function onReady(yourMethod) {
@@ -35,7 +36,7 @@
             font-weight: bold;
         }
         .form-control{
-            box-shadow: none !important;
+            /* box-shadow: none !important; */
         }
     </style>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -177,6 +178,13 @@
                             </a>
                         </li>
                         <li>
+                            <a class="has-arrow " href="#" aria-expanded="false"><i class="mdi mdi-vector-polyline"></i><span class="hide-menu">E-Banking</span></a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="{{route('user.pay_bills.index')}}">Pay Bills</a></li>
+                                <li><a href="dd">POS service</a></li>
+                            </ul>
+                        </li>
+                        <li>
                             <a href="dd" aria-expanded="false" >
                                 <i class="mdi mdi-trending-up"></i>
                                 <span class="hide-menu">Investment </span>
@@ -213,7 +221,7 @@
                             </a>
                         </li>
 
-                                                <li>
+                        <li>
                             <a class="has-arrow " href="#" aria-expanded="false"><i class="mdi mdi-vector-polyline"></i><span class="hide-menu">My Store</span></a>
                             <ul aria-expanded="false" class="collapse">
                                 <li><a href="dd">Overview</a></li>

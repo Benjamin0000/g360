@@ -11,6 +11,7 @@ use App\Models\Package;
 use App\Models\Lmp;
 use App\Models\Rank;
 use App\Models\Reward;
+use App\Models\Loan;
 use App\Http\Helpers;
 use Carbon\Carbon;
 class Task extends G360
@@ -42,88 +43,130 @@ class Task extends G360
         }
     }
     /**
-     * Track free users;
+     * Share pending wallet
      * 
      * @return Void
     */
     public static function sharePendingWallet()
     {
         $last_pkg_id = 7;
-                # [award_pt, with, pkg_loan, trx]
-        $share_p_one = [20, 5,  25, 50]; #no loan
-        $share_p_two = [20, 5,  0, 75]; #last_pkg
         $users = User::all();
         if($users->count()){
             foreach($users as $user){
                 $total = $user->self::$pend_balance;
-                $pend_trx = $user->self::$pend_trx_balance;
-                $loan_pkg_bal = 0;
-                $trx_bal = 0;
-                $w_bal = 0;
-                $award_pt = 0;
-                $bill_pkg = true;
+                $billForLoan = false;
+                $billForPkg = false;
+                $type = '';
                 if($total > 0){
-                    if($user->pkg_id  == $last_pkg_id){
-                        if(!$user->haveUnPaidLoan())
-                            $bill_pkg = false;
+                    if($user->pkg_id != $last_pkg_id)
+                        $billForPkg = true;
+                    if($user->haveUnPaidLoan())
+                        $billForLoan = true;
+                    if($billForLoan && $billForPkg){
+                        $formular = [20, 5, 15, 15, 45];
+                    }elseif($billForPkg || $billForLoan){
+                        if($billForLoan)
+                            $type = 'loan';
+                        else
+                            $type = 'pkg';
+                        $formular = [20, 5, 30, 45];
+                    }else{
+                        $formular = [20, 5,  0, 75];
                     }
-                    if($bill_pkg == false)
-                        $trx_bal = ($share_p_two[3] / 100) * $total;
-                    else{
-                        $trx_bal = ($share_p_one[3] / 100) * $total;
-                        $loan_pkg_bal = ($share_p_one[2] / 100) * $total;
-                    }
-                    $award_pt = ($share_p_one[0] / 100) * $total;
-                    $w_bal = ($share_p_one[1] / 100) * $total;
-                    if($loan_pkg_bal){
-                        $user->self::$loan_pkg_balance += $loan_pkg_bal;
-                        WalletHistory::create([
-                            'id'=>Helpers::genTableId(WalletHistory::class),
-                            'user_id'=>$user->id,
-                            'amount'=>$loan_pkg_bal,
-                            'gnumber'=>$user->gnumber,
-                            'name'=>self::$loan_pkg_balance,
-                            'type'=>'credit',
-                            'description'=>self::$cur.number_format($loan_pkg_bal).' daily earning'
-                        ]);
-                    }
-                    WalletHistory::create([
-                        'id'=>Helpers::genTableId(WalletHistory::class),
-                        'user_id'=>$user->id,
-                        'amount'=>$award_pt,
-                        'gnumber'=>$user->gnumber,
-                        'name'=>self::$award_point,
-                        'type'=>'credit',
-                        'description'=>$award_pt.' award point from daily earning'
-                    ]);                    
-                    WalletHistory::create([
-                        'id'=>Helpers::genTableId(WalletHistory::class),
-                        'user_id'=>$user->id,
-                        'amount'=>$w_bal,
-                        'gnumber'=>$user->gnumber,
-                        'name'=>self::$with_balance,
-                        'type'=>'credit',
-                        'description'=>self::$cur.number_format($w_bal).' daily earning'
-                    ]);
-                    WalletHistory::create([
-                        'id'=>Helpers::genTableId(WalletHistory::class),
-                        'user_id'=>$user->id,
-                        'amount'=>$trx_bal,
-                        'gnumber'=>$user->gnumber,
-                        'name'=>self::$trx_balance,
-                        'type'=>'credit',
-                        'description'=>self::$cur.number_format($trx_bal).' daily earning'
-                    ]);
-                    $user->self::$award_point += $award_pt;
-                    $user->self::$with_balance += $w_bal;
-                    $user->self::$trx_balance += $trx_bal;
-                    $user->self::$pend_balance = 0;
-                    if($pend_trx > 0){
-                        $user->self::$trx_balance += $pend_trx;
-                    }
-                    $user->save();
+                    self::pSharing($user, $formular, $type);
                 }
             }
+        }
+    }
+    public static function pSharing(User $user, $formular, $type = '')
+    {
+        $total = $user->self::$pend_balance;
+        $pend_trx = $user->self::$pend_trx_balance;
+        $pkg_bal = 0;
+        $trx_bal = 0;
+        $w_bal = 0;
+        $award_pt = 0;
+        $loan_bal = 0;
+        $excess = 0;
+        if(count($formular) == 5){
+            $pkg_bal = ($formular[2] / 100) * $total;
+            $loan_bal = ($formular[3] / 100) * $total;
+            $trx_bal = ($formular[4] / 100) * $total;
+        }else{
+            $trx_bal = ($formular[3] / 100) * $total;
+            if($perc = $formular[2]){
+                if($type == 'loan')
+                    $loan_bal = ($perc / 100) * $total;
+                elseif($type == 'pkg')
+                    $pkg_bal = ($perc / 100) * $total;
+            }
+        }
+        $award_pt = ($formular[0] / 100) * $total;
+        $w_bal = ($formular[1] / 100) * $total;
+        if($loan_bal){
+            $loan = Loan::where([ 
+                ['user_id', $user->id],
+                ['status', 0]
+            ])->first();
+            if($loan){
+                $loan->returned += $loan_bal;
+                if($loan->returned >= $loan->total_return){
+                    $loan->status = 1;
+                    if($loan->returned > $loan->total_return){
+                        $excess = $loan->returned - $loan->total_return;
+                        $loan->returned = $loan->total_return;
+                    }
+                    self::creditGurantors($loan);
+                }
+                $loan->save();
+            }
+        }
+        $trx_amount = $trx_bal + $excess + $pend_trx;
+        if($pkg_bal)
+            $user->self::$pkg_balance += $pkg_bal;
+        $user->self::$award_point += $award_pt;
+        $user->self::$with_balance += $w_bal;
+        $user->self::$trx_balance += $trx_amount;
+        $user->self::$pend_balance = 0;
+        $user->self::$pend_trx_balance = 0;
+        $user->save();
+        WalletHistory::create([
+            'id'=>Helpers::genTableId(WalletHistory::class),
+            'user_id'=>$user->id,
+            'amount'=>$trx_amount,
+            'gnumber'=>$user->gnumber,
+            'name'=>self::$trx_balance,
+            'type'=>'credit',
+            'description'=>self::$cur.number_format($trx_amount).' daily earning'
+        ]);
+        WalletHistory::create([
+            'id'=>Helpers::genTableId(WalletHistory::class),
+            'user_id'=>$user->id,
+            'amount'=>$award_pt,
+            'gnumber'=>$user->gnumber,
+            'name'=>self::$award_point,
+            'type'=>'credit',
+            'description'=>$award_pt.' award point from daily earning'
+        ]);                    
+        WalletHistory::create([
+            'id'=>Helpers::genTableId(WalletHistory::class),
+            'user_id'=>$user->id,
+            'amount'=>$w_bal,
+            'gnumber'=>$user->gnumber,
+            'name'=>self::$with_balance,
+            'type'=>'credit',
+            'description'=>self::$cur.number_format($w_bal).' daily earning'
+        ]);
+        if($pkg_bal){
+            WalletHistory::create([
+                'id'=>Helpers::genTableId(WalletHistory::class),
+                'user_id'=>$user->id,
+                'amount'=>$pkg_bal,
+                'gnumber'=>$user->gnumber,
+                'name'=>self::$pkg_balance,
+                'type'=>'credit',
+                'description'=>self::$cur.number_format($pkg_bal).' daily earning'
+            ]);
         }
     }
     /**
@@ -148,10 +191,10 @@ class Task extends G360
                         $amount = $nxt_package->amount - $current_pkg->amount;
                         if($percent = $user->free_t_fee)
                             $fee = ($percent/100)*$amount;
-                        if($user->self::$loan_pkg_balance >= $amount){
+                        if($user->self::$pkg_balance >= $amount){
                             if($fee){
                                 $total = $amount+$fee;
-                                if($user->self::$loan_pkg_balance < $total){
+                                if($user->self::$pkg_balance < $total){
                                     if($user->self::$trx_balance < $fee)
                                        return;
                                     else{
@@ -168,28 +211,28 @@ class Task extends G360
                                         ]);
                                     }
                                 }else{
-                                    $user->self::$loan_pkg_balance-=$fee;
+                                    $user->self::$pkg_balance-=$fee;
                                     $user->save();
                                     WalletHistory::create([
                                         'id'=>Helpers::genTableId(WalletHistory::class),
                                         'user_id'=>$user->id,
                                         'amount'=>$fee,
                                         'gnumber'=>$user->gnumber,
-                                        'name'=>self::$loan_pkg_balance,
+                                        'name'=>self::$pkg_balance,
                                         'type'=>'debit',
                                         'description'=>self::$cur.$fee.' Debited for '.ucfirst($nxt_package->name).' package '.$percent.'% fee'
                                     ]);
                                 }
                             }
                             $user->free_t_fee = 0; #clear fee
-                            $user->self::$loan_pkg_balance-=$amount;
+                            $user->self::$pkg_balance-=$amount;
                             $user->save();
                             WalletHistory::create([
                                 'id'=>Helpers::genTableId(WalletHistory::class),
                                 'user_id'=>$user->id,
                                 'amount'=>$amount,
                                 'gnumber'=>$user->gnumber,
-                                'name'=>self::$loan_pkg_balance,
+                                'name'=>self::$pkg_balance,
                                 'type'=>'debit',
                                 'description'=>self::$cur.$amount.' Debited for '.ucfirst($nxt_package->name).' package'
                             ]);
@@ -231,7 +274,7 @@ class Task extends G360
     */
     public static function creditMpPoint()
     {
-        $bonus = 400;
+        $bonus = 500;
         $mpPoints = MpPoint::all();
         foreach($mpPoints as $mpPoint){
             if($user = User::find($mpPoint->user_id)){
@@ -369,6 +412,8 @@ class Task extends G360
                     #credit user
                     $user->rank_id = $rank->id;
                     $user->self::$pend_trx_balance += $rank->prize;
+                    $user->self::$total_loan_balance += $user->self::$loan_elig_balance;
+                    $user->self::$loan_elig_balance = 0;
                     WalletHistory::create([
                         'id'=>Helpers::genTableId(WalletHistory::class),
                         'user_id'=>$user->id,
@@ -412,7 +457,6 @@ class Task extends G360
     */  
     public static function lmp()
     {
-        $month_end = 27;
         $lmps = Lmp::where('status', 0)->get();
         if($lmps->count()){
             foreach($lmps as $lmp){
@@ -420,7 +464,7 @@ class Task extends G360
                     $last_payed = Carbon::parse($lmp->last_payed);
                 else 
                     $last_payed = $lmp->created_at;
-                if($last_payed->diffInDays() >= $month_end){
+                if($last_payed->diffInDays() >= self::$month_end){
                     if($user = User::find($lmp->user_id)){
                         $user->self::$pend_trx_balance += $lmp->amount;
                         $user->save();
@@ -453,6 +497,137 @@ class Task extends G360
                         $lmp->delete();
                     }
                 }
+            }
+        }
+    }
+    /**
+     * Loan
+     *
+     * @return void
+    */  
+    public function loan()
+    {
+        $loans = Loan::where([ ['status', 0], ['defaulted', 0] ])->get();
+        foreach($loans as $loan)
+        {
+            $exp_days = $loan->exp_months*self::$month_end;
+            if(Carbon::parse($loan->expiry_date)->diffInDays() >= $exp_days){
+                if($loan->returned >= $loan->total_return){
+                    $loan->status = 1;
+                    self::creditGurantors($loan);
+                }else{
+                    self::demandLoanDebt($loan);
+                }
+                $loan->save();
+            }
+        }
+    }
+    public static function demandLoanDebt(Loan &$loan)
+    {
+        $debt = $loan->total_return - $loan->returned;
+        if($user = User::find($loan->user_id)){
+            $Adebt = $debt - $user->self::$trx_balance;
+            if($Adebt <= 0){
+                $user->self::$trx_balance -= $debt;
+                $user->save();
+                WalletHistory::create([
+                    'id'=>Helpers::genTableId(WalletHistory::class),
+                    'user_id'=>$user->id,
+                    'amount'=>$debt,
+                    'gnumber'=>$user->gnumber,
+                    'name'=>self::$trx_balance,
+                    'type'=>'debit',
+                    'description'=>self::$cur.$debt.
+                    ' debited for loan payment'
+                ]);
+                $loan->returned += $debt;
+                $debt = 0;
+            }else{
+                $Bdebt = $Adebt - $user->self::$with_balance;
+                if($Bdebt <= 0){
+                    $user->self::$with_balance -= $Adebt;
+                    $user->save();
+                    WalletHistory::create([
+                        'id'=>Helpers::genTableId(WalletHistory::class),
+                        'user_id'=>$user->id,
+                        'amount'=>$Adebt,
+                        'gnumber'=>$user->gnumber,
+                        'name'=>self::$with_balance,
+                        'type'=>'debit',
+                        'description'=>self::$cur.$Adebt.
+                        ' debited for loan payment'
+                    ]);
+                    $loan->returned += $Adebt;
+                    $debt = 0;
+                }else{
+                    $Cdebt = $Bdebt - $user->self::$pend_balance;
+                    if($Cdebt <= 0){
+                        $user->self::$pend_balance -= $Bdebt;
+                        $user->save();
+                        WalletHistory::create([
+                            'id'=>Helpers::genTableId(WalletHistory::class),
+                            'user_id'=>$user->id,
+                            'amount'=>$Bdebt,
+                            'gnumber'=>$user->gnumber,
+                            'name'=>self::$pend_balance,
+                            'type'=>'debit',
+                            'description'=>self::$cur.$Bdebt.
+                            ' debited for loan payment'
+                        ]);
+                        $loan->returned += $Bdebt;
+                        $debt = 0;
+                    }else{
+                        $debt = $Cdebt;
+                    }
+                }
+            }
+            if($debt){
+                $loan->defaulted = 1; # defaulted
+                $loan->defaulted_at = Carbon::now();
+            }else{
+                $loan->status = 1;
+                self::creditGurantors($loan);
+            }
+        }else{
+            $loan->delete();
+        }
+    }
+    /**
+     *Graced Loan
+     *
+     * @return void
+    */  
+    public function gracedLoan()
+    {
+        $loans = Loan::where([ ['status', 0], ['defaulted', 1] ])
+        ->whereNull('default_date')->get();
+        foreach($loans as $loan)
+        {
+            $exp_days = $loan->grace_months*self::$month_end;
+            if(Carbon::parse($loan->grace_date)->diffInDays() >= $exp_days){
+                if($loan->returned >= $loan->total_return){
+                    $loan->status = 1;
+                    self::creditGurantors($loan);
+                }else{
+                    #bill him and gurantor
+                }
+                $loan->save();
+            }
+        }
+    }
+    public static function creditGurantors(Loan $loan)
+    {
+        if($loan->garant){
+            $garant = User::find($loan->garant);
+            if($garant){
+                $garant->self::$loan_elig_balance += $loan->garant_amt;
+                $garant->save();
+            }
+        }else{
+            #a ranked user
+            if($user = User::find($loan->user_id)){
+                $user->self::$loan_elig_balance += $loan->amount;
+                $user->save();
             }
         }
     }

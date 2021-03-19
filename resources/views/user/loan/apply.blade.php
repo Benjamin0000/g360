@@ -2,74 +2,66 @@
 @php
 use Carbon\Carbon;
 $cur = App\Http\Helpers::LOCAL_CURR_SYMBOL;
+$user = Auth::user();
+$min_loan = 50000;
 @endphp
 @section('content')
-  <div class="card text-center">
-      <div class="card-header">
+  <div class="card">
+      <div class="card-header text-center">
           Apply for Loan
       </div>
       <div class="card-body">
           <center>
               <img src="/assets/images/loan.png?>" width="120px" />
           </center>
-          <h4 class="card-title">Apply For a Loan</h4>
-          <p class="card-text">Get low interest loan without collateral</p>
-          <form class="form" method="post" action="">
-
-              <div class="form-group mt-5 row">
-                  <label for="example-text-input" class="col-2 col-form-label">Guarantor G-No.</label>
-                  <div class="col-10">
-                      <input required class="form-control" name="gno_1" type="text" placeholder="G - Number" value="" >
-                      <label class="float-left text-danger"></label>
-                  </div>
+          <div class="text-center">
+            <h4 class="card-title">Apply For a Loan</h4>
+            <p class="card-text">Get low interest loan without collateral</p>
+          </div>
+          <form class="form" method="post" action="{{route('user.loan.requestLoan')}}">
+            @if($user->loan_elig_balance < $min_loan)
+              <div class="form-group">
+                  <label for="example-text-input">Guarantor G-No.</label>
+                  <input required  class="form-control" name="gno_1" type="text" placeholder="G - Number" value="" >
               </div>
-              <div class="form-group mt-5 row">
-                  <label for="example-text-input" class="col-2 col-form-label">Guarantor G-No.</label>
-                  <div class="col-10">
-                      <input required class="form-control" name="gno_2" type="text" placeholder="G - Number" value="" >
-                      <label class="float-left text-danger"></label>
-                  </div>
+            @else
+              <input type="hidden" name="nn" value="1">
+            @endif
+              <div class="form-group">
+                  <label for="example-month-input2">Amount</label>
+                  <input required type="number"id="lamt" name="amount" value="" class="form-control">
               </div>
-              <div class="form-group row">
-                  <label for="example-month-input2" class="col-2 col-form-label">Amount</label>
-                  <div class="col-10">
-                      <select required class="custom-select col-12" name="amount">
-                          <option value="">Select amount...</option>
-                          <option value="50000">N50,000</option>
-                          <option value="100000">N100,000</option>
-                          <option value="150000">N150,000</option>
-                          <option value="200000">N200,000</option>
-                          <option value="250000">N250,000</option>
-                          <option value="500000">N500,000</option>
-                          <option value="1000000">N1,000,000</option>
-                      </select>
-                      <label class="float-left text-danger"></label>
-                  </div>
+              <div class="form-group">
+                <label for="example-month-input2">Period</label>
+                <select class="custom-select col-12" name="period" id="period">
+                    <option value="">Select interval...</option>
+                </select>
               </div>
-              <div class="form-group row">
-                  <label for="example-month-input2" class="col-2 col-form-label">Period</label>
-                  <div class="col-10">
-                      <select required class="custom-select col-12" name="period">
-                          <option value="">Select interval...</option>
-                          <option value="1">1 Month (5% interest)</option>
-                          <option value="3">3 Month (5% interest) </option>
-                          <option value="6">6 Month (15% interest) </option>
-                          <option value="12">12 Month (20% interest) </option>
-                      </select>
-                      <label class="float-left text-danger"></label>
-                  </div>
+              <div class="form-group">
+                  <label for="example-text-input" name="name">Extra information</label>
+                  <textarea  class="form-control" type="text" name="extra"></textarea>
               </div>
-              <div class="form-group mt-5 row">
-                  <label for="example-text-input" name="name" class="col-2 col-form-label">Extra information</label>
-                  <div class="col-10">
-                      <textarea required class="form-control" type="text" name="extra"></textarea>
-                      <label class="float-left text-danger"></label>
-                  </div>
-              </div>
+              @csrf
               <div class="form-group mt-5">
                   <button class="btn btn-outline-primary float-right">Submit request </button>
               </div>
           </form>
       </div>
   </div>
+  <script type="text/javascript">
+     onReady(function(){
+        $('#lamt').on('keyup', function(){
+            var amt = $(this).val();
+            if(amt >= 50000 && amt <= 500000){
+               $('#period').empty().append("<option value='6' selected>6 months (10%)</option>");
+            }else if(amt > 500000 && amt <= 2000000){
+               $('#period').empty().append("<option value='12' selected>12 months (10%)</option>");
+            }else if(amt > 2000000 && amt <= 5000000){
+               $('#period').empty().append("<option value='24' selected>24 months (10%)</option>");
+            }else{
+              $('#period').empty();
+            }
+        });
+     });
+  </script>
 @endsection

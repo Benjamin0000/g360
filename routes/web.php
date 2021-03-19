@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\StoreController;
@@ -13,6 +12,7 @@ use App\Http\Controllers\User\WalletHistoryController;
 use App\Http\Controllers\User\DownlineController;
 use App\Http\Controllers\User\LoanController;
 use App\Http\Controllers\User\RewardController;
+use App\Http\Controllers\User\PayBillsController;
 use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
@@ -59,7 +59,6 @@ Route::group(['prefix'=>'portal'],  function(){
     Route::get('/packages/premium', [PackageController::class, 'showPremiumPackages'])->name('user.package.show_premium');
     Route::post('/packages/premium', [PackageController::class, 'selectPremiumPackage'])->name('user.package.select_premium');
     Route::post('/packages/free', [PackageController::class, 'selectFreePackage'])->name('user.package.select_free');
-
     #Gfund
     Route::get('/gfund', [GfundController::class, 'index'])->name('user.gfund.index');
     Route::post('/SaxRwepRJAHAIzG', [GfundController::class, 'withdrawalWalletTransfer'])->name('user.gfund.withdrawalTransfer');
@@ -83,8 +82,18 @@ Route::group(['prefix'=>'portal'],  function(){
     #loan
     Route::get('/loan', [LoanController::class, 'index'])->name('user.loan.index');
     Route::get('/loan/apply', [LoanController::class, 'apply'])->name('user.loan.apply');
+    Route::post('/loan/request-loan', [LoanController::class, 'requestLoan'])->name('user.loan.requestLoan');
+    Route::post('/loan/pay', [LoanController::class, 'pay'])->name('user.loan.pay');
+    Route::post('/loan/approve/{id}', [LoanController::class, 'loanApprove'])->name('user.loan.approve');
+    Route::post('/loan/extend/{id}', [LoanController::class, 'loanExtend'])->name('user.loan.loanExtend');
     #Reward
     Route::get('/reward', [RewardController::class, 'index'])->name('user.reward.index');
     Route::post('/reward/loan/{id}', [RewardController::class, 'selectLoan'])->name('user.reward.loan');
     Route::post('/reward/lmp/{id}', [RewardController::class, 'selectLmp'])->name('user.reward.lmp');
+    #paybills
+    Route::get('/pay-bills', [PayBillsController::class, 'index'])->name('user.pay_bills.index');
+    Route::get('/pay-bills/electricity', [PayBillsController::class, 'electricity'])->name('user.pay_bills.elect.index');
+    Route::get('/pay-bills/airtime-data', [PayBillsController::class, 'airtimeData'])->name('user.pay_bills.airtimeData.index');
+    Route::get('/pay-bills/water', [PayBillsController::class, 'waterSub'])->name('user.pay_bills.waterSub.index');
+    Route::get('/pay-bills/tv', [PayBillsController::class, 'tvSub'])->name('user.pay_bills.tvSub.index');
 });  

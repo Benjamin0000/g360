@@ -4,6 +4,7 @@ use Carbon\Carbon;
 use App\Http\Helpers;
 $cur = Helpers::LOCAL_CURR_SYMBOL;
 $user = Auth::user();
+$last_rank_id = 10;
 @endphp
 @section('content')
 <div class="card">
@@ -29,12 +30,13 @@ $user = Auth::user();
             </div>
         </div>
     </div>
+@if($user->pkg_balance != $last_rank_id)
     <div class="col-lg-3 col-md-6">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">LOAN-PKG-Wallet</h4>
+                <h4 class="card-title">PKG-Wallet</h4>
                 <div class="text-right">
-                    <h2 class="font-light mb-0"><i class="mdi mdi-wallet text-success"></i>{{$cur.number_format($user->loan_pkg_balance, 2, '.', ',')}}</h2>
+                    <h2 class="font-light mb-0"><i class="mdi mdi-wallet text-success"></i>{{$cur.number_format($user->pkg_balance, 2, '.', ',')}}</h2>
                     <span class="text-muted">Current Balance</span>
                 </div>
                 <div class="progress">
@@ -43,6 +45,7 @@ $user = Auth::user();
             </div>
         </div>
     </div>
+@endif
     <div class="col-lg-3 col-md-6">
         <div class="card">
             <div class="card-body">
@@ -72,6 +75,22 @@ $user = Auth::user();
             </div>
         </div>
     </div>
+@if($user->loanBalance() < 0)
+    <div class="col-lg-3 col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">LOAN-Wallet</h4>
+                <div class="text-right">
+                    <h2 class="font-light mb-0 text-danger">{{$cur.number_format($user->loanBalance(), 2, '.', ',')}}</h2>
+                    <span class="text-muted">Current Balance</span>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar bg-danger" role="progressbar" style="width: 100%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endif
     {{-- <div class="col-lg-3 col-md-6">
         <div class="card">
             <div class="card-body">
@@ -131,7 +150,7 @@ $user = Auth::user();
     <div class="col-lg-3 col-md-6">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">Point Value</h4>
+                <h4 class="card-title">Group PV</h4>
                 <div class="text-right">
                     <h2 class="font-light mb-0"><i class="mdi mdi-trophy-award  text-info"></i>{{$user->cpv}}</h2>
                     <span class="text-muted">Rank:</span> <span>{{$user->rank ? ucwords($user->rank->name): 'Associate'}}</span>
