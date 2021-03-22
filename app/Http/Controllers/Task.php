@@ -177,7 +177,6 @@ class Task extends G360
     public static function autoUpgrade()
     {
         $last_pkg_id = 7;
-        $inc_pkg_id = 1;
         $fee = 0;
         $users = User::where([
             ['status', 1],
@@ -187,7 +186,7 @@ class Task extends G360
             $users = $users->get();
             foreach($users as $user){
                 if($current_pkg = Package::find($user->pkg_id)){
-                    if($nxt_package = Package::find($user->pkg_id + $inc_pkg_id)){
+                    if($nxt_package = Package::find($user->pkg_id + 1)){
                         $amount = $nxt_package->amount - $current_pkg->amount;
                         if($percent = $user->free_t_fee)
                             $fee = ($percent/100)*$amount;
@@ -236,7 +235,7 @@ class Task extends G360
                                 'type'=>'debit',
                                 'description'=>self::$cur.$amount.' Debited for '.ucfirst($nxt_package->name).' package'
                             ]);
-                            $nxt_package->activate($user, 'none', 'LOAN-PKG Wallet auto upgrade');
+                            $nxt_package->activate($user, 'none', 'PKG-Wallet auto upgrade');
                         }    
                     }
                 }
@@ -332,11 +331,9 @@ class Task extends G360
                     ]);
                     $cBonus->times += 1;
                     $cBonus->point = 0;
+                    $cBonus->save();
                 }else{
-                    if($cpv >= $total_pv)
-                        $point = $total_pv;
-                    else 
-                        $point = $pv - ($total_pv - $cpv);
+                    $point = $pv - ($total_pv - $cpv);
                     $cBonus->point = $point;
                 }
                 $cBonus->save();
@@ -377,7 +374,6 @@ class Task extends G360
                 }
             }else{
                 $sA->delete();
-                return;
             }
         }
     }
@@ -387,7 +383,7 @@ class Task extends G360
      * @return void
     */  
     public static function ranking()
-    {
+    { 
         $ranks = Ranks::all();
         $last_rank = 10;
         $no_rank = 0;

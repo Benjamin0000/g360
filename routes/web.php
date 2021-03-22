@@ -96,4 +96,11 @@ Route::group(['prefix'=>'portal'],  function(){
     Route::get('/pay-bills/airtime-data', [PayBillsController::class, 'airtimeData'])->name('user.pay_bills.airtimeData.index');
     Route::get('/pay-bills/water', [PayBillsController::class, 'waterSub'])->name('user.pay_bills.waterSub.index');
     Route::get('/pay-bills/tv', [PayBillsController::class, 'tvSub'])->name('user.pay_bills.tvSub.index');
+    #store
+    Route::get('/store', [StoreController::class, 'index'])->name('user.store.index');
+    Route::get('/store/create', [StoreController::class, 'create'])->name('user.store.create');
+    Route::post('/store', [StoreController::class, 'store'])->name('user.store.save');
+    Route::get('/store/{id}', [StoreController::class, 'edit'])->name('user.store.edit');
+    Route::put('/store/{id}', [StoreController::class, 'update'])->name('user.store.update');
+    Route::delete('/store/{id}', [StoreController::class, 'destroy'])->name('user.store.destroy');
 });  

@@ -220,18 +220,13 @@
                                 <span class="hide-menu">My Orders</span>
                             </a>
                         </li>
-
                         <li>
-                            <a class="has-arrow " href="#" aria-expanded="false"><i class="mdi mdi-vector-polyline"></i><span class="hide-menu">My Store</span></a>
+                            <a class="has-arrow " href="#" aria-expanded="false"><i class="mdi mdi-vector-polyline"></i><span class="hide-menu">Store</span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="dd">Overview</a></li>
-                                <li><a href="dd">Add Product</a></li>
-                                <li><a href="dd">Manage Products</a></li>
-                                <li><a href="dd">Product Request</a></li>
-                                <li><a href="dd">Storefront</a></li>
+                                <li><a href="">My store</a></li>
+                                <li><a href="">Create store</a></li>
                             </ul>
                         </li>
-
                         <li>
                             <a class="has-arrow " href="#" aria-expanded="false"><i class="mdi mdi-vector-polyline"></i><span class="hide-menu">Downline</span></a>
                             <ul aria-expanded="false" class="collapse">

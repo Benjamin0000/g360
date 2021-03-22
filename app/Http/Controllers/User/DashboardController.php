@@ -1,6 +1,6 @@
 <?php
 namespace App\Http\Controllers\User;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\G360;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Helpers;
@@ -9,7 +9,7 @@ use App\Models\SuperAssociate;
 use App\Models\User;
 use App\Models\Loan;
 use App\Models\Lmp;
-class DashboardController extends Controller
+class DashboardController extends G360
 {
     /**
     * Creates a new controller instance
@@ -67,21 +67,20 @@ class DashboardController extends Controller
     public function reactivateSuperAssoc(Request $request)
     {
         $user = Auth::user();
-        $trx_balance =  Helpers::TRX_BALANCE;
         $fee = 5000;
         $sA = SuperAssociate::where('user_id', $user->id)->first();
         switch($request->type){
             case 'ac': 
-                if($sA && $sA->status == 1 && $sA->grace < 3){
-                    if($user->$trx_balance >= $fee){
-                        $user->$trx_balance -= $fee;
+                if($sA && $sA->status == 1){
+                    if($user->self::$trx_balance >= $fee){
+                        $user->self::$trx_balance -= $fee;
                         $user->save();
                         WalletHistory::create([
                             'id'=>Helpers::genTableId(WalletHistory::class),
                             'user_id'=>$user->id,
                             'amount'=>$fee,
                             'gnumber'=>$user->gnumber,
-                            'name'=>$trx_balance,
+                            'name'=>self::$trx_balance,
                             'type'=>'debit',
                             'description'=>$cur.$fee.' debited for super Associate bonus reactivation'
                         ]);
@@ -90,7 +89,7 @@ class DashboardController extends Controller
                         $sA->last_grace = Carbon::now();
                         $sA->save();
                         return redirect('user.dashboard.index')
-                        ->with('success', 'Super associate bonus has been reativated for another 30 days');
+                        ->with('success', 'Super associate bonus has been reactivated for another 30 days');
                     }else{
                         return redirect('user.dashboard.index')
                         ->with('error', 'Insufficient fund in your Transaction wallet');
@@ -99,9 +98,9 @@ class DashboardController extends Controller
                 break;
             case 'cl': 
                 if($sA && $sA->status == 2){
+                    $exp_months = 6;
                     if($request->tp == 'm'){
                         #issue monthly payment
-                        $exp_months = 6;
                         Lmp::create([
                             'id'=>Helpers::genTableId(Lmp::class),
                             'name'=>'Super associate Loan',
@@ -111,15 +110,13 @@ class DashboardController extends Controller
                             'amount'=>10000,
                             'total_times'=>$exp_months
                         ]);
-                        return redirect('user.dashboard.index')
-                            ->with('success', 'Leadership monthly bonus activated');
+                        $amount = 100000-10000;
+                        $user->self::$loan_elig_balance+=$amount; 
+                        $msg = 'Leadership monthly bonus activated';
                     }elseif($request->tp == 'l'){
                         #issue no interest loan
-                        $exp_months = 6;
-                        $month_end = 27;
-                        $exp_days = $exp_months*$month_end;
+                        $exp_days = $exp_months*self::$month_end;
                         $amount = 100000;
-                        $grace = 3;
                         Loan::create([
                             'id'=>Helpers::genTableId(Loan::class),
                             'user_id'=>$user->id,
@@ -128,13 +125,21 @@ class DashboardController extends Controller
                             'total_return'=>$amount,
                             'interest'=>10,
                             'exp_months'=>$exp_months,
-                            'grace_months'=>$grace,
+                            'grace_months'=>3,
                             'extra'=>'Super associate Loan',
                             'expiry_date'=>Carbon::now()->addDays($exp_days)
                         ]);
+                        $msg = 'Loan activated';
+                    }else{
                         return redirect('user.dashboard.index')
-                            ->with('success', 'Loan activated');
+                        ->with('error', 'You don\'t have permission to access that page');                        
                     }
+                    $sA->status = 3; #claimed
+                    $sA->save();
+                    $user->rank_id = 1;
+                    $user->save();
+                    return redirect('user.dashboard.index')
+                            ->with('success', $msg);
                 }
                 break;
             default: 
