@@ -223,8 +223,8 @@
                         <li>
                             <a class="has-arrow " href="#" aria-expanded="false"><i class="mdi mdi-vector-polyline"></i><span class="hide-menu">Store</span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="">My store</a></li>
-                                <li><a href="">Create store</a></li>
+                                <li><a href="{{route('user.store.index')}}">My store</a></li>
+                                <li><a href="{{route('user.store.create')}}">Create store</a></li>
                             </ul>
                         </li>
                         <li>

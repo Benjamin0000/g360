@@ -35,7 +35,7 @@ class StoreController extends Controller
      */
     public function create()
     {
-        return view('user.store.create');
+        return view('user.store.create.index');
     }
 
     /**

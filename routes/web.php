@@ -13,7 +13,10 @@ use App\Http\Controllers\User\DownlineController;
 use App\Http\Controllers\User\LoanController;
 use App\Http\Controllers\User\RewardController;
 use App\Http\Controllers\User\PayBillsController;
+use App\Http\Controllers\User\StoreController as UStore;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+use App\Lib\Interswitch\BillPayment;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -25,8 +28,19 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 Route::get('/test', function(){
-    $user = Auth::user();
-    return $user->upgrade;
+    // $url = 'https://sandbox.interswitchng.com/passport/oauth/token';
+    $clientID = "IKIA452BC16732BA7D1D51881FBEC6A2E0B07529B10B";
+    $secret = "Q1KG+0DqHE0k40z4unA1MDW8cfyjhNsUdwEADUbqwvQ=";
+    // $data = "IKIA452BC16732BA7D1D51881FBEC6A2E0B07529B10B:Q1KG+0DqHE0k40z4unA1MDW8cfyjhNsUdwEADUbqwvQ=";
+    $bill = new BillPayment($clientID, $secret);
+    return $bill->get_billers();
+    // $encoded = base64_encode($data);
+    // $response = Http::withHeaders([
+    //     'Authorization'=>"Basic ".$encoded,
+    // ])->post($url, [
+    //     "grant_type"=>"client_credentials",
+    // ]);
+    // return $response;
 });
 
 Route::get('/',  [FrontController::class, 'index'])->name('front.index');
@@ -97,10 +111,10 @@ Route::group(['prefix'=>'portal'],  function(){
     Route::get('/pay-bills/water', [PayBillsController::class, 'waterSub'])->name('user.pay_bills.waterSub.index');
     Route::get('/pay-bills/tv', [PayBillsController::class, 'tvSub'])->name('user.pay_bills.tvSub.index');
     #store
-    Route::get('/store', [StoreController::class, 'index'])->name('user.store.index');
-    Route::get('/store/create', [StoreController::class, 'create'])->name('user.store.create');
-    Route::post('/store', [StoreController::class, 'store'])->name('user.store.save');
-    Route::get('/store/{id}', [StoreController::class, 'edit'])->name('user.store.edit');
-    Route::put('/store/{id}', [StoreController::class, 'update'])->name('user.store.update');
-    Route::delete('/store/{id}', [StoreController::class, 'destroy'])->name('user.store.destroy');
+    Route::get('/store', [UStore::class, 'index'])->name('user.store.index');
+    Route::get('/store/create', [UStore::class, 'create'])->name('user.store.create');
+    Route::post('/store', [UStore::class, 'store'])->name('user.store.save');
+    Route::get('/store/{id}', [UStore::class, 'edit'])->name('user.store.edit');
+    Route::put('/store/{id}', [UStore::class, 'update'])->name('user.store.update');
+    Route::delete('/store/{id}', [UStore::class, 'destroy'])->name('user.store.destroy');
 });  
