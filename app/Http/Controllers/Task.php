@@ -12,6 +12,8 @@ use App\Models\Lmp;
 use App\Models\Rank;
 use App\Models\Reward;
 use App\Models\Loan;
+use App\Models\GsClub;
+use App\Models\GsClubH;
 use App\Http\Helpers;
 use Carbon\Carbon;
 class Task extends G360
@@ -44,7 +46,7 @@ class Task extends G360
     }
     /**
      * Share pending wallet
-     * 
+     *
      * @return Void
     */
     public static function sharePendingWallet()
@@ -104,7 +106,7 @@ class Task extends G360
         $award_pt = ($formular[0] / 100) * $total;
         $w_bal = ($formular[1] / 100) * $total;
         if($loan_bal){
-            $loan = Loan::where([ 
+            $loan = Loan::where([
                 ['user_id', $user->id],
                 ['status', 0]
             ])->first();
@@ -147,7 +149,7 @@ class Task extends G360
             'name'=>self::$award_point,
             'type'=>'credit',
             'description'=>$award_pt.' award point from daily earning'
-        ]);                    
+        ]);
         WalletHistory::create([
             'id'=>Helpers::genTableId(WalletHistory::class),
             'user_id'=>$user->id,
@@ -171,7 +173,7 @@ class Task extends G360
     }
     /**
      * auto upgrade users plan
-     * 
+     *
      * @return Void
     */
     public static function autoUpgrade()
@@ -236,7 +238,7 @@ class Task extends G360
                                 'description'=>self::$cur.$amount.' Debited for '.ucfirst($nxt_package->name).' package'
                             ]);
                             $nxt_package->activate($user, 'none', 'PKG-Wallet auto upgrade');
-                        }    
+                        }
                     }
                 }
             }
@@ -257,7 +259,7 @@ class Task extends G360
                 $mpPoint = MpPoint::where('user_id', $user->id)->first();
                 if(!$mpPoint)
                     $mpPoint = MpPoint::create(['user_id'=>$user->id]);
-                
+
                 if( $cpv >= ($pv*$mpPoint->times) ){
                     $mpPoint->point+=1;
                     $mpPoint->times+=1;
@@ -301,7 +303,7 @@ class Task extends G360
      * Circle bonus
      *
      * @return void
-    */   
+    */
     public static function circleBonus()
     {
         $pv = 18000;
@@ -344,7 +346,7 @@ class Task extends G360
      * Super assoc. welcome reward
      *
      * @return void
-    */  
+    */
     public static function superAssocReward()
     {
         $pv = 9000;
@@ -381,14 +383,14 @@ class Task extends G360
      * Users Ranking
      *
      * @return void
-    */  
+    */
     public static function ranking()
-    { 
+    {
         $ranks = Ranks::all();
         $last_rank = 10;
         $no_rank = 0;
         foreach($ranks as $rank){
-            $users = User::where([ 
+            $users = User::where([
                 ['rank_id', '<>', $last_rank],
                 ['rank_id', '<>', $no_rank]
             ])->get();
@@ -399,7 +401,7 @@ class Task extends G360
                         #allow the flow
                     }else{
                         return; #disallow the flow
-                    } 
+                    }
                 }else{
                     if($cpv < $rank->pv)
                         return; #disallow the flow
@@ -450,7 +452,7 @@ class Task extends G360
      * Leadership monthly payment
      *
      * @return void
-    */  
+    */
     public static function lmp()
     {
         $lmps = Lmp::where('status', 0)->get();
@@ -458,7 +460,7 @@ class Task extends G360
             foreach($lmps as $lmp){
                 if($lmp->last_payed != '')
                     $last_payed = Carbon::parse($lmp->last_payed);
-                else 
+                else
                     $last_payed = $lmp->created_at;
                 if($last_payed->diffInDays() >= self::$month_end){
                     if($user = User::find($lmp->user_id)){
@@ -500,7 +502,7 @@ class Task extends G360
      * Loan
      *
      * @return void
-    */  
+    */
     public function loan()
     {
         $loans = Loan::where([ ['status', 0], ['defaulted', 0] ])->get();
@@ -592,7 +594,7 @@ class Task extends G360
      *Graced Loan
      *
      * @return void
-    */  
+    */
     public function gracedLoan()
     {
         $loans = Loan::where([ ['status', 0], ['defaulted', 1] ])
@@ -624,6 +626,149 @@ class Task extends G360
             if($user = User::find($loan->user_id)){
                 $user->self::$loan_elig_balance += $loan->amount;
                 $user->save();
+            }
+        }
+    }
+    /**
+     *Process GsClub transactions
+     *
+     * @return void
+    */    
+    public static function gsClub()
+    {
+       $givers = GsClub::where([
+          ['status', 0],
+          ['g', 1]
+       ])->orderBy('created_at', 'asc')->get();
+       if($givers->count()){
+            foreach ($givers as $giver) {
+                if(Carbon::parse($giver->lastg)->diffInDays() >= 7){
+                    $receiver = GsClub::where([
+                        ['status', 0],
+                        ['g', 0],
+                        ['gbal', $giver->gbal],
+                        ['r_count', '<=', $r_count]
+                    ])->orderBy('created_at', 'asc')->first();
+                    switch ($giver->gbal) {
+                        case 1500:
+                            $pay_back = 2500;
+                            $r_count = 7;
+                            self::gsclubR($giver, $r_count, $pay_back, $receiver);
+                        break;
+                        case 2500: 
+                            $pay_back = 7500;
+                            $r_count = 7;
+                            self::gsclubR($giver, $r_count, $pay_back, $receiver);
+                        break;
+                        case 7500:
+                            $pay_back = 30500;
+                            $r_count = 7;
+                            self::gsclubR($giver, $r_count, $pay_back, $receiver);
+                        break;
+                        case 30500: 
+                            $pay_back = 83000;
+                            $r_count = 6;
+                            self::gsclubR($giver, $r_count, $pay_back, $receiver);
+                        break; 
+                        case 83000: 
+                            $pay_back = 215000;
+                            $r_count = 5;
+                            self::gsclubR($giver, $r_count, $pay_back, $receiver);
+                        case 215000: 
+                            $pay_back = 460000;
+                            $r_count = 4;
+                            self::gsclubR($giver, $r_count, $pay_back, $receiver);
+                        break;
+                        case 460000: 
+                            $pay_back = 580000;
+                            $r_count = 3;
+                            self::gsclubR($giver, $r_count, $pay_back, $receiver);
+                        case 580000: 
+                            $pay_back = 19750;
+                            $r_count = 2;
+                            self::gsclubR($giver, $r_count, $pay_back, $receiver);
+                        break;
+                        default:
+                        // code...
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    /**
+     *Get GsClub receiver
+     *
+     * @return void
+    */     
+    public static function gsclubR(GsClub $giver, $r_count, $pay_back, GsClub $receiver)
+    {
+        if($receiver){
+            if( Carbon::parse($receiver->lastr)->diffInDays() >= 30 ){
+                $receiver->r_count+=1;
+                if($receiver->r_count >= $r_count){
+                    $receiver->wbal += (($giver->gbal * $r_count) - $pay_back);
+                    $receiver->gbal = $pay_back;
+                    $receiver->r_count = 0;
+                    #convert receiver to a giver
+                    $receiver->g = 1;
+                    $receiver->lastg = Carbon::now();
+                }
+                $notEligible = false;
+                if($giver->gbal == 7500){
+                    if($giver->user->totalValidRef() < 1)
+                        $notEligible = true;
+                }elseif($giver->gbal == 30500){
+                    if($giver->user->totalValidRef() < 3)
+                        $notEligible = true;
+                }elseif($giver->gbal == 83000){
+                    if($giver->user->totalValidRef() < 6)
+                        $notEligible = true;
+                }elseif($giver->gbal == 215000){
+                    if($giver->user->totalValidRef() < 12)
+                        $notEligible = true;
+                }elseif($giver->gbal == 460000){
+                    if($giver->user->totalValidRef() < 24)
+                        $notEligible = true;
+                }elseif($giver->gbal == 580000){
+                    if($giver->user->totalValidRef() < 50)
+                        $notEligible = true; 
+                    $receiver->gbal = 1500;
+                    $receiver->circle += 1;
+                    $receiver->status = 1;
+                }
+                if($notEligible){
+                    $receiver = GsClub::where([
+                        ['status', 0],
+                        ['g', 0],
+                        ['gbal', $giver->gbal],
+                        ['r_count', '<=', $r_count],
+                        ['id', '<>', $receiver->id]
+                    ])->orderBy('created_at', 'asc')->first();
+                    self::gsclubR($giver, $r_count, $pay_back, $receiver);
+                }else{
+                    $receiver->save();
+                    #convert giver to a receiver
+                    $giver->g = 0;
+                    $giver->lastr = Carbon::now();
+                    $giver->save();
+                    GsClubH::create([
+                        'id'=>Helpers::genTableId(GsClubH::class),
+                        'user_id'=>$receiver->user_id,
+                        'amount'=>$giver->gbal,
+                        'type'=>0,
+                        'description'=>self::$cur.number_format($giver->gbal)." Received from ".
+                        $giver->user->fname.' '.$giver->user->lname
+                    ]);
+                    GsClubH::create([
+                        'id'=>Helpers::genTableId(GsClubH::class),
+                        'user_id'=>$giver->user_id,
+                        'amount'=>$giver->gbal,
+                        'type'=>1,
+                        'description'=>self::$cur.number_format($giver->gbal)." Sent to ".
+                        $receiver->user->fname.' '.$receiver->user->lname
+                    ]);
+                }
             }
         }
     }

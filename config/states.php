@@ -2,7 +2,7 @@
  return [
     [
         'name'=>'Abuja (FCT) State',
-        'loc'=>[
+        'cities'=>[
             'Central Business Dis',
             'Gwarinpa',
             'Kubwa',
@@ -64,7 +64,7 @@
     ],
     [
         'name'=>'Lagos State',
-        'loc'=>[     
+        'cities'=>[     
             'Ajah',
             'Amuwo-Odofin',
             'Ikeja',
@@ -111,7 +111,7 @@
     ],
     [
         'name'=>'Ogun State',
-        'loc'=>[
+        'cities'=>[
             'Abeokuta North',
             'Abeokuta South',
             'Ado-Odo/Ota',
@@ -134,7 +134,7 @@
     ],
     [
         'name'=>'Oyo State',
-        'loc'=>[
+        'cities'=>[
             'Akinyele',
             'Egbeda',
             'Ibadan',
@@ -167,7 +167,7 @@
     ],
     [
         'name'=>'Rivers State',
-        'loc'=>[
+        'cities'=>[
             'Eleme',
             'Ikwerre',
             'Obio-Akpor',
@@ -193,7 +193,7 @@
     ],
     [
         'name'=>'Abia State',
-        'loc'=>[
+        'cities'=>[
             'Aba North',                       
             'Aba South',                       
             'Umuahia',
@@ -212,7 +212,7 @@
     ],
     [
         'name'=>'Adamawa State',
-        'loc'=>[
+        'cities'=>[
             'Yola North',
             'Yola South',
             'Demsa',                  
@@ -238,7 +238,7 @@
     ],
     [
         'name'=>'Akwa Ibom State',
-        'loc'=>[
+        'cities'=>[
             'Abak',
             'Eket',
             'Ikot Ekpene',
@@ -275,7 +275,7 @@
     ],
     [
         'name'=>'Anambra State',
-        'loc'=>[
+        'cities'=>[
            'Awka',
            'Idemili',
            'Nnewi',
@@ -297,7 +297,7 @@
     ],
     [
         'name'=>'Bauchi State',
-        'loc'=>[
+        'cities'=>[
             'Bauchi LGA',
             'Bogoro',
             'Alkaleri',                   
@@ -321,7 +321,7 @@
     ],
     [
         'name'=>'Bayelsa State',
-        'loc'=>[
+        'cities'=>[
             'Yenagoa',
             'Brass',
             'Ekeremor',
@@ -334,7 +334,7 @@
     ],
     [
         'name'=>'Benue State',
-        'loc'=>[
+        'cities'=>[
             'Gboko',
             'Katsina-Alam',
             'Makurdi',
@@ -361,7 +361,7 @@
     ],
     [
         'name'=>'Borno State',
-        'loc'=>[
+        'cities'=>[
             'Maiduguri',
             'Abadam',
             'Askira/Uba',
@@ -393,7 +393,7 @@
     ],
     [
         'name'=>'Cross River State',
-        'loc'=>[
+        'cities'=>[
             'Calabar',                    
             'Ikom',
             'Ogoja',
@@ -415,7 +415,7 @@
     ],
     [
         'name'=>'Delta State',
-        'loc'=>[
+        'cities'=>[
             'Oshimili South',
             'Sapele',
             'Ugheli',
@@ -441,7 +441,7 @@
     ],
     [
         'name'=>'Ebonyi State',
-        'loc'=>[
+        'cities'=>[
             'Abakaliki',                    
             'Afikpo North',                 
             'Afikpo South',                   
@@ -458,7 +458,7 @@
     ],
     [
         'name'=>'Edo State',
-        'loc'=>[
+        'cities'=>[
             'Benin City',
             'Egor',
             'Ekpoma',
@@ -479,7 +479,7 @@
     ],
     [
         'name'=>'Ekiti State',
-        'loc'=>[
+        'cities'=>[
             'Ado Ekiti',                   
             'Ido-Osi',                    
             'Ikere',                    
@@ -500,7 +500,7 @@
     ],
     [
         'name'=>'Enugu State',
-        'loc'=>[
+        'cities'=>[
             'Enugu / Enugu',
             'Nkanu West',
             'Nsukka',                   
@@ -520,7 +520,7 @@
     ],
     [
         'name'=>'Gombe State',
-        'loc'=>[
+        'cities'=>[
             'Gombe LGA',
             'Akko',
             'Balanga',
@@ -536,7 +536,7 @@
     ],
     [
         'name'=>'Imo State',
-        'loc'=>[
+        'cities'=>[
             'Ikeduru',
             'Mbaitoli',
             'Okigwe',                    
@@ -566,7 +566,7 @@
     ],
     [
         'name'=>'Jigawa State',
-        'loc'=>[
+        'cities'=>[
             'Dutse-Jigawa',                   
             'Garki',
             'Auyo',                     
@@ -597,7 +597,7 @@
     ],
     [
         'name'=>'Kaduna State',
-        'loc'=>[
+        'cities'=>[
             'Chikun',
             'Igabi',
             'Kaduna / Kaduna State',
@@ -623,7 +623,7 @@
     ], 
     [
         'name'=>'Kano State',
-        'loc'=>[
+        'cities'=>[
             'Fagge',
             'Kano Municipal',
             'Nasarawa-Kano',
@@ -673,7 +673,7 @@
     ],
     [
         'name'=>'Katsina State',
-        'loc'=>[
+        'cities'=>[
             'Danja',                    
             'Daura',                    
             'Katsina',                     
@@ -712,7 +712,7 @@
     ],
     [
         'name'=>'Kebbi State',
-        'loc'=>[
+        'cities'=>[
             'Birnin Kebbi',                     
             'Jega',                    
             'Zuru',
@@ -738,7 +738,7 @@
     ],
     [
         'name'=>'Kogi State',
-        'loc'=>[
+        'cities'=>[
             'Lokoja',
             'Okene',      
             'Adavi',                   
@@ -766,7 +766,7 @@
     ],
     [
         'name'=>'Kwara State',
-        'loc'=>[
+        'cities'=>[
             'Ilorin East',
             'Ilorin South',
             'Ilorin West',
@@ -787,7 +787,7 @@
     ],
     [
         'name'=>'Nasarawa State',
-        'loc'=>[
+        'cities'=>[
             'Karu-Nasarawa',
             'Keffi',
             'Lafia',
@@ -805,7 +805,7 @@
     ],
     [
         'name'=>'Niger State',
-        'loc'=>[
+        'cities'=>[
             'Bida',
             'Bosso',
             'Chanchaga',
@@ -836,7 +836,7 @@
     ],
     [
         'name'=>'Ondo State',
-        'loc'=>[
+        'cities'=>[
             'Akure',
             'Iju/Itaogbolu',
             'Okitipupa',
@@ -860,7 +860,7 @@
     ],
     [
         'name'=>'Osun State',
-        'loc'=>[
+        'cities'=>[
             'Ede',
             'Ife',                     
             'Ilesa',                    
@@ -888,7 +888,7 @@
     ],
     [
         'name'=>'Plateau State', 
-        'loc'=>[
+        'cities'=>[
             'Jos',
             'Barkin Ladi',
             'Bassa-Plateau',                    
@@ -908,7 +908,7 @@
     ],
     [
         'name'=>'Sokoto State',
-        'loc'=>[
+        'cities'=>[
             'Illela',                     
             'Sokoto North',
             'Sokoto South',
@@ -936,7 +936,7 @@
     ],
     [
         'name'=>'Taraba State',
-        'loc'=>[
+        'cities'=>[
             'Jalingo',                    
             'Takum',                     
             'Wukari',
@@ -957,7 +957,7 @@
     ],
     [
         'name'=>'Yobe State',
-        'loc'=>[
+        'cities'=>[
             'Damaturu',                    
             'Potiskum',
             'Bade',                     
@@ -979,7 +979,7 @@
     ],
     [
         'name'=>'Zamfara State',
-        'loc'=>[
+        'cities'=>[
             'Gusau',
             'Anka',                    
             'Bakura',                   

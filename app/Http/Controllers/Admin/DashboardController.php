@@ -1,11 +1,21 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
-class StoreController extends Controller
+use App\Models\User;
+class DashboardController extends Controller
 {
+     /**
+     * Creates a new Controller instance
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('admin');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -13,7 +23,9 @@ class StoreController extends Controller
      */
     public function index()
     {
-        return view('store.index');
+        $total_users = User::count();
+        return view('admin.dashboard.index',
+        compact('total_users'));
     }
 
     /**

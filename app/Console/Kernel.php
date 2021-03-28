@@ -54,6 +54,7 @@ class Kernel extends ConsoleKernel
             Task::superAssocReward();
             Task::ranking();
             Task::lmp();
+            Task::gsClub();
         })->daily();
     } 
 

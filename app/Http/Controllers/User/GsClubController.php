@@ -1,13 +1,11 @@
 <?php
-
 namespace App\Http\Controllers\User;
-
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\G360;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use App\Models\Store;
-
-class StoreController extends Controller
+use App\Models\GsClub;
+use App\Models\GsClubH;
+class GsClubController extends G360
 {
     /**
     * Creates a new controller instance
@@ -16,8 +14,8 @@ class StoreController extends Controller
     */
     public function __construct()
     {
-        $this->middleware('auth');
-    }
+      $this->middleware('auth');
+    }   
     /**
      * Display a listing of the resource.
      *
@@ -25,17 +23,33 @@ class StoreController extends Controller
      */
     public function index()
     {
-        return view('user.store.index');
+        $user = Auth::user();
+        $member = GsClub::where([ 
+            ['user_id', $user->id], 
+            ['status', 0]   
+        ])->first();
+        $histories = GsClubH::where('user_id', $user->id)->paginate(10);
+        $total_his = $histories->count();
+        return view('user.gsclub.index', compact('member', 'histories', 'total_his'));
     }
-
     /**
-     * Show the form for creating a new resource.
+     * Get more histories
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function moreHistories(Request $request)
     {
-        return view('user.store.create.index');
+        if($request->ajax()){
+            $user = Auth::user();
+            $histories = GsClubH::where('user_id', $user->id)->paginate(10);
+            $total_his = $histories->count();
+            $cur = self::$cur;
+            $view = view('user.gsclub.table_tr', compact('histories', 'total_his', 'cur'));
+            if($view){
+                return ['data'=>"$view"];
+            }
+            return 0;
+        }
     }
 
     /**

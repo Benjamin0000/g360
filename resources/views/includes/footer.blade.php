@@ -10,7 +10,7 @@
 							</a>
 
 							<p>Getsupport 360 Global Associate (G360), is a network marketing company with a vision to provide quality product and services to its members at the best price. </p>
-							
+
 							<div class="social-area">
 								<ul>
 									<li>
@@ -42,7 +42,7 @@
 							</div>
 						</div>
 					</div>
-	
+
 					<div class="col-lg-4 ">
 						<div class="single-widget">
 							<h3>Quick Links</h3>
@@ -69,16 +69,16 @@
 								<li>
 									<a href="{{route('front.about')}}">
 										<i class="bx bx-chevrons-right"></i>
-										About Us 
+										About Us
 									</a>
 								</li>
 								<li>
-									<a href="{{route('store.index')}}">
+									<a href="{{route('gm.index')}}">
 										<i class="bx bx-chevrons-right"></i>
-										E-store
+										G-Market
 									</a>
 								</li>
-								
+
 							</ul>
 						</div>
 					</div>
@@ -91,22 +91,22 @@
 								<li class="pl-0">
 									<a href="tel:Phone:+61-821-456">
 										<i class="bx bx-phone-call"></i>
-										<span>Hotline:</span> 
+										<span>Hotline:</span>
 										Phone: +234-123-456-78
 									</a>
 								</li>
-								
+
 								<li class="pl-0">
 									<a href="mailto:hello@surety.com">
 										<i class="bx bx-envelope"></i>
-										<span>Email:</span> 
+										<span>Email:</span>
 										hello@g360.com
 									</a>
 								</li>
-								
+
 								<li>
 									<i class="bx bx-location-plus"></i>
-									<span>Address:</span> 
+									<span>Address:</span>
 									123, Umuaka plaza, bwari Abuja.
 								</li>
 							</ul>
@@ -126,14 +126,14 @@
 			</div>
 		</footer>
 		<!-- End Footer Bottom Area -->
-		
+
 		<!-- Start Go Top Area -->
 		<div class="go-top">
 			<i class='bx bx-chevrons-up'></i>
 			<i class='bx bx-chevrons-up'></i>
 		</div>
 		<!-- End Go Top Area -->
-		
+
 
         <!-- Jquery-3.5.1.Slim.Min.JS -->
         <script src="/assets/frontpage/js/jquery-3.5.1.slim.min.js"></script>
@@ -151,13 +151,13 @@
 		<script src="/assets/frontpage/js/jquery.magnific-popup.min.js"></script>
         <!-- Nice Select JS -->
 		<script src="/assets/frontpage/js/jquery.nice-select.min.js"></script>
-		<!-- Parallax JS --> 
+		<!-- Parallax JS -->
 		<script src="/assets/frontpage/js/parallax.min.js"></script>
-		<!-- Appear JS --> 
+		<!-- Appear JS -->
         <script src="/assets/frontpage/js/jquery.appear.js"></script>
-		<!-- Odometer JS --> 
+		<!-- Odometer JS -->
 		<script src="/assets/frontpage/js/odometer.min.js"></script>
-		<!-- Odometer JS --> 
+		<!-- Odometer JS -->
 		<script src="/assets/frontpage/js/bootstrap-datepicker.min.js"></script>
 		<!-- Form Validator JS -->
 		<script src="/assets/frontpage/js/form-validator.min.js"></script>

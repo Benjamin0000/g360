@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -126,5 +125,15 @@ class User extends Authenticatable
     public function loan()
     {
         return $this->hasOne(Loan::class, 'user_id', 'id');
+    }
+    /**
+     * Get total direct referrals
+     */   
+    public function totalValidRef()
+    {
+        return self::where([ 
+            ['ref_gnum', $this->gnumber], 
+            ['pkg_id', '>', 1] 
+        ])->count();
     }
 }

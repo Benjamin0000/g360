@@ -9,6 +9,7 @@ use App\Models\Error;
 use App\Models\Package;
 use App\Models\WalletHistory;
 use App\Models\Epin;
+use App\Models\State;
 use libphonenumber\PhoneNumberUtil;
 use libphonenumber\NumberParseException;
 use Exception;
@@ -405,7 +406,7 @@ use Exception;
       * 
       * @return boolen
     */
-    public function checkLegBalance(User $user, $pv)
+    public static function checkLegBalance(User $user, $pv)
     {
         $legs = 4;
         $referrals = User::where('ref_gnum', $user->gnumber)
@@ -421,6 +422,18 @@ use Exception;
         }else{
             return false;
         }
+    }
+    /**
+      * Get Cities
+      * 
+      * @return array || boolean
+    */
+    public static function getCities($name)
+    {
+        $node = State::where('name', $name);
+        if($node->exists() && $node->first()->hasChildren())
+            return $node->first()->children()->pluck('name')->toArray();
+        return 0;
     }
 } 
  ?>

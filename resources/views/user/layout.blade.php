@@ -184,10 +184,18 @@
                                 <li><a href="dd">POS service</a></li>
                             </ul>
                         </li>
+
+                        <li>
+                            <a href="{{route('user.gsclub.index')}}" aria-expanded="false" >
+                                <i class="fa fa-users"></i>
+                                <span class="hide-menu">Gs-Team </span>
+                            </a>
+                        </li>
+
                         <li>
                             <a href="dd" aria-expanded="false" >
                                 <i class="mdi mdi-trending-up"></i>
-                                <span class="hide-menu">Investment </span>
+                                <span class="hide-menu">Trading </span>
                             </a>
                         </li>
                         <li >
@@ -221,27 +229,26 @@
                             </a>
                         </li>
                         <li>
-                            <a class="has-arrow " href="#" aria-expanded="false"><i class="mdi mdi-vector-polyline"></i><span class="hide-menu">Store</span></a>
+                            <a class="has-arrow " href="#" aria-expanded="false"><i class="mdi mdi-cart"></i><span class="hide-menu">G-Market</span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="{{route('user.store.index')}}">My store</a></li>
-                                <li><a href="{{route('user.store.create')}}">Create store</a></li>
+                                <li><a href="{{route('user.shop.index')}}">Shop</a></li>
                             </ul>
                         </li>
-                        <li>
+                        {{-- <li>
                             <a class="has-arrow " href="#" aria-expanded="false"><i class="mdi mdi-vector-polyline"></i><span class="hide-menu">Downline</span></a>
                             <ul aria-expanded="false" class="collapse">
                                 <li><a href="{{route('user.downline.direct')}}">Direct Referals</a></li>
                                 <li><a href="{{route('user.downline.indirect')}}">Indirect Referal</a></li>
                             </ul>
-                        </li>
-                        <li>
+                        </li> --}}
+                        {{-- <li>
                             <a class="has-arrow " href="#" aria-expanded="false"><i class="mdi mdi-history"></i><span class="hide-menu">Transaction History</span></a>
                             <ul aria-expanded="false" class="collapse">
                                 <li><a href="{{route('user.history.w_wallet')}}">W-Wallet</a></li>
                                 <li><a href="{{route('user.history.p_wallet')}}">P-wallet</a></li>
                                 <li><a href="{{route('user.history.t_wallet')}}">T-Wallet</a></li>
                             </ul>
-                        </li>
+                        </li> --}}
 
                         <!--<li>
                             <a href="/user/bank" >
@@ -291,6 +298,14 @@
         <div class="alert alert-warning"><i class="fa fa-info-circle"></i> {!!session('warning')!!}</div>
     @elseif(session('choose_pkg'))
         <div class="alert alert-success"><i class="fa fa-check-circle"></i> Account activated, please select a package to continue</div>
+    @elseif ($errors->any())
+      <div class="alert alert-danger">
+         <ul>
+           @foreach ($errors->all() as $error)
+             <li>{{$error}}</li>
+           @endforeach
+         </ul>
+      </div>
     @endif
     @yield('content')
 </div>

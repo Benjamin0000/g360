@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FrontController;
-use App\Http\Controllers\StoreController;
+use App\Http\Controllers\GmarketController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\User\DashboardController;
@@ -13,10 +13,13 @@ use App\Http\Controllers\User\DownlineController;
 use App\Http\Controllers\User\LoanController;
 use App\Http\Controllers\User\RewardController;
 use App\Http\Controllers\User\PayBillsController;
-use App\Http\Controllers\User\StoreController as UStore;
+use App\Http\Controllers\User\GsClubController;
+use App\Http\Controllers\User\ShopController as UShop;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use App\Lib\Interswitch\BillPayment;
+use App\Http\Controllers\Admin\DashboardController as ADashboard;
+use App\Http\Controllers\Admin\LoginController as ALogin;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -49,7 +52,7 @@ Route::get('/how-it-works',  [FrontController::class, 'how_works'])->name('front
 Route::get('/services',  [FrontController::class, 'services'])->name('front.services');
 Route::get('/terms-and-condition', [FrontController::class, 'terms'])->name('front.terms');
 #store
-Route::get('/store', [StoreController::class, 'index'])->name('store.index');
+Route::get('/general-market', [GmarketController::class, 'index'])->name('gm.index');
 #login
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login');
@@ -64,7 +67,7 @@ Route::post('/password/update', [LoginController::class, 'updatePassword'])->nam
 Route::get('/register', [RegisterController::class, 'index'])->name('register');
 Route::post('/register', [RegisterController::class, 'store'])->name('register');
 Route::get('/verify-email/{token}/{email}', [RegisterController::class, 'verifyEmail'])->name('register.verify');
- 
+
 #user
 Route::group(['prefix'=>'portal'],  function(){
     Route::get('/', [DashboardController::class, 'index'])->name('user.dasbhoard.index');
@@ -110,11 +113,23 @@ Route::group(['prefix'=>'portal'],  function(){
     Route::get('/pay-bills/airtime-data', [PayBillsController::class, 'airtimeData'])->name('user.pay_bills.airtimeData.index');
     Route::get('/pay-bills/water', [PayBillsController::class, 'waterSub'])->name('user.pay_bills.waterSub.index');
     Route::get('/pay-bills/tv', [PayBillsController::class, 'tvSub'])->name('user.pay_bills.tvSub.index');
-    #store
-    Route::get('/store', [UStore::class, 'index'])->name('user.store.index');
-    Route::get('/store/create', [UStore::class, 'create'])->name('user.store.create');
-    Route::post('/store', [UStore::class, 'store'])->name('user.store.save');
-    Route::get('/store/{id}', [UStore::class, 'edit'])->name('user.store.edit');
-    Route::put('/store/{id}', [UStore::class, 'update'])->name('user.store.update');
-    Route::delete('/store/{id}', [UStore::class, 'destroy'])->name('user.store.destroy');
-});  
+    #shop
+    Route::get('/shop', [UShop::class, 'index'])->name('user.shop.index');
+    Route::get('/shop/create', [UShop::class, 'create'])->name('user.shop.create');
+    Route::post('/shop', [UShop::class, 'store'])->name('user.shop.save');
+    Route::get('/shop/{id}', [UShop::class, 'edit'])->name('user.shop.edit');
+    Route::put('/shop/{id}', [UShop::class, 'update'])->name('user.shop.update');
+    Route::delete('/shop/{id}', [UShop::class, 'destroy'])->name('user.shop.destroy');
+    Route::get('/BRrbPKqRyyJcMei/{name?}', [UShop::class, 'getCities'])->name('user.shop.getCities');
+    #GTClub
+    Route::get('/gsteam', [GsClubController::class, 'index'])->name('user.gsclub.index');
+    Route::get('/myueynjsyh', [GsClubController::class, 'moreHistories'])->name('user.gsclub.morehis');
+});
+
+#Admin
+Route::group(['prefix'=>'admin'],  function(){
+   Route::get('/', [ADashboard::class, 'index'])->name('admin.dashboard.index');
+   Route::get('/login', [ALogin::class, 'index'])->name('admin.login');
+   Route::post('/login', [ALogin::class, 'login'])->name('admin.login');
+   Route::post('/logout', [ALogin::class, 'logout'])->name('admin.logout');
+});

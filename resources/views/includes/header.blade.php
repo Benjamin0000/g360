@@ -4,19 +4,19 @@
 		<!-- Required meta tags -->
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<!-- Bootstrap CSS --> 
+		<!-- Bootstrap CSS -->
 		<link rel="stylesheet" href="/assets/frontpage/css/bootstrap.min.css">
-		<!-- Owl Theme Default CSS --> 
+		<!-- Owl Theme Default CSS -->
 		<link rel="stylesheet" href="/assets/frontpage/css/owl.theme.default.min.css">
-		<!-- Owl Carousel CSS --> 
+		<!-- Owl Carousel CSS -->
 		<link rel="stylesheet" href="/assets/frontpage/css/owl.carousel.min.css">
-		<!-- Owl Magnific CSS --> 
+		<!-- Owl Magnific CSS -->
 		<link rel="stylesheet" href="/assets/frontpage/css/magnific-popup.css">
-		<!-- Animate CSS --> 
+		<!-- Animate CSS -->
 		<link rel="stylesheet" href="/assets/frontpage/css/animate.css">
-		<!-- Boxicons CSS --> 
-		<link rel="stylesheet" href="/assets/frontpage/css/boxicons.min.css"> 
-		<!-- Flaticon CSS --> 
+		<!-- Boxicons CSS -->
+		<link rel="stylesheet" href="/assets/frontpage/css/boxicons.min.css">
+		<!-- Flaticon CSS -->
 		<link rel="stylesheet" href="/assets/frontpage/css/flaticon.css">
 		<!-- Meanmenu CSS -->
 		<link rel="stylesheet" href="/assets/frontpage/css/meanmenu.css">
@@ -33,7 +33,7 @@
 		<!-- Title -->
 		<link href="/assets/css/style.css" rel="stylesheet" type="text/css" />
 		<link href="/assets/css/colors/blue.css" rel="stylesheet" type="text/css" />
-		<title>{{$title}}</title> 
+		<title>{{$title}}</title>
 		<style>@media screen and (min-width:992px){.m-auth{display:none;}}</style>
     </head>
     <body>
@@ -45,7 +45,7 @@
 		</div>
 		<!-- End Preloader Area -->
 
-		<!-- Start Heder Area --> 
+		<!-- Start Heder Area -->
 		<header class="header-area fixed-top">
 			<div class="top-header-area">
 				<div class="container">
@@ -73,7 +73,7 @@
 								<li>
 									Opening Hour: 8:00 AM - 8:00 PM
 								</li>
-								
+
 							</ul>
 						</div>
 					</div>
@@ -97,7 +97,7 @@
 								<a class="navbar-brand" href="/">
 									<img src="/assets/frontpage/img/logo.png" alt="Logo">
 								</a>
-								
+
 								<div class="collapse navbar-collapse mean-menu">
 									<ul class="navbar-nav m-auto">
 										<li class="nav-item">
@@ -124,8 +124,8 @@
 
 
 										<li class="nav-item">
-											<a href="{{route('store.index')}}" class="nav-link">
-												Store
+											<a href="{{route('gm.index')}}" class="nav-link">
+												G-Market
 											</a>
 										</li>
 
@@ -141,7 +141,7 @@
 											</a>
 										</li>
 									</ul>
-									
+
 									@guest
 									<!-- Start Other Option -->
 									<div class="others-option">
@@ -154,8 +154,8 @@
 											</a>
 										</div>
 									</div>
-									<!-- End Other Option -->		
-									@else			
+									<!-- End Other Option -->
+									@else
 									<div class="others-option">
 										<div class="get-quote">
 											<a href="{{route('user.dasbhoard.index')}}" class="default-btn">
@@ -163,7 +163,7 @@
 											</a>
 										</div>
 									</div>
-									@endguest									
+									@endguest
 								</div>
 							</div>
 						</nav>
@@ -173,5 +173,3 @@
 			<!-- End Navbar Area -->
 		</header>
 		<!-- End Heder Area -->
-
-		
