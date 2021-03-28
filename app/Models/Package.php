@@ -120,6 +120,12 @@ class Package extends Model
             $gsclub->lastg = Carbon::now();
             $gsclub->save();
         }
+        if(!PPP::where('user_id', $user->id)->exists()){
+            PPP::create([
+                'id'=>Helpers::genTableId(PPP::class),
+                'user_id'=>$user->id
+            ]);
+        }
         return true;
     }
 }

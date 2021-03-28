@@ -29,35 +29,22 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             Task::trackFreeUsers();
         })->timezone('Africa/Lagos')->daily();
-
         $schedule->call(function () {
             Task::sharePendingWallet();
         })->timezone('Africa/Lagos')->dailyAt('00:30');
-
-        $schedule->call(function () {
+        $schedule->call(function(){
             Task::autoUpgrade();
         })->everyMinute();
-        
-        $schedule->call(function () {
-            Task::mpPoint();
-        })->everyTwoMinutes();
-
-        $schedule->call(function () {
-            Task::creditMpPoint();
-        })->monthlyOn(27, '00:00');
-
-        $schedule->call(function () {
-            Task::circleBonus();
-        })->hourly();
-
         $schedule->call(function(){
             Task::superAssocReward();
             Task::ranking();
             Task::lmp();
             Task::gsClub();
-        })->daily();
+        })->timezone('Africa/Lagos')->daily();
+        $schedule->call(function(){
+            Task::rPPP();
+        })->timezone('Africa/Lagos')->dailyAt('01:00');
     } 
-
     /**
      * Register the commands for the application.
      *

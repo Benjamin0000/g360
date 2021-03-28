@@ -5,6 +5,8 @@ use App\Http\Helpers;
 $cur = Helpers::LOCAL_CURR_SYMBOL;
 $user = Auth::user();
 $last_rank_id = 10;
+$sup_as_rank = App\Models\Rank::find(1);
+$sa_fee = 5000;
 @endphp
 @section('content')
 <div class="card">
@@ -164,14 +166,14 @@ $last_rank_id = 10;
     <div class="col-lg-3 col-md-6">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title"><span>MPP</span>  <span class="float-right">CBP</span></h4>
+                <h4 class="card-title"><span>PPP</span>  <span class="float-right">50kClub</span></h4>
                 <div class="">
                     <h2 class="font-light">
                       <span class="">
-                        <i class="mdi mdi-trophy-award text-success"></i>{{$user->mpPoint ? $user->mpPoint->point:0}}
+                        <i class="mdi mdi-trophy-award text-success"></i>0
                       </span>
                       <span class="float-right">
-                         <i class="mdi mdi-trophy-award text-danger"></i>{{$user->circleBPoint ? $user->circleBPoint->point:0}}
+                         <i class="mdi mdi-trophy-award text-danger"></i>0
                       </span>
                     </h2>
                     <span class="text-muted" style="min-height:17px;display:block;"></span>
@@ -191,7 +193,7 @@ $last_rank_id = 10;
                     <div class="text-center">
                     @php $status = $associate->status @endphp
                     @if($status == 1)
-                      <form  action="{{route('user.dashboard.rassoc')}}" method="post" onsubmit="return confirm('{{$cur}}5,000 will be charged as reactivation fee.')">
+                      <form  action="{{route('user.dashboard.rassoc')}}" method="post" onsubmit="return confirm('{{$cur}}{{$sa_fee}} will be charged as reactivation fee.')">
                         @csrf
                         <input type="hidden" name="type" value="ac">
                         <button class="btn btn-primary btn-sm">Reactivate</button>
@@ -208,13 +210,14 @@ $last_rank_id = 10;
                                   </button>
                                 </div>
                                 <div class="modal-body">
-                                   <form  action="{{route('user.dashboard.rassoc')}}" method="post">
+                                   <form action="{{route('user.dashboard.rassoc')}}" method="post">
                                      <div class="form-group">
                                        <label for="">Select a reward type</label>
                                        <select class="form-control" name="tp">
                                           <option value="">Choose</option>
-                                          <option value="m">{{$cur}}12,500 monthly payment</option>
-                                          <option value="l">{{$cur}}100,000 loan</option>
+                                          @php $lmp = $sup_as_rank->total_lmp/$sup_as_rank->lmp_months @endphp
+                                          <option value="m">{{$cur}}{{number_format($lmp)}} monthly payment</option>
+                                          <option value="l">{{$cur}}{{number_format($sup_as_rank->loan)}} loan</option>
                                        </select>
                                      </div>
                                      @csrf

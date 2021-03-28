@@ -124,6 +124,7 @@ Route::group(['prefix'=>'portal'],  function(){
     #GTClub
     Route::get('/gsteam', [GsClubController::class, 'index'])->name('user.gsclub.index');
     Route::get('/myueynjsyh', [GsClubController::class, 'moreHistories'])->name('user.gsclub.morehis');
+    Route::post('/NalQpdnl', [GsClubController::class, 'cashout'])->name('user.gsclub.cashout');
 });
 
 #Admin

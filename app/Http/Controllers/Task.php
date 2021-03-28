@@ -3,8 +3,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\TrackFreeUser;
 use App\Models\WalletHistory;
-use App\Models\MpPoint;
-use App\Models\CircleBonus;
 use App\Models\SuperAssociate;
 use App\Models\User;
 use App\Models\Package;
@@ -14,6 +12,7 @@ use App\Models\Reward;
 use App\Models\Loan;
 use App\Models\GsClub;
 use App\Models\GsClubH;
+use App\Models\PPP;
 use App\Http\Helpers;
 use Carbon\Carbon;
 class Task extends G360
@@ -244,104 +243,6 @@ class Task extends G360
             }
         }
     }
-    /**
-     * Monthly performance point
-     *
-     * @return void
-    */
-    public static function mpPoint()
-    {
-        $pv = 360;
-        $users = User::all();
-        if($users->count()){
-            foreach($users as $user){
-                $cpv = $user->cpv;
-                $mpPoint = MpPoint::where('user_id', $user->id)->first();
-                if(!$mpPoint)
-                    $mpPoint = MpPoint::create(['user_id'=>$user->id]);
-
-                if( $cpv >= ($pv*$mpPoint->times) ){
-                    $mpPoint->point+=1;
-                    $mpPoint->times+=1;
-                    $mpPoint->save();
-                }
-            }
-        }
-    }
-    /**
-     * Credit Monthly performance bonus
-     *
-     * @return void
-    */
-    public static function creditMpPoint()
-    {
-        $bonus = 500;
-        $mpPoints = MpPoint::all();
-        foreach($mpPoints as $mpPoint){
-            if($user = User::find($mpPoint->user_id)){
-                if($mpPoint->point > 0){
-                    $bonus = $bonus*$mpPoint->point;
-                    $user->self::$pend_balance += $bonus;
-                    $user->save();
-                    WalletHistory::create([
-                        'id'=>Helpers::genTableId(WalletHistory::class),
-                        'user_id'=>$user->id,
-                        'amount'=>$bonus,
-                        'gnumber'=>$user->gnumber,
-                        'name'=>self::$pend_balance,
-                        'type'=>'credit',
-                        'description'=>self::$cur.$bonus.'earned from monthly perfomance bonus'
-                    ]);
-                    $mpPoint->earn_times += 1;
-                }
-            }
-            $mpPoint->point = 0;
-            $mpPoint->save();
-        }
-    }
-     /**
-     * Circle bonus
-     *
-     * @return void
-    */
-    public static function circleBonus()
-    {
-        $pv = 18000;
-        $bonus = 100000;
-        $users = User::all();
-        if($users->count()){
-            foreach($users as $user){
-                $cpv = $user->cpv;
-                $cBonus = CircleBonus::where('user_id', $user->id)->first();
-                if(!$cBonus)
-                    $cBonus = CircleBonus::create(['user_id'=>$user->id]);
-                $total_pv = ($pv*$cBonus->times);
-                if($cpv >= $total_pv){
-                    #check for leg balancing
-                    if(!Helpers::checkLegBalance($user, $total_pv))
-                        return;
-                    $user->self::$pend_balance += $bonus;
-                    $user->save();
-                    WalletHistory::create([
-                        'id'=>Helpers::genTableId(WalletHistory::class),
-                        'user_id'=>$user->id,
-                        'amount'=>$bonus,
-                        'gnumber'=>$user->gnumber,
-                        'name'=>self::$pend_balance,
-                        'type'=>'credit',
-                        'description'=>self::$cur.$bonus.'earned from Circle bonus PV'
-                    ]);
-                    $cBonus->times += 1;
-                    $cBonus->point = 0;
-                    $cBonus->save();
-                }else{
-                    $point = $pv - ($total_pv - $cpv);
-                    $cBonus->point = $point;
-                }
-                $cBonus->save();
-            }
-        }
-    }
      /**
      * Super assoc. welcome reward
      *
@@ -349,8 +250,9 @@ class Task extends G360
     */
     public static function superAssocReward()
     {
-        $pv = 9000;
-        $days = 60;
+        $rank = Rank::find(1);
+        $pv = $rank->pv;
+        $days = 90;
         $grace = 30;
         $super_pkg_id = 4;
         $sAs = SuperAssociate::where('status', 0)->get();
@@ -368,9 +270,9 @@ class Task extends G360
             }
             if($user = User::find($sA->user_id)){
                 if($user->cpv >= $pv && $user->pkg_id >= $super_pkg_id){
-                    if(Helpers::checkLegBalance($user, $pv))
+                    if(Helpers::checkLegBalance($user, $pv)){
                         $sA->status = 2; #made it
-                    else
+                    }else
                         $sA->balance_leg = 1; #balance leg
                     $sA->save();
                 }
@@ -633,7 +535,7 @@ class Task extends G360
      *Process GsClub transactions
      *
      * @return void
-    */    
+    */
     public static function gsClub()
     {
        $givers = GsClub::where([
@@ -655,7 +557,7 @@ class Task extends G360
                             $r_count = 7;
                             self::gsclubR($giver, $r_count, $pay_back, $receiver);
                         break;
-                        case 2500: 
+                        case 2500:
                             $pay_back = 7500;
                             $r_count = 7;
                             self::gsclubR($giver, $r_count, $pay_back, $receiver);
@@ -665,25 +567,25 @@ class Task extends G360
                             $r_count = 7;
                             self::gsclubR($giver, $r_count, $pay_back, $receiver);
                         break;
-                        case 30500: 
+                        case 30500:
                             $pay_back = 83000;
                             $r_count = 6;
                             self::gsclubR($giver, $r_count, $pay_back, $receiver);
-                        break; 
-                        case 83000: 
+                        break;
+                        case 83000:
                             $pay_back = 215000;
                             $r_count = 5;
                             self::gsclubR($giver, $r_count, $pay_back, $receiver);
-                        case 215000: 
+                        case 215000:
                             $pay_back = 460000;
                             $r_count = 4;
                             self::gsclubR($giver, $r_count, $pay_back, $receiver);
                         break;
-                        case 460000: 
+                        case 460000:
                             $pay_back = 580000;
                             $r_count = 3;
                             self::gsclubR($giver, $r_count, $pay_back, $receiver);
-                        case 580000: 
+                        case 580000:
                             $pay_back = 19750;
                             $r_count = 2;
                             self::gsclubR($giver, $r_count, $pay_back, $receiver);
@@ -700,7 +602,7 @@ class Task extends G360
      *Get GsClub receiver
      *
      * @return void
-    */     
+    */
     public static function gsclubR(GsClub $giver, $r_count, $pay_back, GsClub $receiver)
     {
         if($receiver){
@@ -732,7 +634,7 @@ class Task extends G360
                         $notEligible = true;
                 }elseif($giver->gbal == 580000){
                     if($giver->user->totalValidRef() < 50)
-                        $notEligible = true; 
+                        $notEligible = true;
                     $receiver->gbal = 1500;
                     $receiver->circle += 1;
                     $receiver->status = 1;
@@ -768,6 +670,85 @@ class Task extends G360
                         'description'=>self::$cur.number_format($giver->gbal)." Sent to ".
                         $receiver->user->fname.' '.$receiver->user->lname
                     ]);
+                }
+            }
+        }
+    }
+    /**
+     * Personal Perfomance point
+     *
+     * @return void
+    */
+    public function ppp()
+    {
+        $acheived = 1;
+        $faild = 2;
+        $reward = 20000;
+        $ppps = PPP::where('status', 0);
+        if($ppps->exists()){
+            foreach($ppps as $ppp){
+                if($ppp->created_at->diffInDays() >= 90){
+                    if($user = User::find($ppp->user_id)){
+                        if($user->totalValidRef() >= 50){
+                            if($ppp->grace == 0){
+                                $user->self::$pend_balance += $reward;
+                                $user->save();
+                                WalletHistory::create([
+                                    'id'=>Helpers::genTableId(WalletHistory::class),
+                                    'user_id'=>$user->id,
+                                    'amount'=>$reward,
+                                    'gnumber'=>$user->gnumber,
+                                    'name'=>self::$pend_balance,
+                                    'type'=>'credit',
+                                    'description'=>self::$cur.$reward.
+                                    ' earned from personal performance Reward'
+                                ]);
+                            }
+                            $ppp->status = $acheived;
+                            $ppp->save();
+                        }else{
+                            
+                        }
+                    }else{
+                        $ppp->delete();
+                    }
+                }
+            }
+        }
+    }
+    /**
+     * Reward Personal Perfomance point
+     *
+     * @return void
+    */
+    public function rPPP()
+    {
+        $acheived = 1;
+        $pv = 100000;
+        $reward = 50000;
+        $ppps = PPP::where('status', $acheived);
+        if($ppps->exists()){
+            foreach($ppps->get() as $ppp){
+                if($user = User::find($ppp->user_id)){
+                    $value = intval($user->cpv/$pv);
+                    $value -= $ppp->point;
+                    if($value > 0){
+                        $amt = $reward * $value;
+                        $user->self::$pend_balance += $amt;
+                        $user->save();
+                        WalletHistory::create([
+                            'id'=>Helpers::genTableId(WalletHistory::class),
+                            'user_id'=>$user->id,
+                            'amount'=>$amt,
+                            'gnumber'=>$user->gnumber,
+                            'name'=>self::$pend_balance,
+                            'type'=>'credit',
+                            'description'=>self::$cur.$amt.
+                            ' earned from personal performance point'
+                        ]);
+                        $ppp->point += $value;
+                        $ppp->save();
+                    }
                 }
             }
         }

@@ -9,6 +9,7 @@ use App\Models\SuperAssociate;
 use App\Models\User;
 use App\Models\Loan;
 use App\Models\Lmp;
+use App\Models\Rank;
 class DashboardController extends G360
 {
     /**
@@ -98,25 +99,27 @@ class DashboardController extends G360
                 break;
             case 'cl': 
                 if($sA && $sA->status == 2){
-                    $exp_months = 6;
+                    $rank = Rank::find(1);
+                    $exp_months = $rank->lmp_months;
+                    $lmp_amt = $rank->total_lmp/$exp_months;
                     if($request->tp == 'm'){
                         #issue monthly payment
                         Lmp::create([
                             'id'=>Helpers::genTableId(Lmp::class),
-                            'name'=>'Super associate Loan',
+                            'name'=>'Super associate',
                             'user_id'=>$user->id,
                             'gnumber'=>$user->gnumber,
-                            'rank_id'=>1,
-                            'amount'=>10000,
+                            'rank_id'=>$rank->id,
+                            'amount'=>$lmp_amt,
                             'total_times'=>$exp_months
                         ]);
-                        $amount = 100000-10000;
+                        $amount = $rank->loan - $rank->total_lmp;
                         $user->self::$loan_elig_balance+=$amount; 
                         $msg = 'Leadership monthly bonus activated';
                     }elseif($request->tp == 'l'){
                         #issue no interest loan
-                        $exp_days = $exp_months*self::$month_end;
-                        $amount = 100000;
+                        $exp_days = $rank->loan_exp_m*self::$month_end;
+                        $amount = $rank->loan;
                         Loan::create([
                             'id'=>Helpers::genTableId(Loan::class),
                             'user_id'=>$user->id,
@@ -124,7 +127,7 @@ class DashboardController extends G360
                             'amount'=>$amount,
                             'total_return'=>$amount,
                             'interest'=>10,
-                            'exp_months'=>$exp_months,
+                            'exp_months'=>$rank->loan_exp_m,
                             'grace_months'=>3,
                             'extra'=>'Super associate Loan',
                             'expiry_date'=>Carbon::now()->addDays($exp_days)
@@ -134,9 +137,22 @@ class DashboardController extends G360
                         return redirect('user.dashboard.index')
                         ->with('error', 'You don\'t have permission to access that page');                        
                     }
+                    if($sA->grace > 0)
+                        $rank->prize = (30/100)*$rank->prize;
+                    $user->self::$pend_trx_balance += $rank->prize;
+                    WalletHistory::create([
+                        'id'=>Helpers::genTableId(WalletHistory::class),
+                        'user_id'=>$user->id,
+                        'amount'=>$rank->prize,
+                        'gnumber'=>$user->gnumber,
+                        'name'=>self::$pend_trx_balance,
+                        'type'=>'credit',
+                        'description'=>self::$cur.$rank->prize.
+                        ' earned from '.$rank->name.' reward'
+                    ]);
                     $sA->status = 3; #claimed
                     $sA->save();
-                    $user->rank_id = 1;
+                    $user->rank_id = $rank->id;
                     $user->save();
                     return redirect('user.dashboard.index')
                             ->with('success', $msg);

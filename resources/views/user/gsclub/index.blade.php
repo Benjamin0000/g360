@@ -1,4 +1,4 @@
-@extends('user.layout', ['title'=>'GSTeam'])
+@extends('user.layout', ['title'=>'GSTEAM'])
 @section('content')
 @php
 use Carbon\Carbon;
@@ -13,7 +13,7 @@ $user = Auth::user();
 @endif
 <div class="card" style="margin:0;">
   <div class="card-header text-center" style="background:#eee;">
-    <h3>GSTeam</h3>
+    <h3>GSTEAM</h3>
   </div>
 </div>
 <div class="row">
@@ -21,8 +21,11 @@ $user = Auth::user();
         <div class="card" style="margin:0;">
             <div class="card-body">
                 <h4 class="card-title">GST-Balance
-                  @if($member && $member->wbal > 0)
-                    <button class="btn btn-primary btn-sm blink">Cashout</button>
+                  @if($member && $member->wbal >= 1000)
+                  <form action="{{route('user.gsclub.cashout')}}" method="post" style="display:inline;">
+                    @csrf
+                    <button class="btn btn-primary btn-sm blink" onclick="confirm('A vat fee of 50 will be charged')">Cashout</button>
+                  </form>
                   @endif
                 </h4>
                 <div class="text-right">

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\GsClub;
 use App\Models\GsClubH;
+use App\Models\WalletHistory;
 class GsClubController extends G360
 {
     /**
@@ -14,7 +15,7 @@ class GsClubController extends G360
     */
     public function __construct()
     {
-      $this->middleware('auth');
+        $this->middleware('auth');
     }   
     /**
      * Display a listing of the resource.
@@ -34,7 +35,7 @@ class GsClubController extends G360
     }
     /**
      * Get more histories
-     *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function moreHistories(Request $request)
@@ -51,60 +52,90 @@ class GsClubController extends G360
             return 0;
         }
     }
-
     /**
-     * Store a newly created resource in storage.
+     * Cashout earning to pending wallet
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function cashout(Request $request)
     {
-        //
+        $user = Auth::user();
+        $member = GsClub::where([ 
+            ['user_id', $user->id], 
+            ['status', 0]   
+        ])->first();
+        if($member){
+            $amt = $member->wbal;
+            $vat = (7.5/100)*$amt;
+            if($amt >= 1000){
+                $amt -= $vat;
+                $member->wbal = 0;
+                $member->save();
+                self::shareCommision($user->ref_gnum, $amt, $amt);
+                $user->self::$pend_balance += $amt;
+                $user->save();
+                GsClubH::create([
+                    'id'=>Helpers::genTableId(GsClubH::class),
+                    'user_id'=>$user->id,
+                    'amount'=>$amt,
+                    'type'=>0,
+                    'description'=>self::$cur.number_format($amt)." Sent to P-Wallet"
+                ]);
+                GsClubH::create([
+                    'id'=>Helpers::genTableId(GsClubH::class),
+                    'user_id'=>$user->id,
+                    'amount'=>$vat,
+                    'type'=>0,
+                    'description'=>self::$cur.number_format($vat)." VAT fee"
+                ]);
+                WalletHistory::create([
+                    'id'=>Helpers::genTableId(WalletHistory::class),
+                    'user_id'=>$user->id,
+                    'amount'=>$amt,
+                    'gnumber'=>$user->gnumber,
+                    'name'=>self::$pend_balance,
+                    'type'=>'credit',
+                    'description'=>self::$cur.number_format($amt).' GSTeam cashout'
+                ]);
+                return back()->with('success', 'Cashout Successfull');
+            }else{
+                return back()->with('error', 'You can only cashout a minimum of '
+                .self::$cur.'1,000');
+            }
+        }else{
+            return back()->with('error', 'You are not a member of GSTeam');
+        }
     }
-
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
+     * Cashout earning to pending wallet
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+     * @return Void
+    */
+    public static function shareCommision($gnumber, &$amt, $nAmt, $level=0)
     {
-        //
+       $com = [1.25, 0.75, 0.5];
+       if($level == 3)return;
+       $user = User::where('gnumber', $gnumber)->first();
+       if($user){
+            #reward  user
+            $reward = ($com[$level] / 100)*$nAmt;
+            $user->self::$pend_balance += $reward;
+            $user->save();
+            $amt -= $reward;
+            WalletHistory::create([
+                'id'=>Helpers::genTableId(WalletHistory::class),
+                'user_id'=>$user->id,
+                'amount'=>$reward,
+                'gnumber'=>$user->gnumber,
+                'name'=>self::$pend_balance,
+                'type'=>'credit',
+                'description'=>self::$cur.number_format($reward).' GSTeam level '.
+                $level+1 . 'ref commision'
+            ]);
+            self::shareCommision($user->ref_gnum, $amt, $nAmt, $level+1);
+       }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }
