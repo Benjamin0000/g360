@@ -65,8 +65,8 @@
                 <input type="text" value="{{App\Http\Helpers::defaultGnum()}}" class="form-control" id="sponsor" name="sponsor" required>
             </div>
             <div class="form-group">
-                <label for="pg">Place under</label>
-                <input type="text" name="pg" value="" class="form-control" placeholder="G-number" id="pg">
+                <label for="pu">Place under</label>
+                <input type="text" name="pu" value="" class="form-control" placeholder="G-number" id="pu">
             </div>
             <div class="form-group">
                 <label for="phone">Phone number</label>

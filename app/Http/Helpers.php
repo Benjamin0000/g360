@@ -195,6 +195,11 @@ use Exception;
                     return "invalid sponsor code";
             break; 
 
+            case 'pu': 
+                if(!User::where('gnumber', $value)->exists() || $value == request('sponsor'))
+                    return "invalid gnumber code";
+            break;       
+            
             case 'password': 
                 if(strlen($value) <= 0)
                     return "password is too short";

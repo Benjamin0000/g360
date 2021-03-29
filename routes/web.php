@@ -72,6 +72,7 @@ Route::get('/verify-email/{token}/{email}', [RegisterController::class, 'verifyE
 Route::group(['prefix'=>'portal'],  function(){
     Route::get('/', [DashboardController::class, 'index'])->name('user.dasbhoard.index');
     Route::post('/kAVRnEzhwNxKXuZ', [DashboardController::class, 'reactivateSuperAssoc'])->name('user.dashboard.rassoc');
+    Route::post('/zGPLAHHAsPLgJzE', [DashboardController::class, 'reactivatePPP'])->name('user.dashboard.rappp');
     Route::get('/packages', [PackageController::class, 'index'])->name('user.package.index');
     Route::get('/packages/premium', [PackageController::class, 'showPremiumPackages'])->name('user.package.show_premium');
     Route::post('/packages/premium', [PackageController::class, 'selectPremiumPackage'])->name('user.package.select_premium');

@@ -163,27 +163,56 @@ $sa_fee = 5000;
             </div>
         </div>
     </div>
+  @if($user->ppp && $user->ppp->status != 3)
+   @php $ppp = $user->ppp @endphp
     <div class="col-lg-3 col-md-6">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title"><span>PPP</span>  <span class="float-right">50kClub</span></h4>
-                <div class="">
-                    <h2 class="font-light">
-                      <span class="">
-                        <i class="mdi mdi-trophy-award text-success"></i>0
-                      </span>
-                      <span class="float-right">
-                         <i class="mdi mdi-trophy-award text-danger"></i>0
-                      </span>
-                    </h2>
-                    <span class="text-muted" style="min-height:17px;display:block;"></span>
-                </div>
+                  <h4 class="card-title"><span>PPP</span>  <span class="float-right">50kClub</span></h4>
+                  <div class="">
+                      <h2 class="font-light">
+                        <span class="">
+                          <i class="mdi mdi-trophy-award text-success"></i>{{$user->totalValidRef()}}
+                        </span>
+                        <span class="float-right">
+                           <i class="mdi mdi-trophy-award text-danger"></i>{{$ppp->point}}
+                        </span>
+                      </h2>
+                      <span class="text-muted" style="min-height:17px;display:block;"></span>
+                  </div>
+                  @if($ppp->status == 0)
+                    <div class="text-center" style="margin-top:-22px;"><b style="color:black;" id="ddp"></b></div>
+                    @php
+                      if($ppp->graced_at != ''){
+                         $date = $ppp->graced_at;
+                         $days = 30;
+                      }else{
+                        $date = $ppp->created_at;
+                        $days = 90;
+                      }
+                    @endphp
+                    <script type="text/javascript">
+                        onReady(function(){
+                          var nextYear = moment.tz("{{Carbon::parse($date)->addDays($days)}}", 'Africa/Lagos');
+                          $('#ddp').countdown(nextYear.toDate(), function(event) {
+                            $(this).html(event.strftime('%D Days %H hrs : %M:%S'));
+                          });
+                        })
+                    </script>
+                  @elseif($ppp->status == 2)
+                  <form action="{{route('user.dashboard.rappp')}}" method="post" class="text-center" style="padding:2px;margin-top:-27px;">
+                    @csrf
+                    <button onclick="return confirm('You will pay a reactivation fee of {{$cur}}10,000')" class="btn btn-primary btn-sm">Reactivate</button>
+                  </form>
+                  @endif
                 <div class="progress">
                     <div class="progress-bar bg-info" role="progressbar" style="width: 100%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
             </div>
         </div>
     </div>
+  @endif
+
     @if($associate = $user->superAssoc)
       @if($associate->status != 3)
         <div class="col-lg-3 col-md-6">

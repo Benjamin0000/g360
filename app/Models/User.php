@@ -18,6 +18,7 @@ class User extends Authenticatable
     protected $fillable = [
         'id',
         'gnumber',
+        'placed_by',
         'username',
         'title',
         'fname',
@@ -135,5 +136,13 @@ class User extends Authenticatable
             ['ref_gnum', $this->gnumber], 
             ['pkg_id', '>', 1] 
         ])->count();
+    }
+    /**
+     * ppp
+     * @return int
+    */
+    public function ppp()
+    {
+        return $this->hasOne(PPP::class, 'user_id', 'id');
     }
 }

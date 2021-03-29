@@ -25,25 +25,35 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
-        $schedule->call(function () {
+        $schedule->call(function(){
             Task::trackFreeUsers();
         })->timezone('Africa/Lagos')->daily();
-        $schedule->call(function () {
+
+        $schedule->call(function(){
             Task::sharePendingWallet();
         })->timezone('Africa/Lagos')->dailyAt('00:30');
+
         $schedule->call(function(){
             Task::autoUpgrade();
         })->everyMinute();
+
+        $schedule->call(function(){
+            Task::gsClub();
+        })->timezone('Africa/Lagos')->dailyAt('23:00');
+
         $schedule->call(function(){
             Task::superAssocReward();
             Task::ranking();
             Task::lmp();
-            Task::gsClub();
         })->timezone('Africa/Lagos')->daily();
+
+        $schedule->call(function(){
+            Task::ppp();
+        })->timezone('Africa/Lagos')->dailyAt('01:00');
+
         $schedule->call(function(){
             Task::rPPP();
-        })->timezone('Africa/Lagos')->dailyAt('01:00');
+        })->timezone('Africa/Lagos')->dailyAt('02:00');
     } 
     /**
      * Register the commands for the application.

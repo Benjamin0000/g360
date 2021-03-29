@@ -682,7 +682,8 @@ class Task extends G360
     public function ppp()
     {
         $acheived = 1;
-        $faild = 2;
+        $needGrace = 2;
+        $faild = 3;
         $reward = 20000;
         $ppps = PPP::where('status', 0);
         if($ppps->exists()){
@@ -707,7 +708,19 @@ class Task extends G360
                             $ppp->status = $acheived;
                             $ppp->save();
                         }else{
-                            
+                            if($ppp->graced_at != ''){
+                                if(Carbon::parse($ppp->graced_at)->diffInDays() >= 30){
+                                    $ppp->grace += 1;
+                                    if($ppp->grace >= 3)
+                                        $ppp->status = $faild;
+                                    else
+                                        $ppp->status = $needGrace;
+                                    $ppp->save();
+                                }
+                            }else{
+                                $ppp->status = $needGrace;
+                                $ppp->save();
+                            }
                         }
                     }else{
                         $ppp->delete();

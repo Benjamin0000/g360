@@ -47,7 +47,7 @@ class RegisterController extends Controller
             $fvalues = [
                 'title','username',
                 'fname','lname', 'phone',
-                'sponsor','email','password',
+                'sponsor','pu','email','password',
                 'confirm_password'
             ];
             foreach($fvalues as $value){
@@ -63,9 +63,13 @@ class RegisterController extends Controller
                 $data['id'] = Helpers::genTableId(User::class);
                 $data['gnumber'] = Helpers::genGnumber();
                 $data['password'] = Hash::make($data['password']);
-                $data['ref_gnum'] = $data['sponsor'];
+                if(isset($data['pu'])){
+                    $data['ref_gnum'] = $data['pu'];
+                    $data['placed_by'] = $data['sponsor'];
+                }else{
+                    $data['ref_gnum'] = $data['sponsor'];
+                }
                 $user = User::create($data);
-           
                 $token = Token::create([
                     'id'=>Helpers::genTableId(Token::class),
                     'user_id'=>$user['id'],

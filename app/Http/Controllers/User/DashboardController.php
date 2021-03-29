@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Loan;
 use App\Models\Lmp;
 use App\Models\Rank;
+use App\Models\PPP;
 class DashboardController extends G360
 {
     /**
@@ -165,6 +166,38 @@ class DashboardController extends G360
         return redirect('user.dashboard.index')
         ->with('error', 'You don\'t have permission to access that page');
     }
-
-  
+    /**
+     * Reactivate Supper assoc
+     *
+     * @return \Illuminate\Http\Response
+    */
+    public function reactivatePPP()
+    {
+        $user = Auth::user();
+        $ppp = $user->ppp;
+        $fee = 10000;
+        if($ppp->status == 2){
+            if($user->self::$trx_balance >= $fee){
+                $user->self::$trx_balance -= $fee;
+                $user->save();
+                WalletHistory::create([
+                    'id'=>Helpers::genTableId(WalletHistory::class),
+                    'user_id'=>$user->id,
+                    'amount'=>$fee,
+                    'gnumber'=>$user->gnumber,
+                    'name'=>self::$trx_balance,
+                    'type'=>'debit',
+                    'description'=>$cur.$fee.' debited for personal performance point reactivation'
+                ]);
+                $ppp->status = 0;
+                $ppp->graced_at = Carbon::now();
+                $ppp->save();
+                return back()->with('success', 'Personal performance point reactivated for another 30days');
+            }else{
+                return back()->with('error', "Insufficient fund in your TRX-Wallet");
+            }
+        }else{
+            return back()->with('error', "Sorry you can't access that resource");
+        }
+    }
 }

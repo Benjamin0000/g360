@@ -19,7 +19,6 @@ class CreatePPPSTable extends Migration
             $table->integer('grace')->default(0);
             $table->integer('point')->default(0);
             $table->boolean('status')->default(0);
-            $table->integer('grace')->default(0);
             $table->timestamp('graced_at')->nullable();
             $table->timestamps();
         });

@@ -1,9 +1,7 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-
 class CreateUsersTable extends Migration
 {
     /**
@@ -17,6 +15,7 @@ class CreateUsersTable extends Migration
             $table->string('id', 30)->primary();
             $table->string('username')->unique();
             $table->bigInteger('gnumber')->unique();
+            $table->bigInteger('placed_by')->nullable();
             $table->string('title', 5);
             $table->string('fname');
             $table->string('lname');
