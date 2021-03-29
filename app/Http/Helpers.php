@@ -321,8 +321,12 @@ use Exception;
         $package = Package::find($pkg_id);
         if($package){
             $user = User::where([ ['gnumber', $gnumber], ['status', 1] ])->first();
-            if($user && $user->pkg_id == $package->id && $package->id > $free_pkg)
-                self::refTree($pkg_id, $amount, $user->ref_gnum);
+            if($user && $user->pkg_id == $package->id && $package->id > $free_pkg){
+                if(!$user->placed_by){
+                    $user->placed_by = 0;
+                }
+                self::refTree($pkg_id, $amount, $user->ref_gnum, $user->placed_by, true);
+            }    
         }
     }
     /**
@@ -330,14 +334,14 @@ use Exception;
       * 
       * @return void
     */
-    public static function refTree($pkg_id, $amount, $ref_gnum, $level=1)
+    public static function refTree($pkg_id, $amount, $ref_gnum, $placed_by, $canEarn, $level=1)
     {
         $last_level = 15;
         if($level > $last_level)return;
         $user = User::where([ ['gnumber', $ref_gnum], ['status', 1] ])->first();
         if($user){
-            self::getRefLevelAndCredit($pkg_id, $amount, $ref_gnum, $level);
-            return self::refTree($pkg_id, $amount, $user->ref_gnum, $level+1);
+            self::getRefLevelAndCredit($pkg_id, $amount, $ref_gnum, $placed_by, $canEarn, $level);
+            return self::refTree($pkg_id, $amount, $user->ref_gnum, $placed_by, $canEarn, $level+1);
         }
     }
     /**
@@ -345,7 +349,7 @@ use Exception;
       * 
       *
     */
-    private static function getRefLevelAndCredit($pkg_id, $amount, $gnumber, $level)
+    private static function getRefLevelAndCredit($pkg_id, $amount, $gnumber, $placed_by, $canEarn, $level)
     {
         $cur = self::LOCAL_CURR_SYMBOL;
         $pend_balance = self::PEND_BALANCE;
@@ -373,30 +377,32 @@ use Exception;
                     // $pv_profit = ($ref_basic_pv*$package->id) - $ref_pv[$level-1];
                     $pv_profit = (int)$ref_pv[$level-1];
                 }
-                $user->$h_token += $h_token_profit;
-                $user->$cpv += $pv_profit;
-                WalletHistory::create([
-                    'id'=>self::genTableId(WalletHistory::class),
-                    'amount'=>$h_token_profit,
-                    'user_id'=>$user->id,
-                    'gnumber'=>$user->gnumber,
-                    'name'=>$h_token,
-                    'type'=>'credit',
-                    'description'=>$h_token_profit.' Health token received from '.ucfirst($package->name).
-                    ' package '.'level '.$level.' referral commission' 
-                ]);
-                WalletHistory::create([
-                    'id'=>self::genTableId(WalletHistory::class),
-                    'amount'=>$pv_profit,
-                    'user_id'=>$user->id,
-                    'gnumber'=>$user->gnumber,
-                    'name'=>$cpv,
-                    'type'=>'credit',
-                    'description'=>$pv_profit.' point value received from '.ucfirst($package->name).
-                    ' package '.'level '.$level. ' referral commission' 
-                ]);
-                if($gnum = $user->placed_by){
-                    if($theUser = User::where('gnumber', $gnum)->first()){
+                if($canEarn){
+                    $user->$h_token += $h_token_profit;
+                    $user->$cpv += $pv_profit;
+                    WalletHistory::create([
+                        'id'=>self::genTableId(WalletHistory::class),
+                        'amount'=>$h_token_profit,
+                        'user_id'=>$user->id,
+                        'gnumber'=>$user->gnumber,
+                        'name'=>$h_token,
+                        'type'=>'credit',
+                        'description'=>$h_token_profit.' Health token received from '.ucfirst($package->name).
+                        ' package '.'level '.$level.' referral commission' 
+                    ]);
+                    WalletHistory::create([
+                        'id'=>self::genTableId(WalletHistory::class),
+                        'amount'=>$pv_profit,
+                        'user_id'=>$user->id,
+                        'gnumber'=>$user->gnumber,
+                        'name'=>$cpv,
+                        'type'=>'credit',
+                        'description'=>$pv_profit.' point value received from '.ucfirst($package->name).
+                        ' package '.'level '.$level. ' referral commission' 
+                    ]);
+                }
+                if($placed_by){
+                    if($theUser = User::where('gnumber', $placed_by)->first()){
                         $theUser->$pend_balance += $cash_profit;
                         $theUser->save();
                         WalletHistory::create([
@@ -409,6 +415,9 @@ use Exception;
                             'description'=>$cur.$cash_profit.' received from '.ucfirst($package->name).
                             ' package '.'level ' .$level.' referal commission' 
                         ]);
+                        if(!$theUser->placed_by)
+                            $theUser->placed_by = 0;
+                        self::refTree($pkg_id, $cash_profit, $theUser->ref_gnum, $theUser->placed_by, false);
                     }
                 }else{
                     $user->$pend_balance += $cash_profit;

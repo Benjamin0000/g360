@@ -68,26 +68,53 @@ class GsClubController extends G360
         if($member){
             $amt = $member->wbal;
             $vat = (7.5/100)*$amt;
+            $fee = (7/100)*$amt;
+            $hamt = (1.5/100)*$amt;
+            $assoc_amt = (1.5/100)*$amt;
+            $h_token = intval($hamt/self::$h_token_price);
             if($amt >= 1000){
                 $amt -= $vat;
+                $amt -= $fee;
+                $amt -= $hamt;
+                $amt -= $assoc_amt;
                 $member->wbal = 0;
                 $member->save();
-                self::shareCommision($user->ref_gnum, $amt, $amt);
+                if($user->placed_by)
+                    $placed_by = $user->placed_by;
+                else
+                    $placed_by = 0;
+
+                self::shareCommision($user->ref_gnum, $amt, $amt, $placed_by);
                 $user->self::$pend_balance += $amt;
+                $user->self::$h_token += $h_token;
                 $user->save();
-                GsClubH::create([
-                    'id'=>Helpers::genTableId(GsClubH::class),
-                    'user_id'=>$user->id,
-                    'amount'=>$amt,
-                    'type'=>0,
-                    'description'=>self::$cur.number_format($amt)." Sent to P-Wallet"
-                ]);
                 GsClubH::create([
                     'id'=>Helpers::genTableId(GsClubH::class),
                     'user_id'=>$user->id,
                     'amount'=>$vat,
                     'type'=>0,
                     'description'=>self::$cur.number_format($vat)." VAT fee"
+                ]);
+                GsClubH::create([
+                    'id'=>Helpers::genTableId(GsClubH::class),
+                    'user_id'=>$user->id,
+                    'amount'=>$fee,
+                    'type'=>0,
+                    'description'=>self::$cur.number_format($fee)."Processing fee"
+                ]);
+                GsClubH::create([
+                    'id'=>Helpers::genTableId(GsClubH::class),
+                    'user_id'=>$user->id,
+                    'amount'=>$hamt,
+                    'type'=>0,
+                    'description'=>self::$cur.number_format($hamt)."Health insurance"
+                ]);
+                GsClubH::create([
+                    'id'=>Helpers::genTableId(GsClubH::class),
+                    'user_id'=>$user->id,
+                    'amount'=>$amt,
+                    'type'=>0,
+                    'description'=>self::$cur.number_format($amt)." Sent to P-Wallet"
                 ]);
                 WalletHistory::create([
                     'id'=>Helpers::genTableId(WalletHistory::class),
@@ -97,6 +124,15 @@ class GsClubController extends G360
                     'name'=>self::$pend_balance,
                     'type'=>'credit',
                     'description'=>self::$cur.number_format($amt).' GSTeam cashout'
+                ]);
+                WalletHistory::create([
+                    'id'=>Helpers::genTableId(WalletHistory::class),
+                    'user_id'=>$user->id,
+                    'amount'=>$h_token,
+                    'gnumber'=>$user->gnumber,
+                    'name'=>self::$h_token,
+                    'type'=>'credit',
+                    'description'=>self::$cur.number_format($h_token).' GSTeam cashout'
                 ]);
                 return back()->with('success', 'Cashout Successfull');
             }else{
@@ -113,7 +149,7 @@ class GsClubController extends G360
      * @param  \Illuminate\Http\Request  $request
      * @return Void
     */
-    public static function shareCommision($gnumber, &$amt, $nAmt, $level=0)
+    public static function shareCommision($gnumber, &$amt, $nAmt, $placed_by, $level=0)
     {
        $com = [1.25, 0.75, 0.5];
        if($level == 3)return;
@@ -121,9 +157,29 @@ class GsClubController extends G360
        if($user){
             #reward  user
             $reward = ($com[$level] / 100)*$nAmt;
-            $user->self::$pend_balance += $reward;
-            $user->save();
             $amt -= $reward;
+
+            $hamt = (1.5/100)*$reward;
+            $assoc_amt = (1.5/100)*$reward;
+            $reward -= $hamt;
+            $reward -= $assoc_amt;
+            if($placed_by){
+                $user->self::$pend_balance += $reward;
+            }
+            
+            $h_token = intval($hamt/self::$h_token_price);
+            $user->self::$h_token += $h_token;
+            $user->save();
+            WalletHistory::create([
+                'id'=>Helpers::genTableId(WalletHistory::class),
+                'user_id'=>$user->id,
+                'amount'=>$h_token,
+                'gnumber'=>$user->gnumber,
+                'name'=>self::$h_token,
+                'type'=>'credit',
+                'description'=>self::$cur.number_format($h_token).' GSTeam level '.
+                $level+1 . ' ref commision'
+            ]);
             WalletHistory::create([
                 'id'=>Helpers::genTableId(WalletHistory::class),
                 'user_id'=>$user->id,
@@ -132,7 +188,7 @@ class GsClubController extends G360
                 'name'=>self::$pend_balance,
                 'type'=>'credit',
                 'description'=>self::$cur.number_format($reward).' GSTeam level '.
-                $level+1 . 'ref commision'
+                $level+1 . ' ref commision'
             ]);
             self::shareCommision($user->ref_gnum, $amt, $nAmt, $level+1);
        }

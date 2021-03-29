@@ -606,7 +606,7 @@ class Task extends G360
     public static function gsclubR(GsClub $giver, $r_count, $pay_back, GsClub $receiver)
     {
         if($receiver){
-            if( Carbon::parse($receiver->lastr)->diffInDays() >= 30 ){
+            if( Carbon::parse($receiver->lastr)->diffInDays() >= 23 ){
                 $receiver->r_count+=1;
                 if($receiver->r_count >= $r_count){
                     $receiver->wbal += (($giver->gbal * $r_count) - $pay_back);
