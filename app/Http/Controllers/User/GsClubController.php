@@ -8,6 +8,7 @@ use App\Models\GsClubH;
 use App\Models\WalletHistory;
 class GsClubController extends G360
 {
+    public $formular = [1.25, 0.75, 0.5];
     /**
     * Creates a new controller instance
     *
@@ -71,7 +72,7 @@ class GsClubController extends G360
             $fee = (7/100)*$amt;
             $hamt = (1.5/100)*$amt;
             $assoc_amt = (1.5/100)*$amt;
-            $h_token = intval($hamt/self::$h_token_price);
+            $h_token = $hamt / self::$h_token_price;
             if($amt >= 1000){
                 $amt -= $vat;
                 $amt -= $fee;
@@ -79,12 +80,9 @@ class GsClubController extends G360
                 $amt -= $assoc_amt;
                 $member->wbal = 0;
                 $member->save();
-                if($user->placed_by)
-                    $placed_by = $user->placed_by;
-                else
-                    $placed_by = 0;
-
-                self::shareCommision($user->ref_gnum, $amt, $amt, $placed_by);
+                self::shareCommision($user->ref_gnum, $amt, $user->placed_by);
+                $refAmt = (array_sum($this->formular) / 100)*$amt;
+                $amt = $amt - $refAmt;
                 $user->self::$pend_balance += $amt;
                 $user->self::$h_token += $h_token;
                 $user->save();
@@ -149,49 +147,55 @@ class GsClubController extends G360
      * @param  \Illuminate\Http\Request  $request
      * @return Void
     */
-    public static function shareCommision($gnumber, &$amt, $nAmt, $placed_by, $level=0)
+    public static function shareCommision($gnumber, $amt, $placed_by, $level=0)
     {
-       $com = [1.25, 0.75, 0.5];
-       if($level == 3)return;
-       $user = User::where('gnumber', $gnumber)->first();
-       if($user){
-            #reward  user
-            $reward = ($com[$level] / 100)*$nAmt;
-            $amt -= $reward;
-
-            $hamt = (1.5/100)*$reward;
-            $assoc_amt = (1.5/100)*$reward;
-            $reward -= $hamt;
-            $reward -= $assoc_amt;
-            if($placed_by){
-                $user->self::$pend_balance += $reward;
+        if($level >= 3)return;
+        $reward = ($this->formular[$level] / 100) * $amt;
+        $hamt = (1.5/100)*$reward;
+        $assoc_amt = (1.5/100)*$reward;
+        $reward -= $hamt;
+        $reward -= $assoc_amt;
+        $h_token = $hamt / self::$h_token_price;
+        if($placed_by){
+            $user = User::where('gnumber', $placed_by)->first();
+            if($user){
+                $this->finishCredit($user, $reward, $h_token);
+                return self::shareCommision($user->ref_gnum, $amt, $user->placed_by, $level+1);
             }
-            
-            $h_token = intval($hamt/self::$h_token_price);
-            $user->self::$h_token += $h_token;
-            $user->save();
-            WalletHistory::create([
-                'id'=>Helpers::genTableId(WalletHistory::class),
-                'user_id'=>$user->id,
-                'amount'=>$h_token,
-                'gnumber'=>$user->gnumber,
-                'name'=>self::$h_token,
-                'type'=>'credit',
-                'description'=>self::$cur.number_format($h_token).' GSTeam level '.
-                $level+1 . ' ref commision'
-            ]);
-            WalletHistory::create([
-                'id'=>Helpers::genTableId(WalletHistory::class),
-                'user_id'=>$user->id,
-                'amount'=>$reward,
-                'gnumber'=>$user->gnumber,
-                'name'=>self::$pend_balance,
-                'type'=>'credit',
-                'description'=>self::$cur.number_format($reward).' GSTeam level '.
-                $level+1 . ' ref commision'
-            ]);
-            self::shareCommision($user->ref_gnum, $amt, $nAmt, $level+1);
-       }
+        }
+        $user = User::where('gnumber', $gnumber)->first();
+        if($user){
+            $this->finishCredit($user, $reward, $h_token);
+        }
+        return self::shareCommision($user->ref_gnum, $amt, $user->placed_by, $level+1);
+    }
+
+    public function finishCredit(User $user, $reward, $h_token)
+    {
+        $user->self::$pend_balance += $reward;
+        $user->self::$h_token += $h_token;
+        $user->save();
+        WalletHistory::create([
+            'id'=>Helpers::genTableId(WalletHistory::class),
+            'user_id'=>$user->id,
+            'amount'=>$h_token,
+            'gnumber'=>$user->gnumber,
+            'name'=>self::$h_token,
+            'type'=>'credit',
+            'description'=>self::$cur.number_format($h_token).' GSTeam level '.
+            $level+1 . ' ref commision'
+        ]);
+        WalletHistory::create([
+            'id'=>Helpers::genTableId(WalletHistory::class),
+            'user_id'=>$user->id,
+            'amount'=>$reward,
+            'gnumber'=>$user->gnumber,
+            'name'=>self::$pend_balance,
+            'type'=>'credit',
+            'description'=>self::$cur.number_format($reward).' GSTeam level '.
+            $level+1 . ' ref commision'
+        ]);
+
     }
 
 }

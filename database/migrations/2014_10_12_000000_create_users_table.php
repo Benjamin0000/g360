@@ -15,7 +15,7 @@ class CreateUsersTable extends Migration
             $table->string('id', 30)->primary();
             $table->string('username')->unique();
             $table->bigInteger('gnumber')->unique();
-            $table->bigInteger('placed_by')->nullable();
+            $table->bigInteger('placed_by')->default(0);
             $table->string('title', 5);
             $table->string('fname');
             $table->string('lname');
