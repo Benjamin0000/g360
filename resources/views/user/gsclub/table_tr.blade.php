@@ -8,7 +8,7 @@ use App\Http\Helpers;
        <td>{{$count++}}</td>
        <td>
          {{$cur.number_format($history->amount)}}
-         @if($history->type)
+         @if($history->type != 0)
             <span class="badge badge-danger">Sent</span>
          @else
             <span class="badge badge-success">Received</span>

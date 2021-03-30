@@ -17,7 +17,7 @@ $user = Auth::user();
   </div>
 </div>
 <div class="row">
-    <div class="col-lg-6">
+    <div class="col-lg-4">
         <div class="card" style="margin:0;">
             <div class="card-body">
                 <h4 class="card-title">GST-Balance
@@ -41,7 +41,24 @@ $user = Auth::user();
         </div>
     </div>
 
-    <div class="col-lg-6">
+    <div class="col-lg-4">
+        <div class="card" style="margin:0;">
+            <div class="card-body">
+                <h4 class="card-title">Total-Received</h4>
+                <div class="text-right">
+                    <h2 class="font-light mb-0"><i class="mdi mdi-wallet text-success"></i>
+                      {{$cur}}{{number_format($totalE)}}
+                    </h2>
+                    <span class="text-muted">Current Balance</span>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
         <div class="card" style="margin:0;">
             <div class="card-body">
                 <h4 class="card-title">R-Balance</h4>

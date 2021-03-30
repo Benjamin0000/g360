@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/frontpage/img/favicon.png">
-    <title>Getsupport360 Admin</title>
+    <title>{{$title}}</title>
     <link href="/assets/abb/css/morris.css" rel="stylesheet">
     <link href="/assets/abb/css/jquery.toast.css" rel="stylesheet">
     <link href="/assets/abb/css/style.min.css" rel="stylesheet">
@@ -327,7 +327,7 @@
                 <!-- Sidebar navigation-->
                 <nav class="sidebar-nav">
                     <ul id="sidebarnav">
-                        <li class="user-pro"> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><img src="../assets/images/users/1.jpg" alt="user-img" class="img-circle"><span class="hide-menu">Mark Jeckson</span></a>
+                        <li class="user-pro"> <a class="has-arrow waves-effect waves-dark" href="" aria-expanded="false"><img src="../assets/images/users/1.jpg" alt="user-img" class="img-circle"><span class="hide-menu">Mark Jeckson</span></a>
                             <ul aria-expanded="false" class="collapse">
                                 <li><a href="javascript:void(0)"><i class="ti-user"></i> My Profile</a></li>
                                 <li><a href="javascript:void(0)"><i class="ti-wallet"></i> My Balance</a></li>
@@ -374,11 +374,11 @@
                             </ul>
                         </li>
                         {{-- <li class="nav-small-cap">--- FORMS, TABLE &amp; WIDGETS</li> --}}
-                        <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="ti-layout-media-right-alt"></i><span class="hide-menu">Investments</span></a>
-                            <ul aria-expanded="false" class="collapse">
-                                <li><a href="form-basic.html">Ongoing</a></li>
-                                <li><a href="form-layout.html">Completed</a></li>
-                            </ul>
+                        <li> <a class="waves-effect waves-dark" href="{{route('admin.trading.index')}}"><i class="ti-layout-media-right-alt"></i><span class="hide-menu">Trading</span></a>
+                            {{-- <ul aria-expanded="false" class="collapse"> --}}
+                                {{-- <li><a href="form-basic.html">Ongoing</a></li>
+                                <li><a href="form-layout.html">Completed</a></li> --}}
+                            {{-- </ul> --}}
                         </li>
                         <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="ti-layout-accordion-merged"></i><span class="hide-menu">Health</span></a>
                         </li>
@@ -498,7 +498,25 @@
             <!-- Container fluid  -->
             <!-- ============================================================== -->
             <div class="container-fluid">
-
+              @if(session('pkg_activated'))
+                  <div class="alert alert-success"><i class="fa fa-check-circle"></i> {!!session('pkg_activated')!!}</div>
+              @elseif(session('error'))
+                  <div class="alert alert-danger"><i class="fa fa-info-circle"></i> {!!session('error')!!}</div>
+              @elseif(session('success'))
+                  <div class="alert alert-success"><i class="fa fa-check-circle"></i> {!!session('success')!!}</div>
+              @elseif(session('warning'))
+                  <div class="alert alert-warning"><i class="fa fa-info-circle"></i> {!!session('warning')!!}</div>
+              @elseif(session('choose_pkg'))
+                  <div class="alert alert-success"><i class="fa fa-check-circle"></i> Account activated, please select a package to continue</div>
+              @elseif ($errors->any())
+                <div class="alert alert-danger">
+                   <ul>
+                     @foreach ($errors->all() as $error)
+                       <li>{{$error}}</li>
+                     @endforeach
+                   </ul>
+                </div>
+              @endif
 @yield('content')
 
 

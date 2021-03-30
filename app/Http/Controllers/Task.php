@@ -544,7 +544,7 @@ class Task extends G360
        ])->orderBy('created_at', 'asc')->get();
        if($givers->count()){
             foreach ($givers as $giver) {
-                if(Carbon::parse($giver->lastg)->diffInDays() >= 7){
+                if(Carbon::parse($giver->lastg)->diffInHours() >= 24){
                     $receiver = GsClub::where([
                         ['status', 0],
                         ['g', 0],
@@ -555,40 +555,44 @@ class Task extends G360
                         case 1500:
                             $pay_back = 2500;
                             $r_count = 7;
-                            self::gsclubR($giver, $r_count, $pay_back, $receiver);
+                            $days = 7;
+                            self::gsclubR($giver, $r_count, $pay_back, $receiver, $days);
                         break;
                         case 2500:
                             $pay_back = 7500;
                             $r_count = 7;
-                            self::gsclubR($giver, $r_count, $pay_back, $receiver);
+                            $days = 15;
+                            self::gsclubR($giver, $r_count, $pay_back, $receiver, $days);
                         break;
                         case 7500:
                             $pay_back = 30500;
                             $r_count = 7;
-                            self::gsclubR($giver, $r_count, $pay_back, $receiver);
+                            $days = 15;
+                            self::gsclubR($giver, $r_count, $pay_back, $receiver, $days);
                         break;
                         case 30500:
                             $pay_back = 83000;
                             $r_count = 6;
-                            self::gsclubR($giver, $r_count, $pay_back, $receiver);
+                            self::gsclubR($giver, $r_count, $pay_back, $receiver, $days);
                         break;
                         case 83000:
                             $pay_back = 215000;
                             $r_count = 5;
-                            self::gsclubR($giver, $r_count, $pay_back, $receiver);
+                            self::gsclubR($giver, $r_count, $pay_back, $receiver, $days);
                         case 215000:
                             $pay_back = 460000;
                             $r_count = 4;
-                            self::gsclubR($giver, $r_count, $pay_back, $receiver);
+                            self::gsclubR($giver, $r_count, $pay_back, $receiver, $days);
                         break;
                         case 460000:
                             $pay_back = 580000;
                             $r_count = 3;
-                            self::gsclubR($giver, $r_count, $pay_back, $receiver);
+                            self::gsclubR($giver, $r_count, $pay_back, $receiver, $days);
                         case 580000:
                             $pay_back = 19750;
                             $r_count = 2;
-                            self::gsclubR($giver, $r_count, $pay_back, $receiver);
+                            $days = 
+                            self::gsclubR($giver, $r_count, $pay_back, $receiver, $days);
                         break;
                         default:
                         // code...
@@ -603,13 +607,15 @@ class Task extends G360
      *
      * @return void
     */
-    public static function gsclubR(GsClub $giver, $r_count, $pay_back, GsClub $receiver)
+    public static function gsclubR(GsClub $giver, $r_count, $pay_back, GsClub $receiver, $days)
     {
         if($receiver){
-            if( Carbon::parse($receiver->lastr)->diffInDays() >= 23 ){
+            if( Carbon::parse($receiver->lastr)->diffInDays() >= $days ){
+
                 $receiver->r_count+=1;
                 if($receiver->r_count >= $r_count){
-                    $receiver->wbal += (($giver->gbal * $r_count) - $pay_back);
+                    $total = $giver->gbal * $r_count;
+                    $receiver->wbal += $total - $pay_back;
                     $receiver->gbal = $pay_back;
                     $receiver->r_count = 0;
                     #convert receiver to a giver
@@ -618,23 +624,35 @@ class Task extends G360
                 }
                 $notEligible = false;
                 if($giver->gbal == 7500){
-                    if($giver->user->totalValidRef() < 1)
+
+                    if($receiver->user->totalValidRef() < 1)
                         $notEligible = true;
+
                 }elseif($giver->gbal == 30500){
-                    if($giver->user->totalValidRef() < 3)
+
+                    if($receiver->user->totalValidRef() < 3)
                         $notEligible = true;
+
                 }elseif($giver->gbal == 83000){
-                    if($giver->user->totalValidRef() < 6)
+
+                    if($receiver->user->totalValidRef() < 6)
                         $notEligible = true;
+
                 }elseif($giver->gbal == 215000){
-                    if($giver->user->totalValidRef() < 12)
+
+                    if($receiver->user->totalValidRef() < 12)
                         $notEligible = true;
+
                 }elseif($giver->gbal == 460000){
-                    if($giver->user->totalValidRef() < 24)
+
+                    if($receiver->user->totalValidRef() < 24)
                         $notEligible = true;
+
                 }elseif($giver->gbal == 580000){
-                    if($giver->user->totalValidRef() < 50)
+
+                    if($receiver->user->totalValidRef() < 50)
                         $notEligible = true;
+
                     $receiver->gbal = 1500;
                     $receiver->circle += 1;
                     $receiver->status = 1;

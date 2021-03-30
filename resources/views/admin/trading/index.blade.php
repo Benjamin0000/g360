@@ -1,23 +1,15 @@
-@extends('admin.layout', ['title'=>'Admin Dashboard'])
+@extends('admin.layout', ['title'=>'Trading'])
 @section('content')
-
-    <!-- ============================================================== -->
-    <!-- Bread crumb and right sidebar toggle -->
-    <!-- ============================================================== -->
-    <div class="row page-titles">
-        <div class="col-md-5 align-self-center">
-            {{-- <h4 class="text-themecolor">Dashboard</h4> --}}
-        </div>
-        {{-- <div class="col-md-7 align-self-center text-right">
-            <div class="d-flex justify-content-end align-items-center">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-                    <li class="breadcrumb-item active">Dashboard 1</li>
-                </ol>
-                <button type="button" class="btn btn-info d-none d-lg-block m-l-15"><i class="fa fa-plus-circle"></i> Create New</button>
-            </div>
-        </div> --}}
+<div class="row page-titles">
+    <div class="col-md-5 align-self-center">
+        <h4 class="text-themecolor">Trading</h4>
     </div>
+    <div class="col-md-7 align-self-center text-right">
+        <div class="d-flex justify-content-end align-items-center">
+            <a href="{{route('admin.trading.package')}}" class="btn btn-info d-none d-lg-block m-l-15"><i class="fa fa-plus-circle"></i>Packages</a>
+        </div>
+    </div>
+</div>
     <!-- ============================================================== -->
     <!-- End Bread crumb and right sidebar toggle -->
     <!-- ============================================================== -->
@@ -32,10 +24,10 @@
                         <div class="d-flex no-block align-items-center">
                             <div>
                                 <h3><i class="icon-user"></i></h3>
-                                <p class="text-muted">TOTAL USERS</p>
+                                <p class="text-muted">TOTAL PACKAGE</p>
                             </div>
                             <div class="ml-auto">
-                                <h2 class="counter text-primary">{{$total_users}}</h2>
+                                <h2 class="counter text-primary"></h2>
                             </div>
                         </div>
                     </div>
@@ -56,7 +48,7 @@
                         <div class="d-flex no-block align-items-center">
                             <div>
                                 <h3><i class="icon-note"></i></h3>
-                                <p class="text-muted">NEW PROJECTS</p>
+                                <p class="text-muted">TOTAL TRADES</p>
                             </div>
                             <div class="ml-auto">
                                 <h2 class="counter text-cyan">169</h2>
@@ -80,7 +72,7 @@
                         <div class="d-flex no-block align-items-center">
                             <div>
                                 <h3><i class="icon-doc"></i></h3>
-                                <p class="text-muted">NEW INVOICES</p>
+                                <p class="text-muted">COMPLETED TRADES</p>
                             </div>
                             <div class="ml-auto">
                                 <h2 class="counter text-purple">157</h2>
@@ -104,7 +96,7 @@
                         <div class="d-flex no-block align-items-center">
                             <div>
                                 <h3><i class="icon-bag"></i></h3>
-                                <p class="text-muted">All PROJECTS</p>
+                                <p class="text-muted">ONGOING TRADES</p>
                             </div>
                             <div class="ml-auto">
                                 <h2 class="counter text-success">431</h2>

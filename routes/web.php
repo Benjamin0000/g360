@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use App\Lib\Interswitch\BillPayment;
 use App\Http\Controllers\Admin\DashboardController as ADashboard;
+use App\Http\Controllers\Admin\TradingController as ATrading;
 use App\Http\Controllers\Admin\LoginController as ALogin;
 /*
 |--------------------------------------------------------------------------
@@ -134,4 +135,8 @@ Route::group(['prefix'=>'admin'],  function(){
    Route::get('/login', [ALogin::class, 'index'])->name('admin.login');
    Route::post('/login', [ALogin::class, 'login'])->name('admin.login');
    Route::post('/logout', [ALogin::class, 'logout'])->name('admin.logout');
+   #Trading
+   Route::get('/trading', [ATrading::class, 'index'])->name('admin.trading.index');
+   Route::get('/trading/package', [ATrading::class, 'package'])->name('admin.trading.package');
+   Route::post('/trading/package', [ATrading::class, 'createPackage'])->name('admin.trading.createPackage');
 });

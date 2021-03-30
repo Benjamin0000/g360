@@ -32,7 +32,8 @@ class GsClubController extends G360
         ])->first();
         $histories = GsClubH::where('user_id', $user->id)->paginate(10);
         $total_his = $histories->count();
-        return view('user.gsclub.index', compact('member', 'histories', 'total_his'));
+        $totalE = GsClubH::where([ ['user_id', $user->id], ['type', 0] ])->sum('amount');
+        return view('user.gsclub.index', compact('member', 'histories', 'total_his', 'totalE'));
     }
     /**
      * Get more histories
@@ -90,28 +91,28 @@ class GsClubController extends G360
                     'id'=>Helpers::genTableId(GsClubH::class),
                     'user_id'=>$user->id,
                     'amount'=>$vat,
-                    'type'=>0,
+                    'type'=>2,
                     'description'=>self::$cur.number_format($vat)." VAT fee"
                 ]);
                 GsClubH::create([
                     'id'=>Helpers::genTableId(GsClubH::class),
                     'user_id'=>$user->id,
                     'amount'=>$fee,
-                    'type'=>0,
+                    'type'=>3,
                     'description'=>self::$cur.number_format($fee)."Processing fee"
                 ]);
                 GsClubH::create([
                     'id'=>Helpers::genTableId(GsClubH::class),
                     'user_id'=>$user->id,
                     'amount'=>$hamt,
-                    'type'=>0,
+                    'type'=>4,
                     'description'=>self::$cur.number_format($hamt)."Health insurance"
                 ]);
                 GsClubH::create([
                     'id'=>Helpers::genTableId(GsClubH::class),
                     'user_id'=>$user->id,
                     'amount'=>$amt,
-                    'type'=>0,
+                    'type'=>5,
                     'description'=>self::$cur.number_format($amt)." Sent to P-Wallet"
                 ]);
                 WalletHistory::create([
