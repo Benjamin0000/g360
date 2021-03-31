@@ -193,7 +193,7 @@
                         </li>
 
                         <li>
-                            <a href="dd" aria-expanded="false" >
+                            <a href="{{route('user.trading.index')}}" aria-expanded="false" >
                                 <i class="mdi mdi-trending-up"></i>
                                 <span class="hide-menu">Trading </span>
                             </a>

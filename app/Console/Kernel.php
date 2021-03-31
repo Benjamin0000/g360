@@ -45,6 +45,7 @@ class Kernel extends ConsoleKernel
             Task::superAssocReward();
             Task::ranking();
             Task::lmp();
+            Task::trading();
         })->timezone('Africa/Lagos')->daily();
 
         $schedule->call(function(){

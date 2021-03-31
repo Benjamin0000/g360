@@ -61,17 +61,41 @@ class TradingController extends Controller
             'exp_days'=>$request->expiry_days,
             'interest'=>$request->interest
         ]);
-        return back()->with('success', 'package created');
+        return back()->with('success', 'Plan created');
     }
     /**
-     * Store a newly created resource in storage.
+     * Update Pacakge
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function updatePackage(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'amount'=>['required'],
+            'name'=>['required'],
+            'pv'=>['required'],
+            'referral_pv'=>['required'],
+            'expiry_days'=>['required'],
+            'referral_commission'=>['required'],
+            'interest'=>['required']
+        ]);
+
+        $pkg = TradePkg::find($id);
+        if($pkg){
+            $pkg->update([
+                'name'=>$request->name,
+                'amount'=>$request->amount,
+                'pv'=>$request->pv,
+                'ref_pv'=>$request->referral_pv,
+                'ref_percent'=>$request->referral_commission,
+                'exp_days'=>$request->expiry_days,
+                'interest'=>$request->interest
+            ]);
+            return back()->with('success', 'Plan updated');
+        }
+        return back()->with('error', 'Plan not found');
     }
     /**
      * Display the specified resource.
@@ -79,9 +103,12 @@ class TradingController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function deletePackage($id)
     {
-        //
+        $pkg = TradePkg::find($id);
+        if($pkg)
+            $pkg->delete();
+        return back()->with('error', 'Plan not found');
     }
     /**
      * Show the form for editing the specified resource.

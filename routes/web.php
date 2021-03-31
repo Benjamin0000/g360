@@ -15,6 +15,7 @@ use App\Http\Controllers\User\RewardController;
 use App\Http\Controllers\User\PayBillsController;
 use App\Http\Controllers\User\GsClubController;
 use App\Http\Controllers\User\ShopController as UShop;
+use App\Http\Controllers\User\TradingController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use App\Lib\Interswitch\BillPayment;
@@ -127,6 +128,10 @@ Route::group(['prefix'=>'portal'],  function(){
     Route::get('/gsteam', [GsClubController::class, 'index'])->name('user.gsclub.index');
     Route::get('/myueynjsyh', [GsClubController::class, 'moreHistories'])->name('user.gsclub.morehis');
     Route::post('/NalQpdnl', [GsClubController::class, 'cashout'])->name('user.gsclub.cashout');
+    #Trading
+    Route::get('/trading', [TradingController::class, 'index'])->name('user.trading.index');
+    Route::post('/trading/{id}', [TradingController::class, 'selectPkg'])->name('user.trading.selectPkg');
+    Route::get('/trading/history', [TradingController::class, 'history'])->name('user.trading.history');
 });
 
 #Admin
@@ -139,4 +144,6 @@ Route::group(['prefix'=>'admin'],  function(){
    Route::get('/trading', [ATrading::class, 'index'])->name('admin.trading.index');
    Route::get('/trading/package', [ATrading::class, 'package'])->name('admin.trading.package');
    Route::post('/trading/package', [ATrading::class, 'createPackage'])->name('admin.trading.createPackage');
+   Route::put('/trading/pacakage/{id}', [ATrading::class, 'updatePackage'])->name('admin.trading.updatePackage');
+   Route::delete('/trading/pacakage/{id}', [ATrading::class, 'deletePackage'])->name('admin.trading.deletePackage');
 });

@@ -13,6 +13,7 @@ use App\Models\Loan;
 use App\Models\GsClub;
 use App\Models\GsClubH;
 use App\Models\PPP;
+use App\Models\Trading;
 use App\Http\Helpers;
 use Carbon\Carbon;
 class Task extends G360
@@ -781,6 +782,58 @@ class Task extends G360
                         $ppp->save();
                     }
                 }
+            }
+        }
+    }
+    public function trading()
+    {
+        $trading = Trading::where('status', 0)->get();
+        foreach($trading as $trade){
+            if($trade->created_at->diffInHours() >= 48 && $trade->interest_returned == 0){
+                if($user = User::find($trade->user_id)){
+                    $int_amt = $trade->interest_amt;
+                    $user->self::$with_balance += $int_amt;
+                    $trade->interest_returned = 1;
+                    $trade->save();
+                    $user->save();
+                    WalletHistory::create([
+                        'id'=>Helpers::genTableId(WalletHistory::class),
+                        'user_id'=>$user->id,
+                        'amount'=>$int_amt,
+                        'gnumber'=>$user->gnumber,
+                        'name'=>self::$with_balance,
+                        'type'=>'credit',
+                        'description'=>self::$cur.$int_amt.
+                        " Interest from $trade->name plan trading"
+                    ]);
+                    #pay referrals
+                }else{
+                    $trade->delete();
+                    continue;
+                }
+            }
+            if($trade->created_at->diffInDays() < $trade->exp_days || $trade->returned < $trade->amount){
+                if(Carbon::parse($trade->last_added)->diffInHours() >= 24 && $trade->returned < $trade->amount){
+                    $trade->returned += $trade->amt_return;
+                    $trade->last_added = Carbon::now();
+                    $trade->save();
+                }
+            }else{
+                $returned = $trade->returned;
+                $user->self::$with_balance += $returned;
+                $user->save();
+                WalletHistory::create([
+                    'id'=>Helpers::genTableId(WalletHistory::class),
+                    'user_id'=>$user->id,
+                    'amount'=>$returned,
+                    'gnumber'=>$user->gnumber,
+                    'name'=>self::$with_balance,
+                    'type'=>'credit',
+                    'description'=>self::$cur.$returned.
+                    " Your Capital from $trade->name plan trading"
+                ]);
+                $trade->status = 1;
+                $trade->save();
             }
         }
     }

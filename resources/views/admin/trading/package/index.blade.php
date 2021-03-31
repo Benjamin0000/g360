@@ -1,4 +1,4 @@
-@extends('admin.layout', ['title'=>'Package'])
+@extends('admin.layout', ['title'=>'Plan'])
 @section('content')
 @php
   use App\Http\Helpers;
@@ -9,7 +9,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="d-flex m-b-40 align-items-center no-block">
-                    <h5 class="card-title ">PACKAGE</h5>
+                    <h5 class="card-title ">PLAN</h5>
                 </div>
                 <div style="min-height: 340px;">
                   <div class="row">
@@ -51,10 +51,10 @@
                       </form>
                     </div>
                     <div class="col-md-8">
-                       <h5 class="text-center"><b>PACKAGES</b></h5>
+                       <h5 class="text-center"><b>PLANS</b></h5>
                        <br>
                        <div class="table-responsive">
-                          <table class="table table-bordered">
+                          <table class="table table-bordered table-hover">
                              <thead>
                                 <tr>
                                   <th>No</th>
@@ -82,8 +82,12 @@
                                        <td>{{$package->ref_percent}}</td>
                                        <td>{{$package->exp_days}}</td>
                                        <td>
-                                         <button class="btn btn-info btn-sm">Edit</button>
-                                         <button class="btn btn-danger btn-sm">Delete</button>
+                                         @include('admin.trading.package.edit_modal')
+                                         <button class="btn btn-info btn-sm" data-toggle='modal' data-target="#edit{{$package->id}}">Edit</button>
+                                         <form style="display:inline;" action="{{route('admin.trading.deletePackage', $package->id)}}" method="post">
+                                           @csrf
+                                           <button class="btn btn-danger btn-sm"  onclick="return confirm('Are you sure about this')">Delete</button>
+                                         </form>
                                        </td>
                                     </tr>
                                   @endforeach
