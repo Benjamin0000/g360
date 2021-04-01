@@ -21,6 +21,7 @@ class CreateTradePkgsTable extends Migration
             $table->integer('pv')->default(0);
             $table->integer('ref_pv')->default(0);
             $table->string('ref_percent')->nullable();
+            $table->string('min_pkg');
             $table->integer('exp_days');
             $table->timestamps();
         });

@@ -20,6 +20,7 @@ class TradePkg extends Model
         'pv',
         'ref_pv',
         'ref_percent',
-        'exp_days'
+        'exp_days',
+        'min_pkg'
     ];
 }

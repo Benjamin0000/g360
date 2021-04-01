@@ -585,7 +585,7 @@
         <!-- footer -->
         <!-- ============================================================== -->
         <footer class="footer">
-            © 2020 Eliteadmin by themedesigner.in
+            Copyright ©{{date('Y')}} GetSupport360
         </footer>
     </div>
     <script src="/assets/abb/js/jquery-3.2.1.min.js"></script>

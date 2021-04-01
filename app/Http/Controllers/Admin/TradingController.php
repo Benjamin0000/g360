@@ -1,10 +1,9 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\TradePkg;
+use App\Models\Trading;
 class TradingController extends Controller
 {
     /**
@@ -23,7 +22,13 @@ class TradingController extends Controller
      */
     public function index()
     {
-        return view('admin.trading.index');
+        $total_pkg = TradePkg::count();
+        $alltrade = Trading::all();
+        $ongoing = Trading::where('status', 0);
+        $completed = Trading::where('status', 1);
+        $trades = Trading::latest()->paginate(10);
+        return view('admin.trading.index', compact('total_pkg', 
+        'alltrade', 'ongoing', 'completed', 'trades'));
     }
      /**
      * Display a listing of the resource.
@@ -50,7 +55,8 @@ class TradingController extends Controller
             'referral_pv'=>['required'],
             'expiry_days'=>['required'],
             'referral_commission'=>['required'],
-            'interest'=>['required']
+            'interest'=>['required'],
+            'minimum_package'=>['required']
         ]);
         TradePkg::create([
             'name'=>$request->name,
@@ -59,7 +65,8 @@ class TradingController extends Controller
             'ref_pv'=>$request->referral_pv,
             'ref_percent'=>$request->referral_commission,
             'exp_days'=>$request->expiry_days,
-            'interest'=>$request->interest
+            'interest'=>$request->interest,
+            'min_pkg'=>$request->minimum_package
         ]);
         return back()->with('success', 'Plan created');
     }
@@ -79,9 +86,9 @@ class TradingController extends Controller
             'referral_pv'=>['required'],
             'expiry_days'=>['required'],
             'referral_commission'=>['required'],
-            'interest'=>['required']
+            'interest'=>['required'],
+            'minimum_package'=>['required']
         ]);
-
         $pkg = TradePkg::find($id);
         if($pkg){
             $pkg->update([
@@ -91,7 +98,8 @@ class TradingController extends Controller
                 'ref_pv'=>$request->referral_pv,
                 'ref_percent'=>$request->referral_commission,
                 'exp_days'=>$request->expiry_days,
-                'interest'=>$request->interest
+                'interest'=>$request->interest,
+                'min_pkg'=>$request->minimum_package
             ]);
             return back()->with('success', 'Plan updated');
         }
@@ -109,36 +117,5 @@ class TradingController extends Controller
         if($pkg)
             $pkg->delete();
         return back()->with('error', 'Plan not found');
-    }
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

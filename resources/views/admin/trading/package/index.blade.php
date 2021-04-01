@@ -46,6 +46,10 @@
                            <input type="text" name="referral_commission" value="" class="form-control" placeholder="Eg: 1.3, 4.6, 5.3, 4.5">
                          </div>
                          <div class="form-group">
+                            <label for="">Minimum sign up Package</label>
+                            <input type="text" name="minimum_package" value="" class="form-control">
+                         </div>
+                         <div class="form-group">
                              <button class="btn btn-primary">Create Package</button>
                          </div>
                       </form>
@@ -65,6 +69,7 @@
                                   <th>Referral PV</th>
                                   <th>Ref. Com</th>
                                   <th>Expiry Days</th>
+                                  <th>Min Pkg</th>
                                   <th>Action</th>
                                 </tr>
                              </thead>
@@ -81,6 +86,7 @@
                                        <td>{{$package->ref_pv}}</td>
                                        <td>{{$package->ref_percent}}</td>
                                        <td>{{$package->exp_days}}</td>
+                                       <td>{{$package->min_pkg}}</td>
                                        <td>
                                          @include('admin.trading.package.edit_modal')
                                          <button class="btn btn-info btn-sm" data-toggle='modal' data-target="#edit{{$package->id}}">Edit</button>

@@ -349,46 +349,32 @@ use Exception;
         $cur = self::LOCAL_CURR_SYMBOL;
         $pend_balance = self::PEND_BALANCE;
         $package = Package::find($pkg_id);
-        $user = User::where([ ['gnumber', $gnumber], ['status', 1] ])->first();
-        if($package && $user){
-            $ref_percent = explode(',', $package->ref_percent);
-            if($level > count($ref_percent))
-                $cash_profit = (floatval(end($ref_percent)) / 100) * $amount;
+        $ref_percent = explode(',', $package->ref_percent);
+        if($level > count($ref_percent))
+            $cash_profit = (floatval(end($ref_percent)) / 100) * $amount;
+        else
+            $cash_profit = (floatval($ref_percent[$level-1]) / 100) * $amount;
+        if($package){
+            if($placed_by)
+                $user = User::where([ ['gnumber', $placed_by], ['status', 1] ])->first();
             else
-                $cash_profit = (floatval($ref_percent[$level-1]) / 100) * $amount;
-            if($placed_by){
-                if($theUser = User::where('gnumber', $placed_by)->first()){
-                    $theUser->$pend_balance += $cash_profit;
-                    $theUser->save();
-                    WalletHistory::create([
-                        'id'=>self::genTableId(WalletHistory::class),
-                        'amount'=>$cash_profit,
-                        'user_id'=>$theUser->id,
-                        'gnumber'=>$theUser->gnumber,
-                        'name'=>$pend_balance,
-                        'type'=>'credit',
-                        'description'=>$cur.$cash_profit.' received from '.ucfirst($package->name).
-                        ' package level '.$level.' referral commission' 
-                    ]);
-                    return self::creditRefCommission($pkg_id, $amount, $theUser->ref_gnum, $theUser->placed_by,  $level+1);
-                }
-            }else{
-                if($user->canEarnFromLevel($level)){
-                    $user->$pend_balance += $cash_profit;
-                    $user->save();
-                    WalletHistory::create([
-                        'id'=>self::genTableId(WalletHistory::class),
-                        'amount'=>$cash_profit,
-                        'user_id'=>$user->id,
-                        'gnumber'=>$user->gnumber,
-                        'name'=>$pend_balance,
-                        'type'=>'credit',
-                        'description'=>$cur.$cash_profit.' received from '.ucfirst($package->name).
-                        ' package level ' .$level.' referral commission' 
-                    ]);
-                }
-                return self::creditRefCommission($pkg_id, $amount, $user->ref_gnum, $user->placed_by,  $level+1);
+                $user = User::where([ ['gnumber', $gnumber], ['status', 1] ])->first();
+            
+            if($user && $user->canEarnFromLevel($level)){
+                $user->$pend_balance += $cash_profit;
+                $user->save();
+                WalletHistory::create([
+                    'id'=>self::genTableId(WalletHistory::class),
+                    'amount'=>$cash_profit,
+                    'user_id'=>$user->id,
+                    'gnumber'=>$user->gnumber,
+                    'name'=>$pend_balance,
+                    'type'=>'credit',
+                    'description'=>$cur.$cash_profit.' received from '.ucfirst($package->name).
+                    ' package level ' .$level.' referral commission' 
+                ]);
             }
+            return self::creditRefCommission($pkg_id, $amount, $user->ref_gnum, $user->placed_by,  $level+1);
         }
     }
     /**

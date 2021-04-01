@@ -3,14 +3,61 @@
 $cur = App\Http\Helpers::LOCAL_CURR_SYMBOL;
 @endphp
 @section('content')
-  {{-- <div class="card">
-    <div class="card-body text-center">
-        <h3>Earn more by trading with us.</h3>
-        <small>Choose your trading package</small>
-    </div>
-  </div> --}}
+  <div class="row">
+      <div class="col-lg-4">
+          <div class="card" style="margin:0;">
+              <div class="card-body">
+                  <h4 class="card-title">Active Trades</h4>
+                  <div class="text-right">
+                      <h2 class="font-light mb-0"><i class="mdi mdi-wallet text-success"></i>
+                        {{$cur.number_format($tActive, 2, '.', ',')}}
+                      </h2>
+                      <span class="text-muted">Current Balance</span>
+                  </div>
+                  <div class="progress">
+                      <div class="progress-bar bg-success" role="progressbar" style="width: 100%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <div class="col-lg-4">
+          <div class="card" style="margin:0;">
+              <div class="card-body">
+                  <h4 class="card-title">Total Received</h4>
+                  <div class="text-right">
+                      <h2 class="font-light mb-0"><i class="mdi mdi-wallet text-success"></i>
+                        {{$cur.number_format($tReceived, 2, '.', ',')}}
+                      </h2>
+                      <span class="text-muted">Current Balance</span>
+                  </div>
+                  <div class="progress">
+                      <div class="progress-bar bg-success" role="progressbar" style="width: 100%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <div class="col-lg-4">
+          <div class="card" style="margin:0;">
+              <div class="card-body">
+                  <h4 class="card-title">Total Traded</h4>
+                  <div class="text-right">
+                      <h2 class="font-light mb-0"><i class="mdi mdi-wallet text-success"></i>
+                          {{$cur.number_format($tTraded, 2, '.', ',')}}
+                      </h2>
+                      <span class="text-muted">Current Balance</span>
+                  </div>
+                  <div class="progress">
+                      <div class="progress-bar bg-success" role="progressbar" style="width: 100%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+<br>
   <div class="text-right">
-      <a href="{{route('user.trading.index')}}" class="btn btn-primary">Plans</a>
+      <a href="{{route('user.trading.index')}}" class="btn btn-primary">Select Plans</a>
   </div>
   <br>
   <div class="card">
@@ -18,7 +65,8 @@ $cur = App\Http\Helpers::LOCAL_CURR_SYMBOL;
        <h4 class="card-title">Trading History</h4>
     </div>
     <div class="card-body">
-       <table class="table">
+      <div class="table-responsive">
+       <table class="table table-bordered table-hover">
          <thead>
             <tr>
               <th>No</th>
@@ -27,6 +75,7 @@ $cur = App\Http\Helpers::LOCAL_CURR_SYMBOL;
               <th>Returned</th>
               <th>Interest</th>
               <th>Status</th>
+              <th>Created</th>
               <th>Expiry Date</th>
             </tr>
          </thead>
@@ -47,17 +96,20 @@ $cur = App\Http\Helpers::LOCAL_CURR_SYMBOL;
                      <span class="badge badge-warning">Trading</span>
                    @endif
                  </td>
-                 <td>{{$trade->created_at->addDays($trade->exp_days)}}</td>
+                 <td>{{$trade->created_at->isoFormat()}}</td>
+                 <td>{{$trade->created_at->addDays($trade->exp_days)->isoFormat()}}</td>
                </tr>
              @endforeach
           @endif
          </tbody>
        </table>
+     </div>
        @if(!$trades->count())
           <div class="alert alert-warning">
             Nothing to show
           </div>
        @endif
+       {{$trades->links()}}
     </div>
   </div>
 @endsection

@@ -16,7 +16,7 @@ class CreateTradingsTable extends Migration
         Schema::create('tradings', function (Blueprint $table) {
             $table->string('id', 30)->primary();
             $table->string('user_id', 30);
-            $table->bigInteger('gnumber');
+            $table->bigInteger('gnumber'); 
             $table->string('name');
             $table->decimal('amount', 65, 2);
             $table->decimal('returned', 65, 2)->default(0);
@@ -26,6 +26,7 @@ class CreateTradingsTable extends Migration
             $table->boolean('interest_returned')->default(0);
             $table->integer('exp_days');
             $table->boolean('status')->default(0);
+            $table->string('ref_percent')->nullable();
             $table->timestamp('last_added');
             $table->timestamps();
         });

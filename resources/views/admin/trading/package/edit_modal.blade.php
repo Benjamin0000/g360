@@ -39,6 +39,10 @@
            <label for="">Referral commission</label>
            <input type="text" name="referral_commission" value="{{$package->ref_percent}}" class="form-control" placeholder="Eg: 1.3, 4.6, 5.3, 4.5">
          </div>
+         <div class="form-group">
+            <label for="">Minimum sign up Package</label>
+            <input type="text" name="minimum_package" value="{{$package->min_pkg}}" class="form-control">
+         </div>
          <div class="form-group text-right">
              <button class="btn btn-primary">Update Package</button>
          </div>

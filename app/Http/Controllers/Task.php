@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
+use App\Http\Controllers\User\TradingController as TradeCon;
 use App\Models\TrackFreeUser;
 use App\Models\WalletHistory;
 use App\Models\SuperAssociate;
@@ -807,6 +808,11 @@ class Task extends G360
                         " Interest from $trade->name plan trading"
                     ]);
                     #pay referrals
+                    TradeCon::sharePv($user, $trade->pv, $level=1);
+                    if($trade->ref_percent != ''){
+                        $formular =  explode(',', $trade->ref_percent);
+                        TradeCon::shareCommission($user, $formular, $trade->amount, $trade->name, $level=1);
+                    }
                 }else{
                     $trade->delete();
                     continue;
