@@ -178,11 +178,10 @@
                             </a>
                         </li>
                         <li>
-                            <a class="has-arrow " href="#" aria-expanded="false"><i class="mdi mdi-vector-polyline"></i><span class="hide-menu">E-Banking</span></a>
-                            <ul aria-expanded="false" class="collapse">
-                                <li><a href="{{route('user.pay_bills.index')}}">Pay Bills</a></li>
-                                <li><a href="dd">POS service</a></li>
-                            </ul>
+                            <a class="" href="{{route('user.efinance.index')}}" aria-expanded="false">
+                              <i class="mdi mdi-cash"></i>
+                              <span class="hide-menu">E-Finance</span>
+                            </a>
                         </li>
 
                         <li>

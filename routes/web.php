@@ -12,7 +12,7 @@ use App\Http\Controllers\User\WalletHistoryController;
 use App\Http\Controllers\User\DownlineController;
 use App\Http\Controllers\User\LoanController;
 use App\Http\Controllers\User\RewardController;
-use App\Http\Controllers\User\PayBillsController;
+use App\Http\Controllers\User\EFinanceController;
 use App\Http\Controllers\User\GsClubController;
 use App\Http\Controllers\User\ShopController as UShop;
 use App\Http\Controllers\User\TradingController;
@@ -22,6 +22,7 @@ use App\Lib\Interswitch\BillPayment;
 use App\Http\Controllers\Admin\DashboardController as ADashboard;
 use App\Http\Controllers\Admin\TradingController as ATrading;
 use App\Http\Controllers\Admin\LoginController as ALogin;
+use App\Http\Controllers\Admin\FinanceController as AFinance;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -110,12 +111,13 @@ Route::group(['prefix'=>'portal'],  function(){
     Route::get('/reward', [RewardController::class, 'index'])->name('user.reward.index');
     Route::post('/reward/loan/{id}', [RewardController::class, 'selectLoan'])->name('user.reward.loan');
     Route::post('/reward/lmp/{id}', [RewardController::class, 'selectLmp'])->name('user.reward.lmp');
-    #paybills
-    Route::get('/pay-bills', [PayBillsController::class, 'index'])->name('user.pay_bills.index');
-    Route::get('/pay-bills/electricity', [PayBillsController::class, 'electricity'])->name('user.pay_bills.elect.index');
-    Route::get('/pay-bills/airtime-data', [PayBillsController::class, 'airtimeData'])->name('user.pay_bills.airtimeData.index');
-    Route::get('/pay-bills/water', [PayBillsController::class, 'waterSub'])->name('user.pay_bills.waterSub.index');
-    Route::get('/pay-bills/tv', [PayBillsController::class, 'tvSub'])->name('user.pay_bills.tvSub.index');
+    #Efinance
+    Route::get('/e-finance', [EFinanceController::class, 'index'])->name('user.efinance.index');
+    Route::get('/e-finance/electricity', [EFinanceController::class, 'electricity'])->name('user.pay_bills.elect.index');
+    Route::get('/e-finance/airtime-data', [EFinanceController::class, 'airtimeData'])->name('user.pay_bills.airtimeData.index');
+    Route::get('/e-finance/water', [EFinanceController::class, 'waterSub'])->name('user.pay_bills.waterSub.index');
+    Route::get('/e-finance/tv', [EFinanceController::class, 'tvSub'])->name('user.pay_bills.tvSub.index');
+
     #shop
     Route::get('/shop', [UShop::class, 'index'])->name('user.shop.index');
     Route::get('/shop/create', [UShop::class, 'create'])->name('user.shop.create');
@@ -146,4 +148,9 @@ Route::group(['prefix'=>'admin'],  function(){
    Route::post('/trading/package', [ATrading::class, 'createPackage'])->name('admin.trading.createPackage');
    Route::put('/trading/pacakage/{id}', [ATrading::class, 'updatePackage'])->name('admin.trading.updatePackage');
    Route::delete('/trading/pacakage/{id}', [ATrading::class, 'deletePackage'])->name('admin.trading.deletePackage');
+   #VTU
+   Route::get('/vtu', [AFinance::class, 'index'])->name('admin.finance.vtu');
+   Route::get('/vtu/settings', [AFinance::class, 'settings'])->name('admin.finance.vtu.settings');
+   Route::put('/vtu/settings/airtime/{id}', [AFinance::class, 'updateAirtime'])->name('admin.finance.vtu.updateAirtime');
+   Route::put('/vtu/settings/data/{id}', [AFinance::class, 'updateData'])->name('admin.finance.vtu.updateData');
 });

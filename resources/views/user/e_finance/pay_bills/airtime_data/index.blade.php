@@ -54,7 +54,7 @@ cursor: pointer;
                     Buy Airtime <span class="float-right mdi mdi-chevron-down"></span>
                   </div>
                   <div id="collapse1" class="card-body collapse">
-                    @include('user.pay_bills.airtime.a_form')
+                    @include('user.e_finance.pay_bills.airtime_data.a_form')
                   </div>
               </div>
           </div>
@@ -64,7 +64,7 @@ cursor: pointer;
                     Buy Mobile Data <span class="float-right mdi mdi-chevron-down"></span>
                   </div>
                   <div id="collapse2" class="card-body collapse">
-                    @include('user.pay_bills.airtime.d_form')
+                    @include('user.e_finance.pay_bills.airtime_data.d_form')
                   </div>
               </div>
           </div>

@@ -1,10 +1,12 @@
 <?php
+
 namespace App\Http\Controllers\User;
-use Illuminate\Support\Facades\Auth;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
-class PayBillsController extends Controller
+use App\Models\Airtime;
+use App\Models\DataSub;
+class EFinanceController extends Controller
 {
     /**
     * Creates a new controller instance
@@ -14,15 +16,15 @@ class PayBillsController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-    }    
-    /**
+    }
+    /** 
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        return view('user.pay_bills.index');
+        return view('user.e_finance.index');
     }
     /**
      * Show electrical pay bills page
@@ -31,7 +33,7 @@ class PayBillsController extends Controller
      */
     public function electricity()
     {
-        return view('user.pay_bills.electricity.index');
+        return view('user.e_finance.pay_bills.electricity.index');
     }
     /**
      * Show airtime/data pay bills page
@@ -40,7 +42,9 @@ class PayBillsController extends Controller
      */
     public function airtimeData()
     {
-        return view('user.pay_bills.airtime.index');
+        $airtimes = Airtime::all();
+        $datasub = DataSub::all();
+        return view('user.e_finance.pay_bills.airtime_data.index', compact('airtimes', 'datasub'));
     }
     /**
      * Show Cable tv pay bills page
@@ -49,7 +53,7 @@ class PayBillsController extends Controller
      */
     public function tvSub()
     {
-        return view('user.pay_bills.tvsub.index');
+        return view('user.e_finance.pay_bills.tvsub.index');
     }
     /**
      * Show waterSub pay bills page
@@ -58,6 +62,6 @@ class PayBillsController extends Controller
      */
     public function waterSub()
     {
-        return view('user.pay_bills.waterSub.index');
+        return view('user.e_finance.pay_bills.waterSub.index');
     }
 }

@@ -388,10 +388,12 @@
                         </li>
                         <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="ti-layout-accordion-merged"></i><span class="hide-menu">Ajor</span></a>
                         </li>
-                        <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="ti-settings"></i><span class="hide-menu">E-Banking</span></a>
+                        <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="ti-settings"></i><span class="hide-menu">E-Finance</span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="widget-data.html">Airtime & Data</a></li>
-                                <li><a href="widget-apps.html">Bills payment</a></li>
+                                <li><a href="{{route('admin.finance.vtu')}}">Airtime & Data</a></li>
+                                <li><a href="widget-apps.html">Electricity</a></li>
+                                <li><a href="widget-apps.html">Cable TV</a></li>
+                                <li><a href="widget-apps.html">Money transfer</a></li>
                             </ul>
                         </li>
                         {{-- <li class="nav-small-cap">--- EXTRA COMPONENTS</li> --}}
