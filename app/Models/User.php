@@ -6,7 +6,6 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
-
     public $incrementing = false;
     protected $primaryKey = 'id';
     protected $keyType = 'string';
@@ -144,5 +143,21 @@ class User extends Authenticatable
     public function ppp()
     {
         return $this->hasOne(PPP::class, 'user_id', 'id');
+    }
+    /**
+     * Get users partnership
+     * @return int
+    */
+    public function partner()
+    {
+        return $this->hasOne(Partner::class, 'user_id');
+    }
+     /**
+     * Agent
+     * @return int
+    */
+    public function agent()
+    {
+        return $this->hasOne(Agent::class, 'user_id');
     }
 }

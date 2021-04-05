@@ -60,7 +60,7 @@ class Task extends G360
                 $billForLoan = false;
                 $billForPkg = false;
                 $type = '';
-                if($total > 0){
+                if($total >= 100){
                     if($user->pkg_id != $last_pkg_id)
                         $billForPkg = true;
                     if($user->haveUnPaidLoan())

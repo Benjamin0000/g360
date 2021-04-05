@@ -9,8 +9,9 @@
     <title>{{$title}} | GetSupport360</title>
     <link rel="icon" type="image/png" href="/assets/frontpage/img/favicon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/css/nice-select.min.css" integrity="sha512-CruCP+TD3yXzlvvijET8wV5WxxEh5H8P4cmz0RFbKK6FlZ2sYl3AEsKlLPHbniXKSrDdFewhbmBK5skbdsASbQ==" crossorigin="anonymous" />
-    <link href="/assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <link href="/assets/css/style.css?v=2" rel="stylesheet" type="text/css" />
+    {{-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> --}}
+    <link href="/assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/style.css?v=2" rel="stylesheet" type="text/css" /> 
     <link href="/assets/css/colors/blue.css" rel="stylesheet" type="text/css" />
     <link href="/assets/plugins/datatables.net-bs4/css/dataTables.bootstrap4.css" rel="stylesheet" type="text/css" />
     <script src="https://kit.fontawesome.com/bb8f3fac95.js" crossorigin="anonymous"></script>
@@ -84,55 +85,20 @@
                         <!-- This is  -->
                         <li class="nav-item"> <a class="nav-link nav-toggler hidden-md-up text-muted waves-effect waves-dark" href="javascript:void(0)"><i class="ti-menu"></i></a> </li>
                         <li class="nav-item"> <a class="nav-link sidebartoggler hidden-sm-down text-muted waves-effect waves-dark" href="javascript:void(0)"><i class="icon-arrow-left-circle"></i></a> </li>
-
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-muted text-muted waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="mdi mdi-message"></i>
-                                <div class="notify">
-                                                                    </div>
-                            </a>
-
-                            <div class="dropdown-menu mailbox animated bounceInDown">
-                                <ul>
-                                    <li>
-                                        <div class="drop-title"><i class="fa fa-link text-danger"></i> Notifications</div>
-                                    </li>
-                                    <li>
-                                        <div class="message-center">
-                                            <!-- Message -->
-                                                                                        <a href="/user/notification/b4c7dd4cad860d4718cdfdce36380bd3">
-                                                <div class="mail-contnet">
-                                                    <span class="mail-desc">Maintaince for homemade tile and frontage</span>
-                                                    <span class="time">05:22PM</span>
-                                                </div>
-                                            </a>
-                                                                                        <a href="/user/notification/a539e9d79d351f93cc4c43e241d0275c">
-                                                <div class="mail-contnet">
-                                                    <span class="mail-desc">Maintaince for homemade tile and frontage</span>
-                                                    <span class="time">09:36PM</span>
-                                                </div>
-                                            </a>
-                                                                                        <a href="/user/notification/c8819280ab0da9e0dddd4bf945ea24f7">
-                                                <div class="mail-contnet">
-                                                    <span class="mail-desc">0</span>
-                                                    <span class="time">08:08PM</span>
-                                                </div>
-                                            </a>
-                                                                                    </div>
-                                    </li>
-                                    <li>
-                                        <a class="nav-link text-center" href="/user/notification"> <strong>Check all notifications</strong> <i class="fa fa-angle-right"></i> </a>
-                                    </li>
-                                </ul>
-                            </div>
-
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link text-muted text-muted waves-effect waves-dark" href="/user/store/request"> <i class="mdi mdi-shopping"></i>
-                                <div class="notify">
-                                                                    </div>
-                            </a>
-                        </li>
+                        @if(Auth::user()->partner)
+                          <li class="nav-item">
+                              <a class="nav-link" href="{{route('user.partnership.index')}}">
+                                 <span class="btn btn-success">Partner</span>
+                              </a>
+                          </li>
+                        @endif
+                        {{-- @if(Auth::user()->agent)
+                          <li class="nav-item">
+                              <a class="nav-link" href="">
+                                <span class="btn btn-danger">Agent</span>
+                              </a>
+                          </li>
+                        @endif --}}
 
                         <li class="nav-item hide"> <a class="nav-link text-muted " href="javascript:void(0)"><i class="ti-user"></i> 123456789 </a> </li>
 
@@ -222,16 +188,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="ddd" >
-                                <i class="fa  fa-medkit"></i>
-                                <span class="hide-menu">My Orders</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="has-arrow " href="#" aria-expanded="false"><i class="mdi mdi-cart"></i><span class="hide-menu">G-Market</span></a>
-                            <ul aria-expanded="false" class="collapse">
-                                <li><a href="{{route('user.shop.index')}}">Shop</a></li>
-                            </ul>
+                            <a class="" href="{{route('user.gmarket.index')}}" aria-expanded="false"><i class="mdi mdi-cart"></i><span class="hide-menu">G-Market</span></a>
                         </li>
                         {{-- <li>
                             <a class="has-arrow " href="#" aria-expanded="false"><i class="mdi mdi-vector-polyline"></i><span class="hide-menu">Downline</span></a>

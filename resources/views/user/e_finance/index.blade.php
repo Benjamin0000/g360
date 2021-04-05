@@ -1,4 +1,4 @@
-@extends('user.layout', ['title'=>'Pay Bills'])
+@extends('user.layout', ['title'=>'E-Finance'])
 @php
 use Carbon\Carbon;
 $cur = App\Http\Helpers::LOCAL_CURR_SYMBOL;
@@ -13,7 +13,7 @@ $user = Auth::user();
   color:#555 !important;
   font-size: 20px;
   padding:10px;
-  width: 200px;
+  min-width: 150px;
   margin:10px;
   text-align: center;
   transition: 0.3s ease;
@@ -79,9 +79,10 @@ $user = Auth::user();
     </div>
 </div>
 <br>
-<div class="card" style="min-height:80vh;">
+<div class="card" style="min-height:100px;">
   <div class="card-body text-center">
-    <a href="{{route('user.pay_bills.airtimeData.index')}}"  class="bill-l"><i class="fas fa-phone-square-alt text-primary"></i> Airtime / Data</a>
+    <a href="{{route('user.pay_bills.airtimeData.index')}}"  class="bill-l"><i class="fas fa-university text-primary"></i>Banking</a>
+    <a href="{{route('user.pay_bills.airtimeData.index')}}"  class="bill-l"><i class="fas fa-mobile-alt text-info"></i> Airtime & Data</a>
     <a href="{{route('user.pay_bills.elect.index')}}"  class="bill-l"><i class="fas fa-bolt text-danger"></i> Electricity</a>
     <a href="{{route('user.pay_bills.waterSub.index')}}"  class="bill-l"><i class="fas fa-shower"></i> Water</a>
     <a href="{{route('user.pay_bills.tvSub.index')}}"  class="bill-l"><i class="fas fa-tv text-warning"></i> Cable Tv</a>

@@ -300,7 +300,7 @@ $sa_fee = 5000;
         </div>
       @endif
     @endif
-    <div class="col-lg-3 col-md-6">
+    {{-- <div class="col-lg-3 col-md-6">
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">Deca / Coin Wallet</h4>
@@ -313,7 +313,7 @@ $sa_fee = 5000;
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 </div>
 
 <!-- Row -->

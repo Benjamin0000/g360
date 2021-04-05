@@ -2,6 +2,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\GmarketController;
+use App\Http\Controllers\EShopController;
+
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\User\DashboardController;
@@ -16,6 +18,8 @@ use App\Http\Controllers\User\EFinanceController;
 use App\Http\Controllers\User\GsClubController;
 use App\Http\Controllers\User\ShopController as UShop;
 use App\Http\Controllers\User\TradingController;
+use App\Http\Controllers\User\PartnershipController;
+use App\Http\Controllers\User\GmarketController as UGmarket;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use App\Lib\Interswitch\BillPayment;
@@ -23,6 +27,9 @@ use App\Http\Controllers\Admin\DashboardController as ADashboard;
 use App\Http\Controllers\Admin\TradingController as ATrading;
 use App\Http\Controllers\Admin\LoginController as ALogin;
 use App\Http\Controllers\Admin\FinanceController as AFinance;
+use App\Http\Controllers\Admin\GmarketController as AGMarket;
+use App\Http\Controllers\Admin\PartnersController as APartner;
+use App\Http\Controllers\Admin\AgentsController as AAgent;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -54,8 +61,10 @@ Route::get('/about',  [FrontController::class, 'about'])->name('front.about');
 Route::get('/how-it-works',  [FrontController::class, 'how_works'])->name('front.how_works');
 Route::get('/services',  [FrontController::class, 'services'])->name('front.services');
 Route::get('/terms-and-condition', [FrontController::class, 'terms'])->name('front.terms');
-#store
+#Gmarket
 Route::get('/general-market', [GmarketController::class, 'index'])->name('gm.index');
+#E-Shop
+Route::get('/e-shop', [EShopController::class, 'index'])->name('eshop.index');
 #login
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login');
@@ -117,7 +126,8 @@ Route::group(['prefix'=>'portal'],  function(){
     Route::get('/e-finance/airtime-data', [EFinanceController::class, 'airtimeData'])->name('user.pay_bills.airtimeData.index');
     Route::get('/e-finance/water', [EFinanceController::class, 'waterSub'])->name('user.pay_bills.waterSub.index');
     Route::get('/e-finance/tv', [EFinanceController::class, 'tvSub'])->name('user.pay_bills.tvSub.index');
-
+    #Gmarket
+    Route::get('/g-market', [UGmarket::class, 'index'])->name('user.gmarket.index');
     #shop
     Route::get('/shop', [UShop::class, 'index'])->name('user.shop.index');
     Route::get('/shop/create', [UShop::class, 'create'])->name('user.shop.create');
@@ -134,6 +144,9 @@ Route::group(['prefix'=>'portal'],  function(){
     Route::get('/trading', [TradingController::class, 'index'])->name('user.trading.index');
     Route::post('/trading/{id}', [TradingController::class, 'selectPkg'])->name('user.trading.selectPkg');
     Route::get('/trading/history', [TradingController::class, 'history'])->name('user.trading.history');
+    #partner
+    Route::get('/partner', [PartnershipController::class, 'index'])->name('user.partnership.index');
+    Route::post('/partner', [PartnershipController::class, 'cashout'])->name('user.partnership.cashout');
 });
 
 #Admin
@@ -153,4 +166,16 @@ Route::group(['prefix'=>'admin'],  function(){
    Route::get('/vtu/settings', [AFinance::class, 'settings'])->name('admin.finance.vtu.settings');
    Route::put('/vtu/settings/airtime/{id}', [AFinance::class, 'updateAirtime'])->name('admin.finance.vtu.updateAirtime');
    Route::put('/vtu/settings/data/{id}', [AFinance::class, 'updateData'])->name('admin.finance.vtu.updateData');
+   #Gmarket
+   Route::get('/gmarket/shop', [AGMarket::class, 'shop'])->name('admin.gmarket.shop');
+   #Partner
+   Route::get('/partner', [APartner::class, 'index'])->name('admin.partner.index');
+   Route::post('/partner', [APartner::class, 'store'])->name('admin.partner.store');
+   Route::put('/partner/{id}', [APartner::class, 'update'])->name('admin.partner.update');
+   Route::delete('/partner/{id}', [APartner::class, 'destroy'])->name('admin.partner.delete');
+   Route::get('/partner/contract/{id}', [APartner::class, 'contract'])->name('admin.pcontract.index');
+   Route::put('/partner/create-contract/{id}', [APartner::class, 'createContract'])->name('admin.pcontract.create');
+   Route::delete('/partner/contract/{id}', [APartner::class, 'destroyContract'])->name('admin.pcontract.delete');
+   #Agents
+   Route::get('/agents', [AAgent::class, 'index'])->name('admin.agents.index');
 });

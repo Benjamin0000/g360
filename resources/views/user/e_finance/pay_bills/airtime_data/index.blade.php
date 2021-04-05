@@ -38,15 +38,16 @@ cursor: pointer;
 .n-img-a{
   border:1px solid black;
 }
-.n-img-c{
-
-}
 </style>
 <div class="card" style="min-height:80vh;">
     <div class="card-header text-center" style="background:#eee;">
       <h3>Airtime & Data Subscription</h3>
     </div>
     <div class="card-body">
+      <div class="">
+        <a href="{{route('user.efinance.index')}}" class="btn btn-primary btn-sm">Go back</a>
+      </div>
+      <br>
       <div class="row">
           <div class="col-md-6">
               <div class="card tab">

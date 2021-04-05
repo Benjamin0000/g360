@@ -35,6 +35,21 @@
 		<link href="/assets/css/colors/blue.css" rel="stylesheet" type="text/css" />
 		<title>{{$title}}</title>
 		<style>@media screen and (min-width:992px){.m-auth{display:none;}}</style>
+		<style >
+		.gcon{
+		  border-color:#e6e6e6;
+		  min-height: 100px;
+		  padding: 11px;
+		  border: 1px solid #e6e6e6;
+		  border-radius: 4px;
+		  margin-bottom:10px;
+		  text-align: center;
+		}
+		.gcon:hover{
+		  border-color:blue;
+		  box-shadow: 0 6px 12px rgb(0 0 0 / 10%);
+		}
+		</style>
     </head>
     <body>
 		<!-- Start Preloader Area -->

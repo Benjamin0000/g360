@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Http\Controllers\User;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Airtime;
@@ -24,6 +22,7 @@ class EFinanceController extends Controller
      */
     public function index()
     {
+        
         return view('user.e_finance.index');
     }
     /**
