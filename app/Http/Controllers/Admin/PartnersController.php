@@ -1,12 +1,13 @@
 <?php
 namespace App\Http\Controllers\Admin;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\G360;
 use Illuminate\Http\Request;
 use App\Http\Helpers;
 use App\Models\User;
 use App\Models\Partner;
 use App\Models\PContract;
-class PartnersController extends Controller
+use App\Models\PCashout;
+class PartnersController extends G360
 {
      /**
      * Creates a new Controller instance
@@ -58,7 +59,8 @@ class PartnersController extends Controller
                 'id'=>Helpers::genTableId(Partner::class),
                 'user_id'=>$user->id,
                 'gnumber'=>$user->gnumber,
-                'type'=>$request->type
+                'type'=>$request->type,
+                'min_with'=>$request->min_with
             ]);
             PContract::create([
                 'id'=>Helpers::genTableId(PContract::class),
@@ -84,6 +86,7 @@ class PartnersController extends Controller
             $partner->s_credit = $request->signup_credits;
             $partner->f_credit = $request->finance_credits;
             $partner->e_credit = $request->eshop_credits;
+            $partner->min_with = $request->min_with;
             $partner->save();
             return back()->with('success', 'Partner credentials updated');
         }   
@@ -124,7 +127,7 @@ class PartnersController extends Controller
         return back()->with('error', 'contract not found');
     }
      /**
-     * Destory contract
+     * Destroy contract
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -151,10 +154,47 @@ class PartnersController extends Controller
                 foreach($contracts->get() as $contract)
                     $contract->delete();
             }
+            $cashouts = PCashout::where('partner_id', $partner->id);
+            if($cashouts->exists()){
+                foreach($cashouts->get() as $cashout)
+                    $cashout->delete();
+            }
             $partner->delete();
             return back()->with('success', 'Partner deleted');
         }else{
             return back()->with('error', 'Partner not found');
+        }
+    }
+    public function cashout()
+    {
+        $cashouts = PCashout::latest()->paginate(10);
+        return view('admin.partners.cashout', compact('cashouts'));
+    }
+    public function processCashout(Request $request, $id)
+    {
+        $cashout = PCashout::find($id);
+        if($cashout){
+            $partner = $cashout->partner;
+            $user = $cashout->user;
+            $amount = $cashout->amount;
+            $partner->debited += $amount;
+            $user->self::$with_balance += $amount;
+            $user->save();
+            WalletHistory::create([
+                'id'=>Helpers::genTableId(WalletHistory::class),
+                'user_id'=>$user->id,
+                'amount'=>$amount,
+                'gnumber'=>$user->gnumber,
+                'name'=>self::$with_balance,
+                'type'=>'credit',
+                'description'=>self::$cur.number_format($amount).' from partnership earning'
+            ]);
+            $partner->save();
+            $cashout->status = 1;
+            $cashout->save();
+            return back()->with('success', 'Cashout completed');
+        }else{
+            return back()->with('error', 'not found');
         }
     }
 }

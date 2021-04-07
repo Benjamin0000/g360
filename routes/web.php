@@ -20,6 +20,7 @@ use App\Http\Controllers\User\ShopController as UShop;
 use App\Http\Controllers\User\TradingController;
 use App\Http\Controllers\User\PartnershipController;
 use App\Http\Controllers\User\GmarketController as UGmarket;
+use App\Http\Controllers\User\AgentController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use App\Lib\Interswitch\BillPayment;
@@ -147,6 +148,11 @@ Route::group(['prefix'=>'portal'],  function(){
     #partner
     Route::get('/partner', [PartnershipController::class, 'index'])->name('user.partnership.index');
     Route::post('/partner', [PartnershipController::class, 'cashout'])->name('user.partnership.cashout');
+    #agent
+    Route::get('/agent', [AgentController::class, 'index'])->name('user.agent.index');
+    Route::get('/agent/apply', [AgentController::class, 'apply'])->name('user.agent.apply');
+    Route::post('/agent/create', [AgentController::class, 'create'])->name('user.agent.create');
+    Route::delete('/agent/delete/{id}', [AgentController::class, 'deleteRequest'])->name('user.agent.deleteRequest');
 });
 
 #Admin
@@ -176,6 +182,16 @@ Route::group(['prefix'=>'admin'],  function(){
    Route::get('/partner/contract/{id}', [APartner::class, 'contract'])->name('admin.pcontract.index');
    Route::put('/partner/create-contract/{id}', [APartner::class, 'createContract'])->name('admin.pcontract.create');
    Route::delete('/partner/contract/{id}', [APartner::class, 'destroyContract'])->name('admin.pcontract.delete');
+   Route::get('/partner-cashout', [APartner::class, 'cashout'])->name('admin.partner.cashout');
+   Route::patch('/partner-cashout/process/{id}', [APartner::class, 'processCashout'])->name('admin.partner.processCashout');
    #Agents
    Route::get('/agents', [AAgent::class, 'index'])->name('admin.agents.index');
+   Route::post('/agents', [AAgent::class, 'create'])->name('admin.agents.create');
+   Route::get('/agents/new', [AAgent::class, 'newAgents'])->name('admin.agents.new');
+   Route::patch('/agents/makesupper/{id}', [AAgent::class, 'makeSuper'])->name('admin.agents.makeSuper');
+   Route::patch('/agents/approve/{id}', [AAgent::class, 'approveRequest'])->name('admin.agents.approve');
+   Route::delete('/agents/disapprove/{id}', [AAgent::class, 'disApproveRequest'])->name('admin.agents.disapprove');
+   Route::get('/agents/settings', [AAgent::class, 'settings'])->name('admin.agents.settings');
+   Route::post('/agents/settings/update', [AAgent::class, 'updateAgent'])->name('admin.agents.settings.update');
+   Route::post('/superagents/settings/update', [AAgent::class, 'updateSuperAgent'])->name('admin.superagent.settings.update');
 });

@@ -10,6 +10,8 @@ use App\Models\Package;
 use App\Models\WalletHistory;
 use App\Models\Epin;
 use App\Models\State;
+use App\Models\AgentSetting;
+use App\Models\PartnerProfit;
 use libphonenumber\PhoneNumberUtil;
 use libphonenumber\NumberParseException;
 use Exception;
@@ -217,7 +219,6 @@ use Exception;
         }
         return null;
     }
-
     /**
       * Get gnumber for the default user
       * @param  void 
@@ -461,6 +462,46 @@ use Exception;
         if($node->exists() && $node->first()->hasChildren())
             return $node->first()->children()->pluck('name')->toArray();
         return 0;
+    }
+    public static function validStateAndCity($state, $city)
+    {
+        if($theState = State::where('name', $state)->first()){
+            if($theCity = State::where('name', $city)->first()){
+                if($theCity->parent_id == $theState->id){
+                    return [
+                        'state_id'=>$theState->id, 
+                        'city_id'=>$theCity->id
+                    ];
+                }
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
+    public static function getStateById($id)
+    {
+        $state = State::find($id);
+        if($state)
+            return $state->name;
+        return "";
+    }
+    public static function partnerUreward()
+    {
+        $partnerP = PartnerProfit::where('name', 'partner')->first();
+        $partnerP->users_count += 1;
+        $partnerP->save();
+    }
+    public static function rewardAgent($gnumber)
+    {
+        $user = User::where('gnumber', $gnumber)->first();
+        if($user && $user->agent){
+            if($set = AgentSetting::first()){
+                $agent = $user->agent;
+                $agent->creditAgent('r', $set->ag_sra);
+            }
+        }
     }
 } 
  ?>

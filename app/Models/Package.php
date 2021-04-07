@@ -126,6 +126,11 @@ class Package extends Model
                 'user_id'=>$user->id
             ]);
         }
+        if($from == 0){
+            Helpers::partnerUreward();
+            if($ref_gnum = $user->ref_gnum)
+                Helpers::rewardAgent($ref_gnum);
+        }
         return true;
     }
 }

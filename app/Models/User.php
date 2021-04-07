@@ -152,6 +152,13 @@ class User extends Authenticatable
     {
         return $this->hasOne(Partner::class, 'user_id');
     }
+    public function validPartner()
+    {
+        return PContract::where([ 
+            ['user_id', $this->id],
+            ['status', 0 ]
+        ])->exists();
+    }
      /**
      * Agent
      * @return int
@@ -159,5 +166,9 @@ class User extends Authenticatable
     public function agent()
     {
         return $this->hasOne(Agent::class, 'user_id');
+    }
+    public function upline()
+    {
+       return self::where('gnumber', $this->ref_gnum)->first();
     }
 }

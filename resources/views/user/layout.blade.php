@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/css/nice-select.min.css" integrity="sha512-CruCP+TD3yXzlvvijET8wV5WxxEh5H8P4cmz0RFbKK6FlZ2sYl3AEsKlLPHbniXKSrDdFewhbmBK5skbdsASbQ==" crossorigin="anonymous" />
     {{-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> --}}
     <link href="/assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-    <link href="/assets/css/style.css?v=2" rel="stylesheet" type="text/css" /> 
+    <link href="/assets/css/style.css?v=2" rel="stylesheet" type="text/css" />
     <link href="/assets/css/colors/blue.css" rel="stylesheet" type="text/css" />
     <link href="/assets/plugins/datatables.net-bs4/css/dataTables.bootstrap4.css" rel="stylesheet" type="text/css" />
     <script src="https://kit.fontawesome.com/bb8f3fac95.js" crossorigin="anonymous"></script>
@@ -39,6 +39,9 @@
         .form-control{
             /* box-shadow: none !important; */
         }
+    </style>
+    <style type="text/css">
+    .lds-ripple{display:inline-block;position:relative;width:80px;height:80px}.lds-ripple div{position:absolute;border:4px solid #bb5de0;opacity:1;border-radius:50%;animation:lds-ripple 1s cubic-bezier(0,.2,.8,1) infinite}.lds-ripple div:nth-child(2){animation-delay:-.5s}@keyframes lds-ripple{0%{top:36px;left:36px;width:0;height:0;opacity:1}100%{top:0;left:0;width:72px;height:72px;opacity:0}}
     </style>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -92,16 +95,12 @@
                               </a>
                           </li>
                         @endif
-                        {{-- @if(Auth::user()->agent)
                           <li class="nav-item">
-                              <a class="nav-link" href="">
+                              <a class="nav-link" href="{{route('user.agent.index')}}">
                                 <span class="btn btn-danger">Agent</span>
                               </a>
                           </li>
-                        @endif --}}
-
-                        <li class="nav-item hide"> <a class="nav-link text-muted " href="javascript:void(0)"><i class="ti-user"></i> 123456789 </a> </li>
-
+                        {{-- <li class="nav-item hide"> <a class="nav-link text-muted " href="javascript:void(0)"><i class="ti-user"></i> 123456789 </a> </li> --}}
                     </ul>
 
                 </div>

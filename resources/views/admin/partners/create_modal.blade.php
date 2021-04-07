@@ -33,6 +33,10 @@
                 <label for="">Duration (In Months)</label>
                 <input type="text" name="duration" value="" class="form-control">
             </div>
+            <div class="form-group">
+              <label for="">Min Withdrawable</label>
+              <input type="text" name="min_with" value="" class="form-control">
+            </div>
             @csrf
             <div class="form-group">
                  <button class="btn btn-primary">CREATE</button>

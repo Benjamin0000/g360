@@ -148,7 +148,7 @@ class GsClubController extends G360
      * @param  \Illuminate\Http\Request  $request
      * @return Void
     */
-    public static function shareCommision($gnumber, $amt, $placed_by, $level=0)
+    private static function shareCommision($gnumber, $amt, $placed_by, $level=0)
     {
         if($level >= 3)return;
         $reward = ($this->formular[$level] / 100) * $amt;
@@ -171,7 +171,7 @@ class GsClubController extends G360
         return self::shareCommision($user->ref_gnum, $amt, $user->placed_by, $level+1);
     }
 
-    public function finishCredit(User $user, $reward, $h_token)
+    private function finishCredit(User $user, $reward, $h_token)
     {
         $user->self::$pend_balance += $reward;
         $user->self::$h_token += $h_token;
@@ -196,7 +196,6 @@ class GsClubController extends G360
             'description'=>self::$cur.number_format($reward).' GSTeam level '.
             $level+1 . ' ref commision'
         ]);
-
     }
 
 }

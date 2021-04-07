@@ -30,7 +30,6 @@ $user = Auth::user();
           </div>
       </div>
   </div>
-
   <div class="col-lg-4" style="margin-bottom:10px;">
       <div class="card" style="margin:0;">
           <div class="card-body">
@@ -102,8 +101,12 @@ $user = Auth::user();
     <div class="col-lg-4">
         <div class="card" style="margin:0;">
             <div class="card-body">
-                <h4 class="card-title">Current Balance    &nbsp;<button class="btn btn-sm btn-primary" data-toggle='modal' data-target='#cashout'>Cashout</button>
-</h4>
+                <h4 class="card-title">Current Balance
+                  @if($partner->balance >= $partner->min_with)
+                     &nbsp;
+                    <button class="btn btn-sm btn-primary" data-toggle='modal' data-target='#cashout'>Cashout</button>
+                  @endif
+                </h4>
                 <div class="text-right">
                     <h2 class="font-light mb-0"><i class="mdi mdi-wallet text-success"></i>
                       {{$cur}}{{number_format($partner->balance, 2, '.', ',')}}
@@ -119,7 +122,7 @@ $user = Auth::user();
     <div class="col-lg-4">
         <div class="card" style="margin:0;">
             <div class="card-body">
-                <h4 class="card-title">Total Spent</h4>
+                <h4 class="card-title">Total Withdrawn</h4>
                 <div class="text-right">
                     <h2 class="font-light mb-0"><i class="mdi mdi-wallet text-success"></i>
                       {{$cur}}{{number_format($partner->debited, 2, '.', ',')}}
@@ -139,7 +142,6 @@ $user = Auth::user();
     <div class="d-flex m-b-40 align-items-center no-block">
         <h5 class="card-title">CONTRACTS</h5>
     </div>
-
     <div class="table-responsive">
     <table class="table table-bordered table-hover">
       <thead>

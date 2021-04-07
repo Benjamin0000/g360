@@ -25,4 +25,15 @@ class PContract extends Model
     {
         return $this->belongsTo(Partner::class, 'partner_id');
     }
+    public function creditContract($amt)
+    {
+        $partner = Partner::where('id', $this->partner_id);
+        if($partner){
+            $this->returned += $amt;
+            $partner->credited += $amt;
+            $partner->balance += $amt;
+            $partner->save();
+            $this->save();
+        }
+    }
 }

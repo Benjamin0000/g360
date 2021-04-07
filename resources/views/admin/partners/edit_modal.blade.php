@@ -21,6 +21,10 @@
               <label for="">Eshop credits</label>
               <input type="text" name="eshop_credits" value="{{$partner->e_credit}}" class="form-control">
             </div>
+            <div class="form-group">
+              <label for="">Min Withdrawable</label>
+              <input type="text" name="min_with" value="{{$partner->min_with}}" class="form-control">
+            </div>
             @method('put')
             @csrf
             <div class="form-group">

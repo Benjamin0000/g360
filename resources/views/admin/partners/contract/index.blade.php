@@ -76,7 +76,7 @@ $cur = Helpers::LOCAL_CURR_SYMBOL;
                                @if($contract->months)
                                  <div>{{$contract->months}} Months</div>
                                  {{$contract->created_at->addMonths($contract->months)->isoFormat('lll')}}
-                                 @if(Carbon::now() >= $contract->created_at->addMonths($contract->months))
+                                 @if($contract->created_at->diffInMonths() >= $contract->months)
                                    <div><small class="text-danger">Expired</small></div>
                                  @endif
                                @else

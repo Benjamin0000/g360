@@ -5,17 +5,14 @@ use App\Http\Helpers;
 use Carbon\Carbon;
 $cur = Helpers::LOCAL_CURR_SYMBOL;
 @endphp
-<style >
-  tr{
-    text-align: center;
-  }
-</style>
+<style>tr{text-align:center;}</style>
 <div class="row page-titles">
     <div class="col-md-5 align-self-center">
         <h4 class="text-themecolor">PARTNERS</h4>
     </div>
     <div class="col-md-7 align-self-center text-right">
         <div class="d-flex justify-content-end align-items-center">
+            <a href="{{route('admin.partner.cashout')}}" class="btn btn-info d-none d-lg-block m-l-15"><i class="fa fa-money"></i>Cashouts</a>
             <a href="#" data-toggle='modal' data-target='#create' class="btn btn-info d-none d-lg-block m-l-15"><i class="fa fa-plus-circle"></i>Create Partner</a>
         </div>
     </div>

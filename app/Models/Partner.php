@@ -20,7 +20,8 @@ class Partner extends Model
         'type',
         's_credit',
         'f_credit',
-        'e_credit'
+        'e_credit',
+        'min_with'
     ];
     public function user()
     {

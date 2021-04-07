@@ -24,6 +24,7 @@ class CreatePartnersTable extends Migration
             $table->float('s_credit')->default(0); // sign up
             $table->float('f_credit')->default(0); // finance
             $table->float('e_credit')->default(0); // eshop
+            $table->decimal('min_with', 65, 2)->default(0);
             $table->timestamps();
         });
     }

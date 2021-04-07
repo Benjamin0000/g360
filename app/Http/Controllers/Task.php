@@ -15,6 +15,11 @@ use App\Models\GsClub;
 use App\Models\GsClubH;
 use App\Models\PPP;
 use App\Models\Trading;
+use App\Models\PartnerProfit;
+use App\Models\PContract;
+use App\Models\GTR;
+use App\Models\Agent;
+use App\Models\AgentSetting;
 use App\Http\Helpers;
 use Carbon\Carbon;
 class Task extends G360
@@ -407,7 +412,7 @@ class Task extends G360
      *
      * @return void
     */
-    public function loan()
+    public static function loan()
     {
         $loans = Loan::where([ ['status', 0], ['defaulted', 0] ])->get();
         foreach($loans as $loan)
@@ -499,7 +504,7 @@ class Task extends G360
      *
      * @return void
     */
-    public function gracedLoan()
+    public static function gracedLoan()
     {
         $loans = Loan::where([ ['status', 0], ['defaulted', 1] ])
         ->whereNull('default_date')->get();
@@ -546,60 +551,9 @@ class Task extends G360
        ])->orderBy('created_at', 'asc')->get();
        if($givers->count()){
             foreach ($givers as $giver) {
-                if(Carbon::parse($giver->lastg)->diffInHours() >= 24){
-                    $receiver = GsClub::where([
-                        ['status', 0],
-                        ['g', 0],
-                        ['gbal', $giver->gbal],
-                        ['r_count', '<=', $r_count]
-                    ])->orderBy('created_at', 'asc')->first();
-                    switch ($giver->gbal) {
-                        case 1500:
-                            $pay_back = 2500;
-                            $r_count = 7;
-                            $days = 7;
-                            self::gsclubR($giver, $r_count, $pay_back, $receiver, $days);
-                        break;
-                        case 2500:
-                            $pay_back = 7500;
-                            $r_count = 7;
-                            $days = 15;
-                            self::gsclubR($giver, $r_count, $pay_back, $receiver, $days);
-                        break;
-                        case 7500:
-                            $pay_back = 30500;
-                            $r_count = 7;
-                            $days = 15;
-                            self::gsclubR($giver, $r_count, $pay_back, $receiver, $days);
-                        break;
-                        case 30500:
-                            $pay_back = 83000;
-                            $r_count = 6;
-                            self::gsclubR($giver, $r_count, $pay_back, $receiver, $days);
-                        break;
-                        case 83000:
-                            $pay_back = 215000;
-                            $r_count = 5;
-                            self::gsclubR($giver, $r_count, $pay_back, $receiver, $days);
-                        case 215000:
-                            $pay_back = 460000;
-                            $r_count = 4;
-                            self::gsclubR($giver, $r_count, $pay_back, $receiver, $days);
-                        break;
-                        case 460000:
-                            $pay_back = 580000;
-                            $r_count = 3;
-                            self::gsclubR($giver, $r_count, $pay_back, $receiver, $days);
-                        case 580000:
-                            $pay_back = 19750;
-                            $r_count = 2;
-                            $days = 
-                            self::gsclubR($giver, $r_count, $pay_back, $receiver, $days);
-                        break;
-                        default:
-                        // code...
-                        break;
-                    }
+                if($gtr = GTR::where('amount', $giver->gbal)->first()){
+                    if(Carbon::parse($giver->lastg)->diffInHours() >= $gtr->g_hours)
+                        self::gsclubR($giver, $gtr);
                 }
             }
         }
@@ -609,88 +563,71 @@ class Task extends G360
      *
      * @return void
     */
-    public static function gsclubR(GsClub $giver, $r_count, $pay_back, GsClub $receiver, $days)
+    public static function gsclubR(GsClub $giver, GTR $gtr, $r_id = 0)
     {
+        $first_amt = GTR::orderBy('id', 'ASC')->first()->amount;
+        $last = GTR::orderBy('id', 'DESC')->first()->id;
+        $r_count = $gtr->r_count;
+        $pay_back = $gtr->pay_back;
+        $days = $gtr->r_days;
+        $dateCheck = Carbon::now()->subHours($days);
+        $receiver = GsClub::where([
+            ['id', '<>', $r_id],
+            ['status', 0],
+            ['g', 0],
+            ['gbal', $giver->gbal]
+        ])->whereDate('lastr', '<=', $dateCheck)
+        ->orderBy('created_at', 'asc')->first();
         if($receiver){
-            if( Carbon::parse($receiver->lastr)->diffInDays() >= $days ){
-
-                $receiver->r_count+=1;
-                if($receiver->r_count >= $r_count){
-                    $total = $giver->gbal * $r_count;
-                    $receiver->wbal += $total - $pay_back;
-                    $receiver->gbal = $pay_back;
-                    $receiver->r_count = 0;
-                    #convert receiver to a giver
-                    $receiver->g = 1;
-                    $receiver->lastg = Carbon::now();
-                }
-                $notEligible = false;
-                if($giver->gbal == 7500){
-
-                    if($receiver->user->totalValidRef() < 1)
-                        $notEligible = true;
-
-                }elseif($giver->gbal == 30500){
-
-                    if($receiver->user->totalValidRef() < 3)
-                        $notEligible = true;
-
-                }elseif($giver->gbal == 83000){
-
-                    if($receiver->user->totalValidRef() < 6)
-                        $notEligible = true;
-
-                }elseif($giver->gbal == 215000){
-
-                    if($receiver->user->totalValidRef() < 12)
-                        $notEligible = true;
-
-                }elseif($giver->gbal == 460000){
-
-                    if($receiver->user->totalValidRef() < 24)
-                        $notEligible = true;
-
-                }elseif($giver->gbal == 580000){
-
-                    if($receiver->user->totalValidRef() < 50)
-                        $notEligible = true;
-
-                    $receiver->gbal = 1500;
+            $receiver->r_count+=1;
+            if($receiver->r_count >= $r_count){
+                $total = $giver->gbal * $r_count;
+                $receiver->wbal += $total - $pay_back;
+                $receiver->gbal = $pay_back;
+                $receiver->r_count = 0;
+                #convert receiver to a giver
+                $receiver->g = 1;
+                $receiver->lastg = Carbon::now();
+                if($gtr->id == $last){
+                    $receiver->gbal = $first_amt;
                     $receiver->circle += 1;
                     $receiver->status = 1;
                 }
-                if($notEligible){
-                    $receiver = GsClub::where([
-                        ['status', 0],
-                        ['g', 0],
-                        ['gbal', $giver->gbal],
-                        ['r_count', '<=', $r_count],
-                        ['id', '<>', $receiver->id]
-                    ])->orderBy('created_at', 'asc')->first();
-                    self::gsclubR($giver, $r_count, $pay_back, $receiver);
-                }else{
-                    $receiver->save();
-                    #convert giver to a receiver
-                    $giver->g = 0;
-                    $giver->lastr = Carbon::now();
-                    $giver->save();
-                    GsClubH::create([
-                        'id'=>Helpers::genTableId(GsClubH::class),
-                        'user_id'=>$receiver->user_id,
-                        'amount'=>$giver->gbal,
-                        'type'=>0,
-                        'description'=>self::$cur.number_format($giver->gbal)." Received from ".
-                        $giver->user->fname.' '.$giver->user->lname
-                    ]);
-                    GsClubH::create([
-                        'id'=>Helpers::genTableId(GsClubH::class),
-                        'user_id'=>$giver->user_id,
-                        'amount'=>$giver->gbal,
-                        'type'=>1,
-                        'description'=>self::$cur.number_format($giver->gbal)." Sent to ".
-                        $receiver->user->fname.' '.$receiver->user->lname
-                    ]);
-                }
+            }
+            $notEligible = false;
+            if(!$receiver->user->validPartner()){
+                if($receiver->user->totalValidRef() < $gtr->total_ref)
+                    $notEligible = true;
+            }else{
+                $receiver->status = 0;
+            }
+            if($receiver->agent){
+                #requirement
+            }
+            if($notEligible){
+                self::gsclubR($giver, $gtr, $receiver->id);
+            }else{
+                $receiver->save();
+                #convert giver to a receiver
+                $giver->g = 0;
+                $giver->lastr = Carbon::now();
+                $giver->save();
+                GsClubH::create([
+                    'id'=>Helpers::genTableId(GsClubH::class),
+                    'user_id'=>$receiver->user_id,
+                    'amount'=>$giver->gbal,
+                    'type'=>0,
+                    'description'=>self::$cur.number_format($giver->gbal)." Received from ".
+                    $giver->user->fname.' '.$giver->user->lname
+                ]);
+                GsClubH::create([
+                    'id'=>Helpers::genTableId(GsClubH::class),
+                    'user_id'=>$giver->user_id,
+                    'amount'=>$giver->gbal,
+                    'type'=>1,
+                    'description'=>self::$cur.number_format($giver->gbal)." Sent to ".
+                    $receiver->user->fname.' '.$receiver->user->lname
+                ]);
             }
         }
     }
@@ -699,7 +636,7 @@ class Task extends G360
      *
      * @return void
     */
-    public function ppp()
+    public static  function ppp()
     {
         $acheived = 1;
         $needGrace = 2;
@@ -754,7 +691,7 @@ class Task extends G360
      *
      * @return void
     */
-    public function rPPP()
+    public static function rPPP()
     {
         $acheived = 1;
         $pv = 100000;
@@ -786,7 +723,12 @@ class Task extends G360
             }
         }
     }
-    public function trading()
+     /**
+     *For traders
+     *
+     * @return void
+    */
+    public static function trading()
     {
         $trading = Trading::where('status', 0)->get();
         foreach($trading as $trade){
@@ -840,6 +782,87 @@ class Task extends G360
                 ]);
                 $trade->status = 1;
                 $trade->save();
+            }
+        }
+    }
+     /**
+     *Get profit share statictics and share
+     *
+     * @return void
+    */
+    public static function shareSignupProfit()
+    {
+        $track = PartnerProfit::where('name', 'partner')->first();
+        $contracts = PContract::where('status', 0);
+        $total = $track->users_count - $track->last_count;
+        if($total > 0){
+            if($contracts->exists()){
+                foreach($contracts->get() as $contract){
+                    $partner = $contract->partner;
+                    if($contract->returned >= $contract->total_return && $partner->type == 0){
+                        $contract->status = 1;
+                    }else{
+                        $amt = ($partner->s_credit*$total);
+                        $contract->creditContract($amt);
+                    }
+                    $contract->save();
+                }
+                self::expire_contract();
+            }
+            $track->last_count += $total;
+            $track->save();
+        }
+    }
+    public static function expire_contract()
+    {
+        $contracts = PContract::where('status', 0);
+        if($contracts->exists()){
+            foreach($contracts->get() as $contract){
+                $partner = $contract->partner;
+                if($contract->created_at->diffInMonths() >= $contract->months && $partner->type == 0){
+                    $contract->status = 2;
+                    $contract->save();
+                }elseif($contract->returned >= $contract->total_return && $partner->type == 0){
+                    $contract->status = 1;
+                    $contract->save();
+                }
+            }
+        }
+    }
+    public static function sAgentRGcoin()
+    {
+        $sAgents = Agent::where('type', 1)->get();
+        if($sAgents->count()){
+            $set = AgentSetting::first();
+            if($set){
+                foreach($sAgents as $sAgent){
+                    $totalRefsCount = 0;
+                    $subAgents = Agent::where('ref_by', $sAgent->id)->get();
+                    $totalAgents = $subAgents->count();
+                    if($totalAgents){
+                        foreach($subAgents as $agent){
+                            $totalRefsCount += $agent->totalValidReferrer();
+                        }
+                    }
+                    if($totalRefsCount){
+                        $newRefs = $totalRefsCount - $sAgent->sg_ref_total;
+                        $valid = false;
+                        if( ($newRefs/$totalAgents) > 0){
+                            $valid = true;
+                        }
+                        if($newRefs >= 0){
+                            $gcoin = intval($newRefs/$set->sg_trprgc);
+                            if($gcoin > 0 && $valid){
+                                $sAgent->rgold_deca += ($gcoin * $set->sg_prgc);
+                                $sAgent->sg_ref_total += $newRefs;
+                                $sAgent->save();
+                            }
+                        }else{
+                            $sAgent->sg_ref_total = $totalRefsCount;
+                            $sAgent->save();
+                        }
+                    }
+                }
             }
         }
     }

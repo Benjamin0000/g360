@@ -1,11 +1,14 @@
 <?php
 namespace App\Http\Controllers\User;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\G360;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Helpers;
 use App\Models\Partner;
 use App\Models\PContract;
-class PartnershipController extends Controller
+use App\Models\PCashout;
+use App\Models\WalletHistory;
+class PartnershipController extends G360
 {
     /**
     * Creates a new controller instance
@@ -40,64 +43,44 @@ class PartnershipController extends Controller
      */
     public function cashout(Request $request)
     {
+        $amount = $request->amount;
         $user = Auth::user();
         $partner = $user->partner;
-        
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        if($amount >= $partner->min_with){
+            if($partner->balance >= $amount){
+                $partner->balance -= $amount;
+                if($partner->type == 1){
+                    $partner->debited += $amount;
+                    $user->self::$with_balance += $amount;
+                    $user->save();
+                    WalletHistory::create([
+                        'id'=>Helpers::genTableId(WalletHistory::class),
+                        'user_id'=>$user->id,
+                        'amount'=>$amount,
+                        'gnumber'=>$user->gnumber,
+                        'name'=>self::$with_balance,
+                        'type'=>'credit',
+                        'description'=>self::$cur.number_format($amount).' from partnership earning'
+                    ]);
+                    $status = 1;
+                }else{
+                    $status = 0;
+                }
+                $partner->save();
+                PCashout::create([
+                    'id'=>Helpers::genTableId(PCashout::class),
+                    'partner_id'=>$partner->id,
+                    'user_id'=>$user->id,
+                    'amount'=>$amount,
+                    'status'=>$status
+                ]);
+                return back()->with('success', 'Payout submitted');
+            }else{
+                return back()->with('error', 'No enough fund in your balance yet');
+            }
+        }else{
+            return back()->with('error', 'minimum withdrawal amount is '.
+            self::$cur.$partner->min_with);
+        }
     }
 }

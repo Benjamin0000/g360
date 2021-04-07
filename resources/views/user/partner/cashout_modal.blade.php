@@ -8,7 +8,7 @@
           </button>
         </div>
         <div class="modal-body">
-          <form action="" method="post">
+          <form action="{{route('user.partnership.cashout')}}" method="post">
             <div class="form-group">
               {{-- <div class="text-center"><label for="">Amount</label></div> --}}
               <input type="text" name="amount" value="" class="form-control" placeholder="Enter amount">
