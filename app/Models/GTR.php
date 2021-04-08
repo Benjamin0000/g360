@@ -14,6 +14,7 @@ class GTR extends Model
         'amount',
         'pay_back',
         'r_count',
+        'r_hours',
         'g_hours',
         'r_days',
         'total_ref',
