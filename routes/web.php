@@ -25,12 +25,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use App\Lib\Interswitch\BillPayment;
 use App\Http\Controllers\Admin\DashboardController as ADashboard;
+use App\Http\Controllers\Admin\RankController as ARank;
 use App\Http\Controllers\Admin\TradingController as ATrading;
 use App\Http\Controllers\Admin\LoginController as ALogin;
 use App\Http\Controllers\Admin\FinanceController as AFinance;
 use App\Http\Controllers\Admin\GmarketController as AGMarket;
 use App\Http\Controllers\Admin\PartnersController as APartner;
 use App\Http\Controllers\Admin\AgentsController as AAgent;
+use App\Http\Controllers\Admin\SettingsController as ASettings;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -161,6 +163,9 @@ Route::group(['prefix'=>'admin'],  function(){
    Route::get('/login', [ALogin::class, 'index'])->name('admin.login');
    Route::post('/login', [ALogin::class, 'login'])->name('admin.login');
    Route::post('/logout', [ALogin::class, 'logout'])->name('admin.logout');
+   #Rank
+   Route::get('/rank', [ARank::class, 'index'])->name('admin.rank.index');
+   Route::put('/rank/{id}', [ARank::class, 'update'])->name('admin.rank.update');
    #Trading
    Route::get('/trading', [ATrading::class, 'index'])->name('admin.trading.index');
    Route::get('/trading/package', [ATrading::class, 'package'])->name('admin.trading.package');
@@ -194,4 +199,6 @@ Route::group(['prefix'=>'admin'],  function(){
    Route::get('/agents/settings', [AAgent::class, 'settings'])->name('admin.agents.settings');
    Route::post('/agents/settings/update', [AAgent::class, 'updateAgent'])->name('admin.agents.settings.update');
    Route::post('/superagents/settings/update', [AAgent::class, 'updateSuperAgent'])->name('admin.superagent.settings.update');
-});
+   Route::get('/settings', [ASettings::class, 'index'])->name('admin.settings.index');
+   Route::post('/settings/ppp', [ASettings::class, 'ppp'])->name('admin.settings.ppp');
+}); 

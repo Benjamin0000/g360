@@ -4,15 +4,17 @@ use Carbon\Carbon;
 use App\Http\Helpers;
 $cur = Helpers::LOCAL_CURR_SYMBOL;
 $user = Auth::user();
-$last_rank_id = 10;
+$last_rank_id = App\Models\Rank::orderBy('id', 'DESC')->first()->id;
 $sup_as_rank = App\Models\Rank::find(1);
-$sa_fee = 5000;
+$last_pkg = App\Models\Package::orderBy('id', 'DESC')->first();
+$sa_fee = $sup_as_rank->fee;
+$ppp_g_trail = Helpers::getRegData('ppp_grace_trail');
 @endphp
 @section('content')
 <div class="card">
     <div class="card-body">
-        <h4 class="card-title float-left">Current package: <b>{{$user->package->name=='vip'?'VIP': ucfirst($user->package->name)}}</b></h4>
-        @if($user->package->name != 'vip')
+        <h4 class="card-title float-left">Current package: <b>{{$user->package->id == $last_pkg->id ? strtoupper($last_pkg->name): ucfirst($user->package->name)}}</b></h4>
+        @if($user->package->id != $last_pkg->id)
             <a href="{{route('user.package.select_premium')}}" class="btn btn-danger btn-sm float-right">UPGRADE</a>
         @endif
     </div>
@@ -32,7 +34,7 @@ $sa_fee = 5000;
             </div>
         </div>
     </div>
-@if($user->pkg_balance != $last_rank_id)
+@if($user->rank_id != $last_rank_id)
     <div class="col-lg-3 col-md-6">
         <div class="card">
             <div class="card-body">
@@ -93,62 +95,6 @@ $sa_fee = 5000;
         </div>
     </div>
 @endif
-    {{-- <div class="col-lg-3 col-md-6">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">Monthly Bonus</h4>
-                <div class="text-right">
-                    <h2 class="font-light mb-0"><i class="mdi mdi-led-on text-danger"></i> </h2>
-                    <span class="text-muted">Monthly point accumulation</span>
-                </div>
-                <div class="progress">
-                    <div class="progress-bar bg-danger" role="progressbar" style="width: 100%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-            </div>
-        </div>
-    </div> --}}
-    {{-- <div class="col-lg-3 col-md-6">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">Circle Bonus</h4>
-                <div class="text-right">
-                    <h2 class="font-light mb-0"><i class="mdi mdi-led-on text-danger"></i> </h2>
-                    <span class="text-muted">Monthly point accumulation</span>
-                </div>
-                <div class="progress">
-                    <div class="progress-bar bg-danger" role="progressbar" style="width: 100%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-            </div>
-        </div>
-    </div> --}}
-    {{-- <div class="col-lg-3 col-md-6">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">Laurel Bonus</h4>
-                <div class="text-right">
-                    <h2 class="font-light mb-0"><i class="mdi mdi-led-on text-danger"></i> </h2>
-                    <span class="text-muted">Monthly point accumulation</span>
-                </div>
-                <div class="progress">
-                    <div class="progress-bar bg-danger" role="progressbar" style="width: 100%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-            </div>
-        </div>
-    </div> --}}
-    {{-- <div class="col-lg-3 col-md-6">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">Travel Bonus</h4>
-                <div class="text-right">
-                    <h2 class="font-light mb-0"><i class="mdi mdi-led-on text-danger"></i> </h2>
-                    <span class="text-muted">Monthly point accumulation</span>
-                </div>
-                <div class="progress">
-                    <div class="progress-bar bg-danger" role="progressbar" style="width: 100%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-            </div>
-        </div>
-    </div> --}}
     <div class="col-lg-3 col-md-6">
         <div class="card">
             <div class="card-body">
@@ -163,7 +109,7 @@ $sa_fee = 5000;
             </div>
         </div>
     </div>
-  @if($user->ppp && $user->ppp->status != 3)
+  @if($user->ppp && $user->ppp->status != $ppp_g_trail)
    @php $ppp = $user->ppp @endphp
     <div class="col-lg-3 col-md-6">
         <div class="card">
@@ -185,26 +131,27 @@ $sa_fee = 5000;
                     @php
                       if($ppp->graced_at != ''){
                          $date = $ppp->graced_at;
-                         $days = 30;
+                         $minutes = Helpers::getRegData('ppp_grace_minutes');
                       }else{
                         $date = $ppp->created_at;
-                        $days = 90;
+                        $minutes = Helpers::getRegData('ppp_minutes');
                       }
                     @endphp
                     <script type="text/javascript">
                         onReady(function(){
-                          var nextYear = moment.tz("{{Carbon::parse($date)->addDays($days)}}", 'Africa/Lagos');
+                          var nextYear = moment.tz("{{Carbon::parse($date)->addMinutes($minutes)}}", 'Africa/Lagos');
                           $('#ddp').countdown(nextYear.toDate(), function(event) {
                             $(this).html(event.strftime('%D Days %H hrs : %M:%S'));
                           });
                         })
                     </script>
                   @elseif($ppp->status == 2)
-                  <form action="{{route('user.dashboard.rappp')}}" method="post" class="text-center" style="padding:2px;margin-top:-27px;">
-                    @csrf
-                    <button onclick="return confirm('You will pay a reactivation fee of {{$cur}}10,000')" class="btn btn-primary btn-sm">Reactivate</button>
-                  </form>
-                  @endif
+                    @php $rFee = Helpers::getRegData('ppp_r_fee'); @endphp
+                    <form action="{{route('user.dashboard.rappp')}}" method="post" class="text-center" style="padding:2px;margin-top:-27px;">
+                      @csrf
+                      <button onclick="return confirm('You will pay a reactivation fee of {{$cur.number_format($rFee)}}')" class="btn btn-primary btn-sm">Reactivate</button>
+                    </form>
+                @endif
                 <div class="progress">
                     <div class="progress-bar bg-info" role="progressbar" style="width: 100%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
@@ -212,7 +159,6 @@ $sa_fee = 5000;
         </div>
     </div>
   @endif
-
     @if($associate = $user->superAssoc)
       @if($associate->status != 3)
         <div class="col-lg-3 col-md-6">
@@ -222,7 +168,7 @@ $sa_fee = 5000;
                     <div class="text-center">
                     @php $status = $associate->status @endphp
                     @if($status == 1)
-                      <form  action="{{route('user.dashboard.rassoc')}}" method="post" onsubmit="return confirm('{{$cur}}{{$sa_fee}} will be charged as reactivation fee.')">
+                      <form  action="{{route('user.dashboard.rassoc')}}" method="post" onsubmit="return confirm('{{$cur}}{{number_format($sa_fee)}} will be charged as reactivation fee.')">
                         @csrf
                         <input type="hidden" name="type" value="ac">
                         <button class="btn btn-primary btn-sm">Reactivate</button>
@@ -268,7 +214,7 @@ $sa_fee = 5000;
                           @endif
                           <script type="text/javascript">
                               onReady(function(){
-                                var nextYear = moment.tz("{{Carbon::parse($associate->last_grace)->addDays(30)}}", 'Africa/Lagos');
+                                var nextYear = moment.tz("{{Carbon::parse($associate->last_grace)->addMinutes($sup_as_rank->graced_minutes)}}", 'Africa/Lagos');
                                 $('#clock').countdown(nextYear.toDate(), function(event) {
                                   $(this).html(event.strftime('%D Days %H hrs : %M:%S'));
                                 });
@@ -283,7 +229,7 @@ $sa_fee = 5000;
                         @endif
                         <script type="text/javascript">
                             onReady(function(){
-                              var nextYear = moment.tz("{{$associate->created_at->addDays(60)}}", 'Africa/Lagos');
+                              var nextYear = moment.tz("{{$associate->created_at->addMinutes($sup_as_rank->minutes)}}", 'Africa/Lagos');
                               $('#clock').countdown(nextYear.toDate(), function(event) {
                                 $(this).html(event.strftime('%D Days %H hrs : %M:%S'));
                               });
@@ -300,20 +246,6 @@ $sa_fee = 5000;
         </div>
       @endif
     @endif
-    {{-- <div class="col-lg-3 col-md-6">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">Deca / Coin Wallet</h4>
-                <div class="text-right">
-                    <h2 class="font-light mb-0"><i class="mdi mdi-leaf text-purple"></i>{{$user->deca}} / {{intval($user->deca/1000)}}</h2>
-                    <span class="text-muted">Accrued units</span>
-                </div>
-                <div class="progress">
-                    <div class="progress-bar bg-purple" role="progressbar" style="width: 100%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-            </div>
-        </div>
-    </div> --}}
 </div>
 
 <!-- Row -->
@@ -386,8 +318,8 @@ $sa_fee = 5000;
                                     TRX-wallet
                                   @elseif($history->name == 'with_balance')
                                     W-Wallet
-                                  @elseif($history->name == 'loan_pkg_balance')
-                                    LOAN-PKG-Wallet
+                                  @elseif($history->name == 'pkg_balance')
+                                    PKG-Wallet
                                   @elseif($history->name == 'pend_balance')
                                     PEND-Wallet
                                   @elseif($history->name == 'cpv')

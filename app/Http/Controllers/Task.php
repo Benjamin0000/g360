@@ -259,15 +259,15 @@ class Task extends G360
     {
         $rank = Rank::find(1);
         $pv = $rank->pv;
-        $days = 90;
-        $grace = 30;
+        $minutes = $rank->minutes;
+        $graced_minutes = $rank->graced_minutes;
         $super_pkg_id = 4;
         $sAs = SuperAssociate::where('status', 0)->get();
         foreach($sAs as $sA){
-            if($sA->created_at->diffInDays() <= $days){
+            if($sA->created_at->diffInMinutes() <= $minutes){
                 #allow flow
             }else{
-                if($sA->last_grace != '' && Carbon::parse($sA->last_grace)->diffInDays() <= $grace){
+                if($sA->last_grace != '' && Carbon::parse($sA->last_grace)->diffInMinutes() <= $graced_minutes){
                     #allow flow
                 }else{
                     $sA->status = 1; #faild
@@ -295,8 +295,8 @@ class Task extends G360
     */
     public static function ranking()
     {
-        $ranks = Ranks::all();
-        $last_rank = 10;
+        $ranks = Rank::all();
+        $last_rank = Rank::orderBy('id', 'DESC')->first()->id;
         $no_rank = 0;
         foreach($ranks as $rank){
             $users = User::where([
@@ -305,7 +305,7 @@ class Task extends G360
             ])->get();
             foreach($users as $user){
                 $cpv = $user->cpv;
-                if($rank->name != 'director'){
+                if($rank->id != $last_rank){
                     if($cpv >= $rank->pv && $cpv < $rank->next()->pv){
                         #allow the flow
                     }else{
@@ -318,7 +318,7 @@ class Task extends G360
                 if(Helpers::checkLegBalance($user, $rank->pv)){
                     #credit user
                     $user->rank_id = $rank->id;
-                    $user->self::$pend_trx_balance += $rank->prize;
+                    // $user->self::$with_balance += $rank->prize;
                     $user->self::$total_loan_balance += $user->self::$loan_elig_balance;
                     $user->self::$loan_elig_balance = 0;
                     WalletHistory::create([
@@ -326,7 +326,7 @@ class Task extends G360
                         'user_id'=>$user->id,
                         'amount'=>$rank->prize,
                         'gnumber'=>$user->gnumber,
-                        'name'=>self::$pend_trx_balance,
+                        'name'=>self::$with_balance, //self::$pend_trx_balance
                         'type'=>'credit',
                         'description'=>self::$cur.$rank->prize.
                         ' earned from '.$rank->name.' reward'
@@ -548,7 +548,7 @@ class Task extends G360
        $givers = GsClub::where([
           ['status', 0],
           ['g', 1]
-       ])->orderBy('created_at', 'asc')->get();
+       ])->orderBy('created_at', 'ASC')->get();
        if($givers->count()){
             foreach ($givers as $giver) {
                 if($gtr = GTR::where('amount', $giver->gbal)->first()){
@@ -563,7 +563,7 @@ class Task extends G360
      *
      * @return void
     */
-    public static function gsclubR(GsClub $giver, GTR $gtr, $r_id = 0)
+    private static function gsclubR(GsClub $giver, GTR $gtr, $r_id = 0)
     {
         $first_amt = GTR::orderBy('id', 'ASC')->first()->amount;
         $last = GTR::orderBy('id', 'DESC')->first()->id;
@@ -599,7 +599,7 @@ class Task extends G360
                 if($receiver->user->totalValidRef() < $gtr->total_ref)
                     $notEligible = true;
             }else{
-                $receiver->status = 0;
+                // $receiver->status = 0;
             }
             if($receiver->agent){
                 #requirement
@@ -641,13 +641,17 @@ class Task extends G360
         $acheived = 1;
         $needGrace = 2;
         $faild = 3;
-        $reward = 20000;
+        $reward = Helpers::getRegData('ppp_reward_amount');
+        $required_referrals = Helpers::getRegData('ppp_total_referrals');
+        $required_minutes = Helpers::getRegData('ppp_minutes');
+        $graced_minutes = Helpers::getRegData('ppp_grace_minutes');
+        $grace_trail = Helpers::getRegData('ppp_grace_trail');
         $ppps = PPP::where('status', 0);
         if($ppps->exists()){
             foreach($ppps as $ppp){
-                if($ppp->created_at->diffInDays() >= 90){
+                if($ppp->created_at->diffInMinutes() >= $required_minutes){
                     if($user = User::find($ppp->user_id)){
-                        if($user->totalValidRef() >= 50){
+                        if($user->totalValidRef() >= $required_referrals){
                             if($ppp->grace == 0){
                                 $user->self::$pend_balance += $reward;
                                 $user->save();
@@ -666,9 +670,9 @@ class Task extends G360
                             $ppp->save();
                         }else{
                             if($ppp->graced_at != ''){
-                                if(Carbon::parse($ppp->graced_at)->diffInDays() >= 30){
+                                if(Carbon::parse($ppp->graced_at)->diffInMinutes() >= $graced_minutes){
                                     $ppp->grace += 1;
-                                    if($ppp->grace >= 3)
+                                    if($ppp->grace >= $grace_trail)
                                         $ppp->status = $faild;
                                     else
                                         $ppp->status = $needGrace;
@@ -694,8 +698,8 @@ class Task extends G360
     public static function rPPP()
     {
         $acheived = 1;
-        $pv = 100000;
-        $reward = 50000;
+        $pv = Helpers::getRegData('ppp_pv');
+        $reward = Helpers::getRegData('ppp_payment');
         $ppps = PPP::where('status', $acheived);
         if($ppps->exists()){
             foreach($ppps->get() as $ppp){

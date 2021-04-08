@@ -12,6 +12,7 @@ use App\Models\Epin;
 use App\Models\State;
 use App\Models\AgentSetting;
 use App\Models\PartnerProfit;
+use App\Models\Register;
 use libphonenumber\PhoneNumberUtil;
 use libphonenumber\NumberParseException;
 use Exception;
@@ -502,6 +503,24 @@ use Exception;
                 $agent->creditAgent('r', $set->ag_sra);
             }
         }
+    }
+    public static function saveRegData($name, $value)
+    {
+       $reg = Register::where('name', $name)->first();
+       if($reg){
+            $reg->value = $value;
+            $reg->save();
+       }else{
+            Register::create([
+                'name'=>$name, 
+                'value'=>$value
+            ]);
+       }
+    }
+    public static function getRegData($name)
+    {
+       $reg = Register::where('name', $name)->first();
+       return $reg?$reg->value:'';
     }
 } 
  ?>

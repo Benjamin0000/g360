@@ -40,7 +40,7 @@ class GfundController extends Controller
         if(!$request->ajax())return;
 
         $trx_balance = Helpers::TRX_BALANCE;
-        $loan_pkg_balance = Helpers::LOAN_PKG_BALANCE;
+        $pkg_balance = Helpers::PKG_BALANCE;
         $with_balance = Helpers::WITH_BALANCE;
 
         $last_pkg_id = 7;
@@ -64,10 +64,10 @@ class GfundController extends Controller
             break; 
             case 'pkg':
                 if($user->pkg_id == $last_pkg_id)
-                    return ['msg'=>"Can't make transfer to LOAN-PKG-wallet"];
-                $wallet = 'LOAN-PKG-wallet';
-                $sent = $loan_pkg_balance;
-                $user->$loan_pkg_balance += $amount;
+                    return ['msg'=>"Can't make transfer to PKG-wallet"];
+                $wallet = 'PKG-wallet';
+                $sent = $pkg_balance;
+                $user->$pkg_balance += $amount;
             break;
             default: 
                 return ['msg'=>"Please select a valid wallet"];
@@ -127,7 +127,6 @@ class GfundController extends Controller
         $total = $amount + $fee;
         if($user->$trx_balance < $total)
             return ['msg'=>"Insufficient fund for the 5% fee"];
-
         
         if($request->wallet == 'w')
             $user->$with_balance += $amount;
@@ -222,11 +221,7 @@ class GfundController extends Controller
     public function transMembers(Request $request)
     {
         if(!$request->ajax())return;
-
-        $trx_balance = Helpers::TRX_BALANCE;
-        $loan_pkg_balance = Helpers::LOAN_PKG_BALANCE;
         $with_balance = Helpers::WITH_BALANCE;
-
         $data = self::validateTransfer($request);
         if(isset($data['gnumber'])){
             $gnumber = $data['gnumber'];

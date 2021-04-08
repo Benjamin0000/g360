@@ -69,8 +69,9 @@ class DashboardController extends G360
     public function reactivateSuperAssoc(Request $request)
     {
         $user = Auth::user();
-        $fee = 5000;
         $sA = SuperAssociate::where('user_id', $user->id)->first();
+        $rank = Rank::find(1);
+        $fee = $rank->fee;
         switch($request->type){
             case 'ac': 
                 if($sA && $sA->status == 1){
@@ -100,7 +101,6 @@ class DashboardController extends G360
                 break;
             case 'cl': 
                 if($sA && $sA->status == 2){
-                    $rank = Rank::find(1);
                     $exp_months = $rank->lmp_months;
                     $lmp_amt = $rank->total_lmp/$exp_months;
                     if($request->tp == 'm'){
@@ -175,7 +175,7 @@ class DashboardController extends G360
     {
         $user = Auth::user();
         $ppp = $user->ppp;
-        $fee = 10000;
+        $fee = Helpers::getRegData('ppp_r_fee');
         if($ppp->status == 2){
             if($user->self::$trx_balance >= $fee){
                 $user->self::$trx_balance -= $fee;

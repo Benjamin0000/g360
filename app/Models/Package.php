@@ -109,27 +109,29 @@ class Package extends Model
         Helpers::shareRefCommission($this->id, $amount, $user->gnumber);
         #activate super associate reward
         $check = SuperAssociate::where('user_id', $user->id)->exists();
-        if(!$check && $this->id >= $super_pkg_id)
+        if(!$check && $this->id >= $super_pkg_id){
             SuperAssociate::create(['user_id'=>$user->id]);
-        if(!GsClub::where('user_id', $user->id)->exists()){
-            $gsclub = new GsClub();
-            $gsclub->id = Helpers::genTableId(GsClub::class);
-            $gsclub->user_id = $user->id;
-            $gsclub->gbal = 1500;
-            $gsclub->g = 1;
-            $gsclub->lastg = Carbon::now();
-            $gsclub->save();
         }
         if(!PPP::where('user_id', $user->id)->exists()){
             PPP::create([
                 'id'=>Helpers::genTableId(PPP::class),
-                'user_id'=>$user->id
+                'user_id'=>$user->id,
             ]);
         }
         if($from == 0){
             Helpers::partnerUreward();
-            if($ref_gnum = $user->ref_gnum)
+            if($ref_gnum = $user->ref_gnum){
                 Helpers::rewardAgent($ref_gnum);
+            }
+            if(!GsClub::where('user_id', $user->id)->exists()){
+                $gsclub = new GsClub();
+                $gsclub->id = Helpers::genTableId(GsClub::class);
+                $gsclub->user_id = $user->id;
+                $gsclub->gbal = 1500;
+                $gsclub->g = 1;
+                $gsclub->lastg = Carbon::now();
+                $gsclub->save();
+            }
         }
         return true;
     }

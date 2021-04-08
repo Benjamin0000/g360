@@ -1,4 +1,4 @@
-@extends('admin.layout', ['title'=>'CASHOUTS'])
+@extends('admin.layout', ['title'=>'PARTNERS CASHOUTS'])
 @section('content')
 @php
 use App\Http\Helpers;

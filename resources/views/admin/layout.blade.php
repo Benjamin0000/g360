@@ -349,7 +349,7 @@ var readyStateCheckInterval = setInterval(function() {
                             </ul>
                         </li>
                         {{-- <li class="nav-small-cap">--- PERSONAL</li> --}}
-                        <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="icon-speedometer"></i><span class="hide-menu">Dashboard <span class="badge badge-pill badge-cyan ml-auto">4</span></span></a>
+                        <li> <a class="waves-effect waves-dark" href="{{route('admin.dashboard.index')}}" aria-expanded="false"><i class="icon-speedometer"></i><span class="hide-menu">Dashboard <span class="badge badge-pill badge-cyan ml-auto">4</span></span></a>
                             {{-- <ul aria-expanded="false" class="collapse">
                                 <li><a href="index.html">Minimal </a></li>
                                 <li><a href="index2.html">Analytical</a></li>
@@ -358,21 +358,8 @@ var readyStateCheckInterval = setInterval(function() {
                             </ul> --}}
                         </li>
                         <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="ti-user"></i><span class="hide-menu">Users</span></a>
-                            {{-- <ul aria-expanded="false" class="collapse">
-                                <li><a href="app-calendar.html">Calendar</a></li>
-                                <li><a href="app-chat.html">Chat app</a></li>
-                                <li><a href="app-ticket.html">Support Ticket</a></li>
-                                <li><a href="app-contact.html">Contact / Employee</a></li>
-                                <li><a href="app-contact2.html">Contact Grid</a></li>
-                                <li><a href="app-contact-detail.html">Contact Detail</a></li>
-                                <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><span class="hide-menu">Inbox</span></a>
-                                    <ul aria-expanded="false" class="collapse">
-                                        <li><a href="app-email.html">Mailbox</a></li>
-                                        <li><a href="app-email-detail.html">Mailbox Detail</a></li>
-                                        <li><a href="app-compose.html">Compose Mail</a></li>
-                                    </ul>
-                                </li>
-                            </ul> --}}
+                        </li>
+                        <li> <a class="waves-effect waves-dark" href="{{route('admin.rank.index')}}" aria-expanded="false"><i class="ti-tag"></i><span class="hide-menu">Ranks</span></a>
                         </li>
                         <li> <a class="has-arrow waves-effect waves-dark two-column" href="javascript:void(0)" aria-expanded="false"><i class="ti-palette"></i><span class="hide-menu">G-Market <span class="badge badge-pill badge-primary text-white ml-auto">25</span></span></a>
                             <ul aria-expanded="false" class="collapse">
@@ -409,6 +396,8 @@ var readyStateCheckInterval = setInterval(function() {
                         <li> <a class="waves-effect waves-dark" href="{{route('admin.agents.index')}}" aria-expanded="false"><i class="ti-layout-accordion-merged"></i><span class="hide-menu">Agents</span></a>
                         </li>
                         <li> <a class="waves-effect waves-dark" href="{{route('admin.partner.index')}}" aria-expanded="false"><i class="ti-layout-accordion-merged"></i><span class="hide-menu">Partners</span></a>
+                        </li>
+                        <li> <a class="waves-effect waves-dark" href="{{route('admin.settings.index')}}" aria-expanded="false"><i class="ti-settings"></i><span >Settings</span></a>
                         </li>
                     </ul>
                 </nav>

@@ -19,6 +19,9 @@ class CreateRanksTable extends Migration
             // $table->string('prize_name');
             $table->decimal('prize', 65, 2);
             $table->decimal('loan', 65, 2);
+            $table->decimal('fee', 65, 2)->default(0);
+            $table->integer('minutes')->default(0);
+            $table->integer('graced_minutes')->default(0);
             $table->integer('pv');
             $table->integer('loan_exp_m'); #expiry months
             $table->decimal('total_lmp', 65, 2);
