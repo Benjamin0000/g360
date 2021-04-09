@@ -25,32 +25,6 @@ use Carbon\Carbon;
 class Task extends G360
 {
     /**
-     * Track free users;
-     *
-     * @return Void
-    */
-    public static function trackFreeUsers()
-    {
-        $trial_period = 30; // days
-        $percent = 20; // percent increase
-        $free_pkg_id = 1;
-        $fUsers = TrackFreeUser::where('status', 0);
-        if($fUsers->exists()){
-            $fUsers = $fUsers->get();
-            foreach($fUsers as $fUser){
-                if($fUser->user->pkg_id == $free_pkg_id && $fUser->created_at->diffInDays() >= $trial_period){
-                    if($user = User::find($fUser->user_id)){
-                        $user->free_t_fee = $percent;
-                        $user->save();
-                        $fUser->status = 1;
-                        $fUser->save();
-                    }else
-                        $fUser->delete();
-                }
-            }
-        }
-    }
-    /**
      * Share pending wallet
      *
      * @return Void
@@ -250,7 +224,33 @@ class Task extends G360
             }
         }
     }
-     /**
+    /**
+     * Track free users;
+     *
+     * @return Void
+     */
+    public static function trackFreeUsers()
+    {
+        $trial_period = 30; // days
+        $percent = 20; // percent increase
+        $free_pkg_id = 1;
+        $fUsers = TrackFreeUser::where('status', 0);
+        if($fUsers->exists()){
+            $fUsers = $fUsers->get();
+            foreach($fUsers as $fUser){
+                if($fUser->user->pkg_id == $free_pkg_id && $fUser->created_at->diffInDays() >= $trial_period){
+                    if($user = User::find($fUser->user_id)){
+                        $user->free_t_fee = $percent;
+                        $user->save();
+                        $fUser->status = 1;
+                        $fUser->save();
+                    }else
+                        $fUser->delete();
+                }
+            }
+        }
+    }
+    /**
      * Super assoc. welcome reward
      *
      * @return void
@@ -648,7 +648,7 @@ class Task extends G360
         $grace_trail = Helpers::getRegData('ppp_grace_trail');
         $ppps = PPP::where('status', 0);
         if($ppps->exists()){
-            foreach($ppps as $ppp){
+            foreach($ppps->get() as $ppp){
                 if($ppp->created_at->diffInMinutes() >= $required_minutes){
                     if($user = User::find($ppp->user_id)){
                         if($user->totalValidRef() >= $required_referrals){
