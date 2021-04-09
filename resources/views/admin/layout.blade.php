@@ -359,7 +359,11 @@ var readyStateCheckInterval = setInterval(function() {
                         </li>
                         <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="ti-user"></i><span class="hide-menu">Users</span></a>
                         </li>
+                        <li> <a class="waves-effect waves-dark" href="{{route('admin.package.index')}}" aria-expanded="false"><i class="ti-target"></i><span class="hide-menu">Packages</span></a>
+                        </li>
                         <li> <a class="waves-effect waves-dark" href="{{route('admin.rank.index')}}" aria-expanded="false"><i class="ti-tag"></i><span class="hide-menu">Ranks</span></a>
+                        </li>
+                        <li> <a class="waves-effect waves-dark" href="{{route('admin.gsteam.index')}}" aria-expanded="false"><i class="ti-user"></i><span class="hide-menu">Gs-Team</span></a>
                         </li>
                         <li> <a class="has-arrow waves-effect waves-dark two-column" href="javascript:void(0)" aria-expanded="false"><i class="ti-palette"></i><span class="hide-menu">G-Market <span class="badge badge-pill badge-primary text-white ml-auto">25</span></span></a>
                             <ul aria-expanded="false" class="collapse">
@@ -379,18 +383,15 @@ var readyStateCheckInterval = setInterval(function() {
                                 <li><a href="form-layout.html">Completed</a></li> --}}
                             {{-- </ul> --}}
                         </li>
-                        <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="ti-layout-accordion-merged"></i><span class="hide-menu">Health</span></a>
-                        </li>
-                        <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="ti-layout-accordion-merged"></i><span class="hide-menu">Loan</span></a>
-                        </li>
-                        <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="ti-layout-accordion-merged"></i><span class="hide-menu">Ajor</span></a>
-                        </li>
+                        {{-- <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="ti-layout-accordion-merged"></i><span class="hide-menu">Health</span></a>
+                        </li> --}}
                         <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="ti-settings"></i><span class="hide-menu">E-Finance</span></a>
                             <ul aria-expanded="false" class="collapse">
                                 <li><a href="{{route('admin.finance.vtu')}}">Airtime & Data</a></li>
                                 <li><a href="widget-apps.html">Electricity</a></li>
                                 <li><a href="widget-apps.html">Cable TV</a></li>
                                 <li><a href="widget-apps.html">Money transfer</a></li>
+                                <li><a href="widget-apps.html">Loan</a></li>
                             </ul>
                         </li>
                         <li> <a class="waves-effect waves-dark" href="{{route('admin.agents.index')}}" aria-expanded="false"><i class="ti-layout-accordion-merged"></i><span class="hide-menu">Agents</span></a>

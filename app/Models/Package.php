@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Models;
-
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Helpers;
@@ -127,7 +125,7 @@ class Package extends Model
                 $gsclub = new GsClub();
                 $gsclub->id = Helpers::genTableId(GsClub::class);
                 $gsclub->user_id = $user->id;
-                $gsclub->gbal = 1500;
+                $gsclub->gbal = GTR::orderBy('id', 'ASC')->first()->amount;
                 $gsclub->g = 1;
                 $gsclub->lastg = Carbon::now();
                 $gsclub->save();

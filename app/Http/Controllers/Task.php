@@ -552,7 +552,7 @@ class Task extends G360
        if($givers->count()){
             foreach ($givers as $giver) {
                 if($gtr = GTR::where('amount', $giver->gbal)->first()){
-                    if(Carbon::parse($giver->lastg)->diffInHours() >= $gtr->g_hours)
+                    if(Carbon::parse($giver->lastg)->diffInMinutes() >= $gtr->g_hours)
                         self::gsclubR($giver, $gtr);
                 }
             }
@@ -570,13 +570,13 @@ class Task extends G360
         $r_count = $gtr->r_count;
         $pay_back = $gtr->pay_back;
         $days = $gtr->r_days;
-        $dateCheck = Carbon::now()->subHours($days);
+        $dateCheck = Carbon::now()->subMinutes($days);
         $receiver = GsClub::where([
             ['id', '<>', $r_id],
             ['status', 0],
             ['g', 0],
             ['gbal', $giver->gbal]
-        ])->whereDate('lastr', '<=', $dateCheck)
+        ])->where('lastr', '<=', $dateCheck)
         ->orderBy('created_at', 'asc')->first();
         if($receiver){
             $receiver->r_count+=1;

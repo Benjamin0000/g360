@@ -33,6 +33,8 @@ use App\Http\Controllers\Admin\GmarketController as AGMarket;
 use App\Http\Controllers\Admin\PartnersController as APartner;
 use App\Http\Controllers\Admin\AgentsController as AAgent;
 use App\Http\Controllers\Admin\SettingsController as ASettings;
+use App\Http\Controllers\Admin\PackageController as APackage;
+use App\Http\Controllers\Admin\GsTeamController as AGsTeam;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -201,4 +203,11 @@ Route::group(['prefix'=>'admin'],  function(){
    Route::post('/superagents/settings/update', [AAgent::class, 'updateSuperAgent'])->name('admin.superagent.settings.update');
    Route::get('/settings', [ASettings::class, 'index'])->name('admin.settings.index');
    Route::post('/settings/ppp', [ASettings::class, 'ppp'])->name('admin.settings.ppp');
+   #package
+   Route::get('/admin/package', [APackage::class, 'index'])->name('admin.package.index');
+   Route::put('/admin/package/{id}', [APackage::class, 'update'])->name('admin.package.update');
+   #Gs-Team
+   Route::get('/admin/gsteam', [AGsTeam::class, 'index'])->name('admin.gsteam.index');
+   Route::get('/admin/gsteam-settings', [AGsTeam::class, 'settings'])->name('admin.gsteam.settings');
+   Route::put('/admin/gsteam-settings/{id}', [AGsTeam::class, 'update'])->name('admin.gsteam.update');
 }); 

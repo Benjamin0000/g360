@@ -29,19 +29,19 @@ $cur = Helpers::LOCAL_CURR_SYMBOL;
                             <input type="text" name="total_referrals" value="{{Helpers::getRegData('ppp_total_referrals')}}">
                          </div>
                          <div class="form-group">
-                            <label for="">PV</label>
+                            <label for="">Circle PV</label>
                             <input type="text" name="pv" value="{{Helpers::getRegData('ppp_pv')}}">
                          </div>
                          <div class="form-group">
-                            <label for="">Reward amount</label>
+                            <label for="">Instant Reward amount</label>
                             <input type="text" name="reward_amount" value="{{Helpers::getRegData('ppp_reward_amount')}}">
                          </div>
                          <div class="form-group">
-                            <label for="">Payment</label>
+                            <label for="">Circle Payment</label>
                             <input type="text" name="payment" value="{{Helpers::getRegData('ppp_payment')}}">
                          </div>
                          <div class="form-group">
-                           <label for="">Grace Trail</label>
+                           <label for="">Total Grace Trail</label>
                            <input type="text" name="grace_trail" value="{{Helpers::getRegData('ppp_grace_trail')}}">
                          </div>
                          <div class="form-group">
