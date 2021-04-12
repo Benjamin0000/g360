@@ -1,4 +1,6 @@
 <?php
+use App\Lib\Epayment\Airtime;
+use App\Lib\Epayment\Data;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\GmarketController;
@@ -46,20 +48,52 @@ use App\Http\Controllers\Admin\GsTeamController as AGsTeam;
 |
 */
 Route::get('/test', function(){
-    // $url = 'https://sandbox.interswitchng.com/passport/oauth/token';
-    $clientID = "IKIA452BC16732BA7D1D51881FBEC6A2E0B07529B10B";
-    $secret = "Q1KG+0DqHE0k40z4unA1MDW8cfyjhNsUdwEADUbqwvQ=";
-    // $data = "IKIA452BC16732BA7D1D51881FBEC6A2E0B07529B10B:Q1KG+0DqHE0k40z4unA1MDW8cfyjhNsUdwEADUbqwvQ=";
-    $bill = new BillPayment($clientID, $secret);
-    return $bill->get_billers();
+    // $url = 'https://passport.interswitchng.com/passport/oauth/token';
+    // $clientID = "IKIAC7E97F86359001BC72CDBD9BEE2AF4B3BEE7C2F9";
+    // $secret = "3EC51A292F79ECAE110BA51348A88F34B620CE95";
+    // $data = "$clientID:$secret";
+    // $bill = new BillPayment($clientID, $secret);
+    // return $bill->get_billers();
     // $encoded = base64_encode($data);
     // $response = Http::withHeaders([
     //     'Authorization'=>"Basic ".$encoded,
+    //     'Content-Type'=>'application/x-www-form-urlencoded'
     // ])->post($url, [
     //     "grant_type"=>"client_credentials",
     // ]);
-    // return $response;
+
+    // $url = 'http://epayment.com.ng/epayment/api/3pbundle_validate';
+    // $response = Http::withHeaders([
+    //     'Authorization'=>"Bearer An4jkYjFi0Q5HFvt5CyaZD6HP8GkM1TNJkoyXftrASROz3dBNVbqyLvPyaw9",
+    // ])->post($url, [
+    //     "phone"=>"2348115814769",
+    // ]);
+
+    // return json_decode($response, true);
+    // $epay = new Airtime();
+    // return $epay->validatePhone('2348115814769', 'Globacom', 100);
+    // return $epay->purchase();
+    // return $epay->product_code;
+    $epay = new Data();
+    return $epay->getDataPlan('07066571490');
 });
+
+// function SHA256($signaturecipher)
+
+// {return hash("sha256",$signaturecipher);}
+
+// function SHA1($signaturecipher)
+
+// {return sha1($signaturecipher, true);}
+
+
+
+
+
+
+
+
+
 
 Route::get('/',  [FrontController::class, 'index'])->name('front.index');
 Route::get('/about',  [FrontController::class, 'about'])->name('front.about');
@@ -127,8 +161,14 @@ Route::group(['prefix'=>'portal'],  function(){
     Route::post('/reward/lmp/{id}', [RewardController::class, 'selectLmp'])->name('user.reward.lmp');
     #Efinance
     Route::get('/e-finance', [EFinanceController::class, 'index'])->name('user.efinance.index');
+    #electricity
     Route::get('/e-finance/electricity', [EFinanceController::class, 'electricity'])->name('user.pay_bills.elect.index');
+    Route::post('/e-finance/electricity', [EFinanceController::class, 'buyMeterUnit'])->name('user.pay_bills.elect.buy');
+    #Airtime data
     Route::get('/e-finance/airtime-data', [EFinanceController::class, 'airtimeData'])->name('user.pay_bills.airtimeData.index');
+    Route::post('/e-finance/airtime-data/A4RiBg5qS', [EFinanceController::class, 'buyAirtime'])->name('user.pay_bills.airtime');
+    Route::post('/e-finance/airtime-data/ERgtj4Thy', [EFinanceController::class, 'getDataPlan'])->name('user.pay_bills.getdata_plan');
+    Route::post('/e-finance/airtime-data/edbuFsBubYr', [EFinanceController::class, 'purchaseData'])->name('user.pay_bills.purchaseData');
     Route::get('/e-finance/water', [EFinanceController::class, 'waterSub'])->name('user.pay_bills.waterSub.index');
     Route::get('/e-finance/tv', [EFinanceController::class, 'tvSub'])->name('user.pay_bills.tvSub.index');
     #Gmarket
@@ -165,6 +205,8 @@ Route::group(['prefix'=>'admin'],  function(){
    Route::get('/login', [ALogin::class, 'index'])->name('admin.login');
    Route::post('/login', [ALogin::class, 'login'])->name('admin.login');
    Route::post('/logout', [ALogin::class, 'logout'])->name('admin.logout');
+   #Users
+
    #Rank
    Route::get('/rank', [ARank::class, 'index'])->name('admin.rank.index');
    Route::put('/rank/{id}', [ARank::class, 'update'])->name('admin.rank.update');
@@ -210,4 +252,4 @@ Route::group(['prefix'=>'admin'],  function(){
    Route::get('/admin/gsteam', [AGsTeam::class, 'index'])->name('admin.gsteam.index');
    Route::get('/admin/gsteam-settings', [AGsTeam::class, 'settings'])->name('admin.gsteam.settings');
    Route::put('/admin/gsteam-settings/{id}', [AGsTeam::class, 'update'])->name('admin.gsteam.update');
-}); 
+});

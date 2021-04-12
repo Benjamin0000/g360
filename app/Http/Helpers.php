@@ -20,7 +20,7 @@ use Exception;
   *  Helpers Class for Helpers methods
   */
   class Helpers 
-  {
+  { 
     public const LOCAL_CURR_SYMBOL = '₦';
     public const TRX_BALANCE = 'trx_balance';
     public const PKG_BALANCE = 'pkg_balance';

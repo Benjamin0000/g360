@@ -39,7 +39,7 @@ cursor: pointer;
   border:1px solid black;
 }
 </style>
-<div class="card" style="min-height:80vh;">
+<div class="card" style="min-height:30vh;margin:0;">
     <div class="card-header text-center" style="background:#eee;">
       <h3>Airtime & Data Subscription</h3>
     </div>
@@ -72,6 +72,11 @@ cursor: pointer;
       </div>
     </div>
 </div>
+<div class="card" style="min-height:30vh;">
+    <div class="card-header text-center" style="background:#eee;">
+      <h3>History</h3>
+    </div>
+</div>
 <script type="text/javascript">
 onReady(function(){
   $('.tab .card-header').on('click', function(){
@@ -90,7 +95,6 @@ onReady(function(){
   });
   $('#electf').on('submit', function(e){
     e.preventDefault();
-
   });
 });
 </script>

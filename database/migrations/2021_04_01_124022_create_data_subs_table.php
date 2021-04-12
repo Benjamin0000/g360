@@ -21,7 +21,7 @@ class CreateDataSubsTable extends Migration
             $table->string('ref_amt'); //amount to go to referrals
             $table->timestamps();
         });
-        $names = ['MTN', 'GLO', '9MOBILE', 'AIRTEL'];
+        $names = ['MTN', 'Globacom', '9mobile', 'Airtel'];
         $logos = [
             'assets/download.png',
             'assets/download4.png',
