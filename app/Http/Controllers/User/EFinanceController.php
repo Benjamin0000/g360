@@ -38,7 +38,12 @@ class EFinanceController extends G360
     }
     public function buyMeterUnit(Request $request)
     {
-        return $request->all();
+        $this->validate($request, [
+            'disco'=>['required'],
+            'meter_number'=>['required', 'numeric'],
+            'amount'=>['required', 'numeric']
+        ]);
+        $url = "";
     }
     /**
      * Show airtime/data pay bills page
