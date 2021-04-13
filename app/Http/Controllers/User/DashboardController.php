@@ -32,7 +32,10 @@ class DashboardController extends G360
         $user = Auth::user();
         $superA = SuperAssociate::where('user_id', $user->id)->exists();
         if(!$superA){
-            SuperAssociate::create(['user_id'=>$user->id]);
+            SuperAssociate::create([
+                'id'=>Helpers::genTableId(SuperAssociate::class),
+                'user_id'=>$user->id
+            ]);
         }
         $histories = WalletHistory::where([ 
             ['user_id', $user->id],
