@@ -37,6 +37,7 @@ class Kernel extends ConsoleKernel
             Task::autoUpgrade();
             Task::shareSignupProfit();
             Task::sAgentRGcoin();
+            Task::superAssocReward();
         })->everyMinute();
 
         $schedule->call(function(){
@@ -44,7 +45,6 @@ class Kernel extends ConsoleKernel
         })->timezone('Africa/Lagos')->dailyAt('23:00');
 
         $schedule->call(function(){
-            Task::superAssocReward();
             Task::ranking();
             Task::lmp();
             Task::trading();
