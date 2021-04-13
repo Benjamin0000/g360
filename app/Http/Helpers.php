@@ -339,7 +339,7 @@ use Exception;
         $user = User::where([ ['gnumber', $ref_gnum], ['status', 1] ])->first();
         if($user){
             self::creditRefTokens($pkg_id, $amount, $user->gnumber, $level);
-            self::creditRefCommission($pkg_id, $amount, $user->gnumber, $placed_by,  $level);
+            self::creditRefCommission($pkg_id, $amount, $user->gnumber, $placed_by, $level);
         }
     }
     /**
@@ -364,21 +364,23 @@ use Exception;
             else
                 $user = User::where([ ['gnumber', $gnumber], ['status', 1] ])->first();
             
-            if($user && $user->canEarnFromLevel($level)){
-                $user->$pend_balance += $cash_profit;
-                $user->save();
-                WalletHistory::create([
-                    'id'=>self::genTableId(WalletHistory::class),
-                    'amount'=>$cash_profit,
-                    'user_id'=>$user->id,
-                    'gnumber'=>$user->gnumber,
-                    'name'=>$pend_balance,
-                    'type'=>'credit',
-                    'description'=>$cur.$cash_profit.' received from '.ucfirst($package->name).
-                    ' package level ' .$level.' referral commission' 
-                ]);
+            if($user){
+                if($user->canEarnFromLevel($level)){
+                    $user->$pend_balance += $cash_profit;
+                    $user->save();
+                    WalletHistory::create([
+                        'id'=>self::genTableId(WalletHistory::class),
+                        'amount'=>$cash_profit,
+                        'user_id'=>$user->id,
+                        'gnumber'=>$user->gnumber,
+                        'name'=>$pend_balance,
+                        'type'=>'credit',
+                        'description'=>$cur.$cash_profit.' received from '.ucfirst($package->name).
+                        ' package level ' .$level.' referral commission' 
+                    ]);
+                }
+                return self::creditRefCommission($pkg_id, $amount, $user->ref_gnum, $user->placed_by,  $level+1);
             }
-            return self::creditRefCommission($pkg_id, $amount, $user->ref_gnum, $user->placed_by,  $level+1);
         }
     }
     /**
