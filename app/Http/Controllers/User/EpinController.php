@@ -65,15 +65,15 @@ class EpinController extends Controller
 
         $total = $number*$package->amount;
         
-        if($user->t_balance > $total){
-            $user->t_balance-=$total;
+        if($user->trx_balance > $total){
+            $user->trx_balance-=$total;
             $user->save();
             WalletHistory::create([
                 'id'=>Helpers::genTableId(WalletHistory::class),
                 'amount'=>$total,
                 'user_id'=>$user->id,
                 'gnumber'=>$user->gnumber,
-                'name'=>'t_wallet',
+                'name'=>'trx_wallet',
                 'type'=>'debit',
                 'description'=>$cur.$total.' debited for '.ucfirst($package->name).
                 ' E-pin purchase' 
