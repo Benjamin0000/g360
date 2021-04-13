@@ -319,68 +319,57 @@ use Exception;
       * @param  void 
       * @return void
     */
-    public static function shareRefCommission($pkg_id, $amount, $gnumber)
+    public static function shareRefCommission($package, $amount, User $user)
     {
         $free_pkg = 1;
-        $package = Package::find($pkg_id);
-        if($package){
-            $user = User::where([ ['gnumber', $gnumber], ['status', 1] ])->first();
-            if($user && $user->pkg_id == $package->id && $package->id > $free_pkg)
-                self::refTree($pkg_id, $amount, $user->ref_gnum, $user->placed_by);
-        }
-    }
-    /**
-      * Get the referal tree
-      * 
-      * @return void
-    */
-    public static function refTree($pkg_id, $amount, $ref_gnum, $placed_by, $level=1)
-    {
-        $user = User::where([ ['gnumber', $ref_gnum], ['status', 1] ])->first();
-        if($user){
-            self::creditRefTokens($pkg_id, $amount, $user->gnumber, $level);
-            self::creditRefCommission($pkg_id, $amount, $user->gnumber, $placed_by, $level);
-        }
+        if($user->pkg_id == $package->id && $package->id > $free_pkg){
+            if($user->ref_gnum){
+                self::creditRefTokens($package, $user->ref_gnum);
+                self::creditRefCommission($package, $amount, $user);
+            }
+        } 
     }
     /**
       * Give referal commission
       * 
       *@return null
     */
-    public static function creditRefCommission($pkg_id, $amount, $gnumber = 0, $placed_by = 0, $level)
+    public static function creditRefCommission(Package $package, $amount, User $user, $level = 1)
     {
         if($level > 15) return;
         $cur = self::LOCAL_CURR_SYMBOL;
         $pend_balance = self::PEND_BALANCE;
-        $package = Package::find($pkg_id);
         $ref_percent = explode(',', $package->ref_percent);
         if($level > count($ref_percent))
             $cash_profit = (floatval(end($ref_percent)) / 100) * $amount;
         else
             $cash_profit = (floatval($ref_percent[$level-1]) / 100) * $amount;
-        if($package){
-            if($placed_by)
-                $user = User::where([ ['gnumber', $placed_by], ['status', 1] ])->first();
-            else
-                $user = User::where([ ['gnumber', $gnumber], ['status', 1] ])->first();
-            
-            if($user){
-                if($user->canEarnFromLevel($level)){
-                    $user->$pend_balance += $cash_profit;
-                    $user->save();
-                    WalletHistory::create([
-                        'id'=>self::genTableId(WalletHistory::class),
-                        'amount'=>$cash_profit,
-                        'user_id'=>$user->id,
-                        'gnumber'=>$user->gnumber,
-                        'name'=>$pend_balance,
-                        'type'=>'credit',
-                        'description'=>$cur.$cash_profit.' received from '.ucfirst($package->name).
-                        ' package level ' .$level.' referral commission' 
-                    ]);
-                }
-                self::creditRefCommission($pkg_id, $amount, $user->ref_gnum, $user->placed_by,  $level+1);
+
+        if($user->placed_by)
+            $user = User::where([ ['gnumber', $user->placed_by], ['status', 1] ])->first();
+        else
+            $user = User::where([ ['gnumber', $user->ref_gnum], ['status', 1] ])->first();
+        if($user){
+            if($user->canEarnFromLevel($level)){
+                $user->$pend_balance += $cash_profit;
+                $user->save();
+                WalletHistory::create([
+                    'id'=>self::genTableId(WalletHistory::class),
+                    'amount'=>$cash_profit,
+                    'user_id'=>$user->id,
+                    'gnumber'=>$user->gnumber,
+                    'name'=>$pend_balance,
+                    'type'=>'credit',
+                    'description'=>$cur.$cash_profit.' received from '.ucfirst($package->name).
+                    ' package level ' .$level.' referral commission' 
+                ]);
             }
+            if($user->ref_gnum)
+                self::creditRefCommission($package, $amount, $user, $level+1);
+            else
+                return;
+        }else{
+            return;
         }
     }
     /**
@@ -388,14 +377,13 @@ use Exception;
       * 
       * @return null
     */
-    public static function creditRefTokens($pkg_id, $amount, $gnumber = 0, $level)
+    public static function creditRefTokens(Package $package, $gnumber, $level = 1)
     {
-        if($level > 15) return;
+        if($level > 20) return;
         $cpv = self::CUM_POINT_VALUE;
         $h_token = self::HEALTH_TOKEN;
-        $package = Package::find($pkg_id);
         $user = User::where([ ['gnumber', $gnumber], ['status', 1] ])->first();
-        if($package && $user){
+        if($user){
             $ref_percent = explode(',', $package->ref_percent);
             $ref_h_token = explode(',', $package->ref_h_token);
             $ref_pv = explode(',', $package->ref_pv);
@@ -431,7 +419,10 @@ use Exception;
                     ' package level '.$level.' referral commission' 
                 ]);
             }
-            self::creditRefTokens($pkg_id, $amount, $user->ref_gnum, $level+1);
+            if($user->ref_gnum)
+                self::creditRefTokens($package, $user->ref_gnum, $level+1);
+            else 
+                return;
         }
     }
     /**
