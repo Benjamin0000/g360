@@ -18,7 +18,7 @@ class CreateSuperAssociatesTable extends Migration
             $table->string('user_id', 30);
             $table->integer('grace')->default(0);
             $table->timestamp('last_grace')->nullable();
-            $table->boolean('status')->default(0); // 1 if grace expired || 2 if won || 3 if claimed
+            $table->boolean('status')->default(0); // 1 if grace expired || 2 if won || 3 if claimed // 4 activate super associate
             $table->boolean('balance_leg')->default(0); // leg not balanced show become 1
             $table->timestamps();
         });

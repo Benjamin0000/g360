@@ -261,7 +261,7 @@ class Task extends G360
         $pv = $rank->pv;
         $minutes = $rank->minutes;
         $graced_minutes = $rank->graced_minutes;
-        $super_pkg_id = 4;
+        
         $sAs = SuperAssociate::where('status', 0)->get();
         foreach($sAs as $sA){
             if($sA->created_at->diffInMinutes() <= $minutes){
@@ -276,11 +276,12 @@ class Task extends G360
                 }
             }
             if($user = User::find($sA->user_id)){
-                if($user->cpv >= $pv && $user->pkg_id >= $super_pkg_id){
+                if($user->cpv >= $pv){
                     if(Helpers::checkLegBalance($user, $pv)){
                         $sA->status = 2; #made it
-                    }else
+                    }else{
                         $sA->balance_leg = 1; #balance leg
+                    }
                     $sA->save();
                 }
             }else{

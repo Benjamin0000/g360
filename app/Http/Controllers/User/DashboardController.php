@@ -79,6 +79,7 @@ class DashboardController extends G360
         $sA = SuperAssociate::where('user_id', $user->id)->first();
         $rank = Rank::find(1);
         $fee = $rank->fee;
+        $super_pkg_id = 4;
         switch($request->type){
             case 'ac': 
                 if($sA && $sA->status == 1){
@@ -108,6 +109,9 @@ class DashboardController extends G360
                 break;
             case 'cl': 
                 if($sA && $sA->status == 2){
+                    if($user->pkg_id < $super_pkg_id){
+                        return back()->with('error', 'You must be in the Super package to claim this prize');
+                    }
                     $exp_months = $rank->lmp_months;
                     $lmp_amt = $rank->total_lmp/$exp_months;
                     if($request->tp == 'm'){

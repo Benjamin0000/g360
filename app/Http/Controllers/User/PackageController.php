@@ -102,7 +102,7 @@ class PackageController extends Controller
         $last_pkg_id = 7;
         $cur = Helpers::LOCAL_CURR_SYMBOL;
         $trx_balance = Helpers::TRX_BALANCE;
-        $loan_pkg_balance = Helpers::LOAN_PKG_BALANCE;
+        $pkg_balance = Helpers::PKG_BALANCE;
         $user = Auth::user();
         $fee = 0;
 
@@ -143,17 +143,17 @@ class PackageController extends Controller
                         if($fee){
                             $user->free_t_fee = 0; #clear fee
                             if($user->$trx_balance < $fee){
-                                if($user->$loan_pkg_balance < $fee)
+                                if($user->$pkg_balance < $fee)
                                     return ['msg'=>'Insufficient fund for your 20% package fee'];
                                 else{
-                                    $user->$loan_pkg_balance-=$fee;
+                                    $user->$pkg_balance-=$fee;
                                     $user->save();
                                     WalletHistory::create([
                                         'id'=>Helpers::genTableId(WalletHistory::class),
                                         'user_id'=>$user->id,
                                         'amount'=>$fee,
                                         'gnumber'=>$user->gnumber,
-                                        'name'=>$loan_pkg_balance,
+                                        'name'=>$pkg_balance,
                                         'type'=>'debit',
                                         'description'=>$cur.number_format($fee).' Debited for '
                                         .ucfirst($package->name).' package '.$percent.'% fee'
@@ -189,17 +189,17 @@ class PackageController extends Controller
                     if($fee){
                         $total = $amount+$fee;
                         if($user->$trx_balance < $total){
-                            if($user->$loan_pkg_balance < $fee)
+                            if($user->$pkg_balance < $fee)
                                 return ['msg'=>'Insufficient fund for your 20% package fee'];
                             else{
-                                $user->$loan_pkg_balance-=$fee;
+                                $user->$pkg_balance-=$fee;
                                 $user->save();
                                 WalletHistory::create([
                                     'id'=>Helpers::genTableId(WalletHistory::class),
                                     'user_id'=>$user->id,
                                     'amount'=>$fee,
                                     'gnumber'=>$user->gnumber,
-                                    'name'=>$loan_pkg_balance,
+                                    'name'=>$pkg_balance,
                                     'type'=>'debit',
                                     'description'=>$cur.number_format($fee).' Debited for '
                                     .ucfirst($package->name).' package '.$percent.'% fee'
