@@ -1,5 +1,8 @@
 @extends('user.layout', ['title'=>' Direct Downlines'])
 @section('content')
+@php
+use App\Http\Helpers;
+@endphp
 <div class=" clearfix row ">
     <div class="col-sm-12 p-3">
         <a href="{{route('user.downline.indirect')}}" class="btn btn-outline-default float-right">Indirect Downline</a>
@@ -23,7 +26,7 @@
                         </thead>
                         <tbody>
                           @if($referals->count())
-                             @php $count = $count = tableNumber($total) @endphp
+                             @php $count = $count = Helpers::tableNumber(10) @endphp
                               @foreach($referals as $referal)
                                 <tr>
                                   <td>{{$count++}}</td>
