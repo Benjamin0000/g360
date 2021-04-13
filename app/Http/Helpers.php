@@ -379,7 +379,7 @@ use Exception;
                         ' package level ' .$level.' referral commission' 
                     ]);
                 }
-                return self::creditRefCommission($pkg_id, $amount, $user->ref_gnum, $user->placed_by,  $level+1);
+                self::creditRefCommission($pkg_id, $amount, $user->ref_gnum, $user->placed_by,  $level+1);
             }
         }
     }
