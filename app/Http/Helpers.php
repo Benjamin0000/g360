@@ -326,7 +326,7 @@ use Exception;
         if($package){
             $user = User::where([ ['gnumber', $gnumber], ['status', 1] ])->first();
             if($user && $user->pkg_id == $package->id && $package->id > $free_pkg)
-                return self::refTree($pkg_id, $amount, $user->ref_gnum, $user->placed_by);
+                self::refTree($pkg_id, $amount, $user->ref_gnum, $user->placed_by);
         }
     }
     /**
@@ -347,7 +347,7 @@ use Exception;
       * 
       *@return null
     */
-    public static function creditRefCommission($pkg_id, $amount, $gnumber, $placed_by, $level)
+    public static function creditRefCommission($pkg_id, $amount, $gnumber = 0, $placed_by = 0, $level)
     {
         if($level > 15) return;
         $cur = self::LOCAL_CURR_SYMBOL;
@@ -388,7 +388,7 @@ use Exception;
       * 
       * @return null
     */
-    public static function creditRefTokens($pkg_id, $amount, $gnumber, $level)
+    public static function creditRefTokens($pkg_id, $amount, $gnumber = 0, $level)
     {
         if($level > 15) return;
         $cpv = self::CUM_POINT_VALUE;
@@ -431,7 +431,7 @@ use Exception;
                     ' package level '.$level.' referral commission' 
                 ]);
             }
-            return self::creditRefTokens($pkg_id, $amount, $user->ref_gnum, $level+1);
+            self::creditRefTokens($pkg_id, $amount, $user->ref_gnum, $level+1);
         }
     }
     /**
