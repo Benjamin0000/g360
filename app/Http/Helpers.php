@@ -135,7 +135,7 @@ use Exception;
      public static function formE($field)
      {
         $value = request($field);
-        switch($field){
+        switch($field){ 
 
             case 'title': 
                 $valid = ['mr', 'mrs', 'miss'];
@@ -198,9 +198,11 @@ use Exception;
                     return "invalid sponsor code";
             break; 
 
-            case 'pu': 
-                if(!User::where('gnumber', $value)->exists() || $value == request('sponsor'))
-                    return "invalid gnumber code";
+            case 'pu':
+                if($value){
+                    if(!User::where('gnumber', $value)->exists() || $value == request('sponsor'))
+                        return "invalid gnumber code";
+                } 
             break;       
             
             case 'password': 
