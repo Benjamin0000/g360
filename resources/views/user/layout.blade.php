@@ -189,21 +189,21 @@
                         <li>
                             <a class="" href="{{route('user.gmarket.index')}}" aria-expanded="false"><i class="mdi mdi-cart"></i><span class="hide-menu">G-Market</span></a>
                         </li>
-                        {{-- <li>
+                        <li>
                             <a class="has-arrow " href="#" aria-expanded="false"><i class="mdi mdi-vector-polyline"></i><span class="hide-menu">Downline</span></a>
                             <ul aria-expanded="false" class="collapse">
                                 <li><a href="{{route('user.downline.direct')}}">Direct Referals</a></li>
                                 <li><a href="{{route('user.downline.indirect')}}">Indirect Referal</a></li>
                             </ul>
-                        </li> --}}
-                        {{-- <li>
+                        </li>
+                        <li>
                             <a class="has-arrow " href="#" aria-expanded="false"><i class="mdi mdi-history"></i><span class="hide-menu">Transaction History</span></a>
                             <ul aria-expanded="false" class="collapse">
                                 <li><a href="{{route('user.history.w_wallet')}}">W-Wallet</a></li>
                                 <li><a href="{{route('user.history.p_wallet')}}">P-wallet</a></li>
                                 <li><a href="{{route('user.history.t_wallet')}}">T-Wallet</a></li>
                             </ul>
-                        </li> --}}
+                        </li>
 
                         <!--<li>
                             <a href="/user/bank" >

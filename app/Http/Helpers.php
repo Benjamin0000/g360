@@ -326,7 +326,7 @@ use Exception;
         if($package){
             $user = User::where([ ['gnumber', $gnumber], ['status', 1] ])->first();
             if($user && $user->pkg_id == $package->id && $package->id > $free_pkg)
-                self::refTree($pkg_id, $amount, $user->ref_gnum, $user->placed_by);
+                return self::refTree($pkg_id, $amount, $user->ref_gnum, $user->placed_by);
         }
     }
     /**
