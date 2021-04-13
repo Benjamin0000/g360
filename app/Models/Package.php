@@ -105,11 +105,6 @@ class Package extends Model
             ]);
         }
         Helpers::shareRefCommission($this->id, $amount, $user->gnumber);
-        #activate super associate reward
-        $check = SuperAssociate::where('user_id', $user->id)->exists();
-        if(!$check && $this->id >= $super_pkg_id){
-            SuperAssociate::create(['user_id'=>$user->id]);
-        }
         if(!PPP::where('user_id', $user->id)->exists()){
             PPP::create([
                 'id'=>Helpers::genTableId(PPP::class),

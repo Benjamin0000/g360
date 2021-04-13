@@ -1,6 +1,6 @@
 <form id="data_form" action="" method="post">
     <div class="form-group">
-       <input type="text" id="dnum" class="form-control fc" name="mobile_number" value="" placeholder="Mobile Number">
+       <input type="text" id="dnum" required class="form-control fc" name="mobile_number" value="" placeholder="Mobile Number">
     </div>
     <div class="form-group">
       <div style="font-size:15px;">Select network provider</div>

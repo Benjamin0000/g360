@@ -250,7 +250,7 @@ $ppp_g_trail = Helpers::getRegData('ppp_grace_trail');
 
 <!-- Row -->
 <div class="row">
-    <div class="col-lg-4">
+    {{-- <div class="col-lg-4">
         <div class="card">
             <div class="card-body">
                 <div class="d-flex no-block">
@@ -278,8 +278,8 @@ $ppp_g_trail = Helpers::getRegData('ppp_grace_trail');
                 </div>
             </div>
         </div>
-    </div>
-    <div class="col-lg-8">
+    </div> --}}
+    <div class="col-lg-12">
         <div class="card">
             <div class="card-body">
                 <div class="d-flex no-block">

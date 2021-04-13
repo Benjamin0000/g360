@@ -171,4 +171,8 @@ class User extends Authenticatable
     {
        return self::where('gnumber', $this->ref_gnum)->first();
     }
+    public function faccount()
+    {
+        return $this->hasOne(FAccount::class, 'user_id');
+    }
 }

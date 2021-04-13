@@ -74,8 +74,9 @@ Route::get('/test', function(){
     // return $epay->validatePhone('2348115814769', 'Globacom', 100);
     // return $epay->purchase();
     // return $epay->product_code;
-    $epay = new Data();
-    return $epay->getDataPlan('07066571490');
+    // $epay = new Data();
+    // return $epay->getDataPlan('07066571490');
+    // return bcrypt('anole22@101');
 });
 
 // function SHA256($signaturecipher)
@@ -85,15 +86,6 @@ Route::get('/test', function(){
 // function SHA1($signaturecipher)
 
 // {return sha1($signaturecipher, true);}
-
-
-
-
-
-
-
-
-
 
 Route::get('/',  [FrontController::class, 'index'])->name('front.index');
 Route::get('/about',  [FrontController::class, 'about'])->name('front.about');
@@ -108,17 +100,14 @@ Route::get('/e-shop', [EShopController::class, 'index'])->name('eshop.index');
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-
 #pass reset
 Route::post('/reset', [LoginController::class, 'sendResetLink'])->name('pass.sendResetLink');
 Route::get('/password/reset/{token}/{email}', [LoginController::class, 'showUpdatePassForm'])->name('pass.showUpdateForm');
 Route::post('/password/update', [LoginController::class, 'updatePassword'])->name('pass.updatePass');
-
 #registration
 Route::get('/register', [RegisterController::class, 'index'])->name('register');
 Route::post('/register', [RegisterController::class, 'store'])->name('register');
 Route::get('/verify-email/{token}/{email}', [RegisterController::class, 'verifyEmail'])->name('register.verify');
-
 #user
 Route::group(['prefix'=>'portal'],  function(){
     Route::get('/', [DashboardController::class, 'index'])->name('user.dasbhoard.index');
@@ -198,7 +187,6 @@ Route::group(['prefix'=>'portal'],  function(){
     Route::post('/agent/create', [AgentController::class, 'create'])->name('user.agent.create');
     Route::delete('/agent/delete/{id}', [AgentController::class, 'deleteRequest'])->name('user.agent.deleteRequest');
 });
-
 #Admin
 Route::group(['prefix'=>'admin'],  function(){
    Route::get('/', [ADashboard::class, 'index'])->name('admin.dashboard.index');
