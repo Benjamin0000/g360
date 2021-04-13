@@ -105,28 +105,28 @@ class Package extends Model
                 'description'=>$cur.$cash_back.' received from '.ucfirst($this->name).' package cashback'
             ]);
         }
-        Helpers::shareRefCommission($this->id, $amount, $user->gnumber);
-        if(!PPP::where('user_id', $user->id)->exists()){
-            PPP::create([
-                'id'=>Helpers::genTableId(PPP::class),
-                'user_id'=>$user->id,
-            ]);
-        }
-        if($from == 0){
-            Helpers::partnerUreward();
-            if($ref_gnum = $user->ref_gnum){
-                Helpers::rewardAgent($ref_gnum);
-            }
-            if(!GsClub::where('user_id', $user->id)->exists()){
-                $gsclub = new GsClub();
-                $gsclub->id = Helpers::genTableId(GsClub::class);
-                $gsclub->user_id = $user->id;
-                $gsclub->gbal = GTR::orderBy('id', 'ASC')->first()->amount;
-                $gsclub->g = 1;
-                $gsclub->lastg = Carbon::now();
-                $gsclub->save();
-            }
-        }
+        // Helpers::shareRefCommission($this->id, $amount, $user->gnumber);
+        // if(!PPP::where('user_id', $user->id)->exists()){
+        //     PPP::create([
+        //         'id'=>Helpers::genTableId(PPP::class),
+        //         'user_id'=>$user->id,
+        //     ]);
+        // }
+        // if($from == 0){
+        //     Helpers::partnerUreward();
+        //     if($ref_gnum = $user->ref_gnum){
+        //         Helpers::rewardAgent($ref_gnum);
+        //     }
+        //     if(!GsClub::where('user_id', $user->id)->exists()){
+        //         $gsclub = new GsClub();
+        //         $gsclub->id = Helpers::genTableId(GsClub::class);
+        //         $gsclub->user_id = $user->id;
+        //         $gsclub->gbal = GTR::orderBy('id', 'ASC')->first()->amount;
+        //         $gsclub->g = 1;
+        //         $gsclub->lastg = Carbon::now();
+        //         $gsclub->save();
+        //     }
+        // }
         return true;
     }
 }
