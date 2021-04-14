@@ -100,10 +100,10 @@ class DashboardController extends G360
                         $sA->grace += 1;
                         $sA->last_grace = Carbon::now();
                         $sA->save();
-                        return redirect('user.dashboard.index')
+                        return redirect(route('user.dashboard.index'))
                         ->with('success', 'Super associate bonus has been reactivated for another 30 days');
                     }else{
-                        return redirect('user.dashboard.index')
+                        return redirect(route('user.dashboard.index'))
                         ->with('error', 'Insufficient fund in your Transaction wallet');
                     }
                 }
@@ -147,7 +147,7 @@ class DashboardController extends G360
                         ]);
                         $msg = 'Loan activated';
                     }else{
-                        return redirect('user.dashboard.index')
+                        return redirect(route('user.dashboard.index'))
                         ->with('error', 'You don\'t have permission to access that page');                        
                     }
                     if($sA->grace > 0)
@@ -167,15 +167,15 @@ class DashboardController extends G360
                     $sA->save();
                     $user->rank_id = $rank->id;
                     $user->save();
-                    return redirect('user.dashboard.index')
+                    return redirect(route('user.dashboard.index'))
                             ->with('success', $msg);
                 }
                 break;
             default: 
-                return redirect('user.dashboard.index')
+                return redirect(route('user.dashboard.index'))
                 ->with('error', 'You don\'t have permission to access that page');
         }
-        return redirect('user.dashboard.index')
+        return redirect(route('user.dashboard.index'))
         ->with('error', 'You don\'t have permission to access that page');
     }
     /**
