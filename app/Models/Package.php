@@ -127,6 +127,26 @@ class Package extends Model
                 $gsclub->save();
             }
         }
+        if($this->lastPkg() && $user->pkg_balance > 0){
+            $amt = $user->pkg_balance;
+            $user->trx_balance += $amt;
+            $user->pkg_balance = 0;
+            $user->save();
+            WalletHistory::create([
+                'id'=>Helpers::genTableId(WalletHistory::class),
+                'user_id'=>$user->id,
+                'amount'=>$amt,
+                'gnumber'=>$user->gnumber,
+                'name'=>'trx_balance',
+                'type'=>'credit',
+                'description'=>$cur.$amt.' from PKG-Wallet'
+            ]);
+        }
         return true;
+    }
+    public function lastPkg()
+    {
+        $last_pkg = self::orderBy('id', 'DESC')->first();
+        return $last_pkg->id == $this->id;
     }
 }

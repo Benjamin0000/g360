@@ -37,6 +37,7 @@ use App\Http\Controllers\Admin\AgentsController as AAgent;
 use App\Http\Controllers\Admin\SettingsController as ASettings;
 use App\Http\Controllers\Admin\PackageController as APackage;
 use App\Http\Controllers\Admin\GsTeamController as AGsTeam;
+use App\Http\Helpers;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -48,6 +49,7 @@ use App\Http\Controllers\Admin\GsTeamController as AGsTeam;
 |
 */
 Route::get('/test', function(){
+    // return Helpers::ripeForUpgrade();
     // $url = 'https://passport.interswitchng.com/passport/oauth/token';
     // $clientID = "IKIAC7E97F86359001BC72CDBD9BEE2AF4B3BEE7C2F9";
     // $secret = "3EC51A292F79ECAE110BA51348A88F34B620CE95";
@@ -113,10 +115,13 @@ Route::group(['prefix'=>'portal'],  function(){
     Route::get('/', [DashboardController::class, 'index'])->name('user.dasbhoard.index');
     Route::post('/kAVRnEzhwNxKXuZ', [DashboardController::class, 'reactivateSuperAssoc'])->name('user.dashboard.rassoc');
     Route::post('/zGPLAHHAsPLgJzE', [DashboardController::class, 'reactivatePPP'])->name('user.dashboard.rappp');
+    #package
     Route::get('/packages', [PackageController::class, 'index'])->name('user.package.index');
     Route::get('/packages/premium', [PackageController::class, 'showPremiumPackages'])->name('user.package.show_premium');
     Route::post('/packages/premium', [PackageController::class, 'selectPremiumPackage'])->name('user.package.select_premium');
     Route::post('/packages/free', [PackageController::class, 'selectFreePackage'])->name('user.package.select_free');
+    Route::get('/upgrade', [PackageController::class, 'upgrade'])->name('user.upgrade');
+    Route::post('/upgrade', [PackageController::class, 'autoUpgrade'])->name('user.autoupgrade');
     #Gfund
     Route::get('/gfund', [GfundController::class, 'index'])->name('user.gfund.index');
     Route::post('/SaxRwepRJAHAIzG', [GfundController::class, 'withdrawalWalletTransfer'])->name('user.gfund.withdrawalTransfer');

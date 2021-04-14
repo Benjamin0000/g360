@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Helpers;
 use Closure;
 
 class Authenticate extends Middleware
@@ -36,10 +37,15 @@ class Authenticate extends Middleware
         $currentUrl = url()->current();
         if($currentUrl == route('user.package.index') || 
            $currentUrl == route('user.package.select_free') ||
-           $currentUrl == route('user.package.show_premium')
+           $currentUrl == route('user.package.show_premium') || 
+           $currentUrl == route('user.upgrade')
         )return $next($request);
-        if(Auth::user()->pkg_id)
+        if(Auth::user()->pkg_id){
+            if(Helpers::ripeForUpgrade()){
+                return redirect(route('user.upgrade'));
+            }
             return $next($request);
+        }
         return redirect(route('user.package.index'))->with('select_a_pkg', 'not empty');
     }
 }

@@ -1,6 +1,7 @@
 <?php 
 namespace App\Http;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\EmailVerify;
 use App\Models\PasswordReset;
 use App\Models\User;
@@ -516,6 +517,30 @@ use Exception;
     {
        $reg = Register::where('name', $name)->first();
        return $reg?$reg->value:'';
+    }
+    public static function ripeForUpgrade()
+    {
+        $user = Auth::user();
+        $last_pkg = Package::orderBy('id', 'DESC')->first();
+        if($user->pkg_id != $last_pkg->id){
+            $balance = $user->pkg_balance;
+            if($balance > 0){
+                $packages = Package::where('amount', '>', $user->package->amount)->pluck('amount')->all();
+                $eligible = [];
+                if(!empty($packages)){
+                    foreach($packages as $package){
+                        $amount = $package - $user->package->amount;
+                        if($balance >= $amount)
+                            array_push($eligible, $package);
+                    }
+                    if(!empty($eligible))
+                        return max($eligible);
+                    else 
+                        return false;
+                }
+            }
+        }
+        return false;
     }
 } 
  ?>

@@ -249,6 +249,41 @@ class PackageController extends Controller
             return ['msg'=>'package could not be activated'];
         }
     }
-    
+    public function upgrade()
+    {
+        $ripe = Helpers::ripeForUpgrade();
+        if($ripe){
+            $package = Package::where('amount', $ripe)->first();
+            return view('user.package.upgrade', compact('package'));
+        }
+        return back();
+    }
+    public function autoUpgrade(Request $request)
+    {   
+        $this->validate($request, [
+            'h'=>['required']
+        ]);
+        if($ripe = Helpers::ripeForUpgrade()){
+            $cur = Helpers::LOCAL_CURR_SYMBOL;
+            $user = Auth::user();
+            $package = Package::where('amount', $ripe)->first();
+            $amount = $package->amount - $user->package->amount;
+            $user->pkg_balance -= $amount;
+            $user->save();
+            WalletHistory::create([
+                'id'=>Helpers::genTableId(WalletHistory::class),
+                'user_id'=>$user->id,
+                'amount'=>$amount,
+                'gnumber'=>$user->gnumber,
+                'name'=>'pkg_balance',
+                'type'=>'debit',
+                'description'=>$cur.$amount.' Debited for '.ucfirst($package->name).' package'
+            ]);
+            if($package->activate($user, $request->h, 'pkg_balance')){
+                return redirect(route('user.dasbhoard.index'))->with('success', ucwords($package->name).' Package activated');
+            }
+        }
+        return back();
+    }
 
 }
