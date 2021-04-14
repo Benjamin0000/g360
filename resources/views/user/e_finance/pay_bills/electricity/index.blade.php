@@ -13,23 +13,29 @@ $user = Auth::user();
       <p class="">
         <a class="btn btn-primary btn-sm" href="{{route('user.efinance.index')}}">Go Back</a>
       </p>
+      <div id="main_fff">
        <form action="{{route('user.pay_bills.elect.buy')}}" method="post" id="electf">
            <div class="row">
                <div class="col-md-6">
                  <div class="form-group">
                      <label for="">Disco Type</label>
-                     <select class="form-control" name="disco" id="disco">
-                       <option> WHAT IS YOUR DISCO TYPE ? </option>
+                     <select class="form-control" name="disco" id="disco" required>
+                       <option value=""> WHAT IS YOUR DISCO TYPE ? </option>
+                       @if($discos->count())
+                         @foreach($discos as $disco)
+                           <option value="{{$disco->code}}">{{$disco->name}}</option>
+                         @endforeach
+                       @endif
                     </select>
                  </div>
                  @csrf
                  <div class="form-group">
                    <label for="">Amount</label>
-                   <input type="text" class="form-control" name="amount" value="">
+                   <input type="number" class="form-control" name="amount" value="" required>
                  </div>
                  <div class="form-group">
                      <label for="">Meter Number</label>
-                     <input type="text" class="form-control" name="meter_number" value="">
+                     <input type="text" class="form-control" name="meter_number" value="" required>
                  </div>
                  <div class="form-group">
                      <button class="btn btn-primary">Continue</button>
@@ -37,8 +43,15 @@ $user = Auth::user();
                </div>
            </div>
        </form>
+     </div>
     </div>
 </div>
 <script type="text/javascript">
+onReady(function(){
+  $("#electf").on('submit', function(e){
+    e.preventDefault();
+
+  });
+});
 </script>
 @endsection

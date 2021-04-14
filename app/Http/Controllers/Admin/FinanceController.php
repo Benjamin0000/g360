@@ -4,6 +4,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Airtime;
 use App\Models\DataSub;
+use App\Models\EDisco;
 class FinanceController extends Controller
 {
     /**
@@ -84,5 +85,31 @@ class FinanceController extends Controller
         }else{
             return back()->with('error', 'network not found');
         }
+    }
+    public function electricity()
+    {
+        return view('admin.finance.elect.index');
+    }
+    public function electSettings()
+    {
+        $discos = EDisco::all();
+        return view('admin.finance.elect.settings', compact('discos'));
+    }
+    public function updateDisco(Request $request, $id)
+    {
+        $this->validate($request, [
+            'name'=>['required', 'max:100'],
+            'charge'=>['required', 'numeric'],
+            'comm_amt'=>['required', 'numeric'],
+            'ref_amt'=>['required']
+        ]);
+        if($request->input('code')){
+            return back();
+        }
+        if($disco = EDisco::find($id)){
+            $disco->update($request->all());
+            return back()->with('success', 'Disco updated');
+        }   
+        return back()->with('error', 'Disco not found');
     }
 }

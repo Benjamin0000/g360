@@ -209,6 +209,10 @@ Route::group(['prefix'=>'admin'],  function(){
    Route::get('/vtu/settings', [AFinance::class, 'settings'])->name('admin.finance.vtu.settings');
    Route::put('/vtu/settings/airtime/{id}', [AFinance::class, 'updateAirtime'])->name('admin.finance.vtu.updateAirtime');
    Route::put('/vtu/settings/data/{id}', [AFinance::class, 'updateData'])->name('admin.finance.vtu.updateData');
+   #Electricity
+   Route::get('/disco', [AFinance::class, 'electricity'])->name('admin.finance.disco.index');
+   Route::get('/disco/settings', [AFinance::class, 'electSettings'])->name('admin.finance.disco.settings');
+   Route::put('/disco/settings/{id}', [AFinance::class, 'updateDisco'])->name('admin.finance.updateDisco');
    #Gmarket
    Route::get('/gmarket/shop', [AGMarket::class, 'shop'])->name('admin.gmarket.shop');
    #Partner

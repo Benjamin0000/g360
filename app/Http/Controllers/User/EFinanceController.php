@@ -10,6 +10,7 @@ use App\Models\WalletHistory;
 use App\Models\Airtime;
 use App\Models\DataSub;
 use App\Models\FAccount;
+use App\Models\EDisco;
 class EFinanceController extends G360
 {
     /**
@@ -44,7 +45,8 @@ class EFinanceController extends G360
      */
     public function electricity()
     {
-        return view('user.e_finance.pay_bills.electricity.index');
+        $discos = EDisco::all();
+        return view('user.e_finance.pay_bills.electricity.index', compact('discos'));
     }
     public function buyMeterUnit(Request $request)
     {
