@@ -93,7 +93,7 @@ class DashboardController extends G360
                             'gnumber'=>$user->gnumber,
                             'name'=>self::$trx_balance,
                             'type'=>'debit',
-                            'description'=>$cur.$fee.' debited for super Associate bonus reactivation'
+                            'description'=>self::$cur.$fee.' debited for super Associate bonus reactivation'
                         ]);
                         $sA->status = 0;
                         $sA->grace += 1;
@@ -198,7 +198,7 @@ class DashboardController extends G360
                     'gnumber'=>$user->gnumber,
                     'name'=>self::$trx_balance,
                     'type'=>'debit',
-                    'description'=>$cur.$fee.' debited for personal performance point reactivation'
+                    'description'=>self::$cur.$fee.' debited for personal performance point reactivation'
                 ]);
                 $ppp->status = 0;
                 $ppp->graced_at = Carbon::now();
