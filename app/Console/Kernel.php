@@ -34,7 +34,6 @@ class Kernel extends ConsoleKernel
         })->timezone('Africa/Lagos')->dailyAt('00:30');
 
         $schedule->call(function(){
-            Task::autoUpgrade();
             Task::shareSignupProfit();
             Task::sAgentRGcoin();
             Task::superAssocReward();
