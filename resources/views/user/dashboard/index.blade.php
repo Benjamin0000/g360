@@ -34,7 +34,7 @@ $ppp_g_trail = Helpers::getRegData('ppp_grace_trail');
             </div>
         </div>
     </div>
-@if($user->rank_id != $last_rank_id)
+@if($user->pkg_id != $last_pkg->id)
     <div class="col-lg-3 col-md-6">
         <div class="card">
             <div class="card-body">
