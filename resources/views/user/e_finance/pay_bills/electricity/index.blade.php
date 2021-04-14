@@ -31,14 +31,16 @@ $user = Auth::user();
                  @csrf
                  <div class="form-group">
                    <label for="">Amount</label>
-                   <input type="number" class="form-control" name="amount" value="" required>
+                   <input type="number" id='anum' class="form-control" name="amount" value="" required>
                  </div>
+                 <input type="hidden" name="type" value="1">
                  <div class="form-group">
                      <label for="">Meter Number</label>
-                     <input type="text" class="form-control" name="meter_number" value="" required>
+                     <input type="text" id="mn" class="form-control" name="meter_number" value="" required>
                  </div>
+                 <div id="mE"></div>
                  <div class="form-group">
-                     <button class="btn btn-primary">Continue</button>
+                     <button class="btn btn-primary" id="mdbtn">Continue</button>
                  </div>
                </div>
            </div>
@@ -50,7 +52,32 @@ $user = Auth::user();
 onReady(function(){
   $("#electf").on('submit', function(e){
     e.preventDefault();
-
+    var $ele = $('#mdbtn');
+    $ele.data('text',$ele.text());
+    $ele.html(get_loader());
+    $ele.prop('disabled',true);
+    $('#mE').html("");
+    $.ajax({
+      url:"{{route('user.pay_bills.elect.buy')}}",
+      type:"POST",
+      data:$(this).serialize(),
+      success:function(data){
+        if(data.status){
+          $('#main_fff').html(data.status);
+        }else if(data.error){
+          $('#mE').html("<div class='alert alert-danger'><i class='fa fa-info-circle'></i> "+data.error+"</div>");
+        }else{
+          $('#mE').html("<div class='alert alert-danger'><i class='fa fa-info-circle'></i> Request could not be processed</div>");
+        }
+        $ele.text($ele.data('text'));
+        $ele.prop('disabled',false);
+      },
+      error:function(){
+        $('#mE').html("<div class='alert alert-danger'><i class='fa fa-info-circle'></i> Request could not be processed</div>");
+        $ele.text($ele.data('text'));
+        $ele.prop('disabled',false);
+      }
+    });
   });
 });
 </script>

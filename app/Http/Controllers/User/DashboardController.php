@@ -39,10 +39,10 @@ class DashboardController extends G360
             ]);
         }
         $histories = WalletHistory::where([ 
-            ['user_id', $user->id],
-            ['name', '<>', 'h_token'],
-            ['name', '<>', 'cpv'],
-            ['name', '<>', 'award_point']
+            ['user_id', $user->id]
+            // ['name', '<>', 'h_token'],
+            // ['name', '<>', 'cpv'],
+            // ['name', '<>', 'award_point']
         ])
         ->latest()->take(15)->get();
         // $referals = [];

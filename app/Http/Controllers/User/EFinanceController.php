@@ -4,6 +4,7 @@ use App\Http\Helpers;
 use App\Http\Controllers\G360;
 use App\Lib\Epayment\Airtime as Pairtime;
 use App\Lib\Epayment\Data as DataSubscription;
+use App\Lib\Epayment\Electricity;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\WalletHistory;
@@ -55,7 +56,24 @@ class EFinanceController extends G360
             'meter_number'=>['required', 'numeric'],
             'amount'=>['required', 'numeric']
         ]);
-        $url = "";
+        $elect = new Electricity($request->meter_number, $request->disco, $request->amount);
+        switch($request->type)
+        {
+            case 1: 
+                $data = $elect->validateMeter();
+                if(isset($data['error']))
+                    return $data;
+                $data['amt'] = $request->amount;
+                $data['service'] = $request->disco;
+                $view = view('user.e_finance.pay_bills.electricity.info', compact('data'));
+                return ['status'=>"$view"];
+            break;
+            case 2:
+                
+                $data = $elect->purchase();
+            default: 
+                return ['error'=>'invalid operation'];
+        }
     }
     /**
      * Show airtime/data pay bills page
@@ -147,7 +165,7 @@ class EFinanceController extends G360
         $plan = explode(',', $request->plan);
         $price = (float)$plan[2];
         $user = Auth::user();
-        if($user->trx_balance < $price){
+        if($user->trx_balance < $price){ 
             return ['error'=>'Insufficient Fund in your TRX-Wallet'];
         }
         $p = $data->purchase($plan[0], $request->mobile_number, $plan[1], $price, $request->operator, $plan[3]);
