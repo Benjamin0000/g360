@@ -83,8 +83,8 @@ class DashboardController extends G360
         switch($request->type){
             case 'ac': 
                 if($sA && $sA->status == 1){
-                    if($user->self::$trx_balance >= $fee){
-                        $user->self::$trx_balance -= $fee;
+                    if($user->trx_balance >= $fee){
+                        $user->trx_balance -= $fee;
                         $user->save();
                         WalletHistory::create([
                             'id'=>Helpers::genTableId(WalletHistory::class),
@@ -126,7 +126,7 @@ class DashboardController extends G360
                             'total_times'=>$exp_months
                         ]);
                         $amount = $rank->loan - $rank->total_lmp;
-                        $user->self::$loan_elig_balance+=$amount; 
+                        $user->loan_elig_balance+=$amount; 
                         $msg = 'Leadership monthly bonus activated';
                     }elseif($request->tp == 'l'){
                         #issue no interest loan
@@ -151,7 +151,7 @@ class DashboardController extends G360
                     }
                     if($sA->grace > 0)
                         $rank->prize = (30/100)*$rank->prize;
-                    $user->self::$pend_trx_balance += $rank->prize;
+                    $user->pend_trx_balance += $rank->prize;
                     WalletHistory::create([
                         'id'=>Helpers::genTableId(WalletHistory::class),
                         'user_id'=>$user->id,
@@ -188,8 +188,8 @@ class DashboardController extends G360
         $ppp = $user->ppp;
         $fee = Helpers::getRegData('ppp_r_fee');
         if($ppp->status == 2){
-            if($user->self::$trx_balance >= $fee){
-                $user->self::$trx_balance -= $fee;
+            if($user->trx_balance >= $fee){
+                $user->trx_balance -= $fee;
                 $user->save();
                 WalletHistory::create([
                     'id'=>Helpers::genTableId(WalletHistory::class),
