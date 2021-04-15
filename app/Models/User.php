@@ -167,7 +167,7 @@ class User extends Authenticatable
     public function validPartner()
     {
         return PContract::where([ 
-            ['user_id', $this->id],
+            ['partner_id', $this->partner->id],
             ['status', 0 ]
         ])->exists();
     }
