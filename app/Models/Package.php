@@ -124,6 +124,7 @@ class Package extends Model
                 $gsclub->gbal = GTR::orderBy('id', 'ASC')->first()->amount;
                 $gsclub->g = 1;
                 $gsclub->lastg = Carbon::now();
+                $gsclub->lastr = Carbon::now();
                 $gsclub->save();
             }
         }
