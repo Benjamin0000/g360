@@ -37,11 +37,12 @@ class Kernel extends ConsoleKernel
             Task::shareSignupProfit();
             Task::sAgentRGcoin();
             Task::superAssocReward();
+            Task::gsClub();
         })->everyMinute();
 
-        $schedule->call(function(){
-            Task::gsClub();
-        })->timezone('Africa/Lagos')->dailyAt('23:00');
+        // $schedule->call(function(){
+            
+        // })->timezone('Africa/Lagos')->dailyAt('23:00');
 
         $schedule->call(function(){
             Task::ranking();
