@@ -339,7 +339,6 @@ use Exception;
     {
         if($level > 15) return;
         $cur = self::LOCAL_CURR_SYMBOL;
-        $pend_balance = self::PEND_BALANCE;
         $ref_percent = explode(',', $package->ref_percent);
         if($level > count($ref_percent))
             $cash_profit = (floatval(end($ref_percent)) / 100) * $amount;
@@ -352,14 +351,14 @@ use Exception;
             $user = User::where([ ['gnumber', $user->ref_gnum], ['status', 1] ])->first();
         if($user){
             if($user->canEarnFromLevel($level)){
-                $user->$pend_balance += $cash_profit;
+                $user->pend_balance += $cash_profit;
                 $user->save();
                 WalletHistory::create([
                     'id'=>self::genTableId(WalletHistory::class),
                     'amount'=>$cash_profit,
                     'user_id'=>$user->id,
                     'gnumber'=>$user->gnumber,
-                    'name'=>$pend_balance,
+                    'name'=>'pend_balance',
                     'type'=>'credit',
                     'description'=>$cur.$cash_profit.' received from '.ucfirst($package->name).
                     ' package level ' .$level.' referral commission' 
@@ -380,7 +379,7 @@ use Exception;
     */
     public static function creditRefTokens(Package $package, $gnumber, $level = 1)
     {
-        if($level > 20) return;
+        if($level > 15) return;
         $cpv = self::CUM_POINT_VALUE;
         $h_token = self::HEALTH_TOKEN;
         $user = User::where([ ['gnumber', $gnumber], ['status', 1] ])->first();
@@ -396,15 +395,15 @@ use Exception;
                 $pv_profit = (int)$ref_pv[$level-1];
             }
             if($user->canEarnFromLevel($level)){ 
-                $user->$h_token += $h_token_profit;
-                $user->$cpv += $pv_profit;
+                $user->h_token += $h_token_profit;
+                $user->cpv += $pv_profit;
                 $user->save();
                 WalletHistory::create([
                     'id'=>self::genTableId(WalletHistory::class),
                     'amount'=>$h_token_profit,
                     'user_id'=>$user->id,
                     'gnumber'=>$user->gnumber,
-                    'name'=>$h_token,
+                    'name'=>'h_token',
                     'type'=>'credit',
                     'description'=>$h_token_profit.' Health token received from '.ucfirst($package->name).
                     ' package level '.$level.' referral commission' 
@@ -414,7 +413,7 @@ use Exception;
                     'amount'=>$pv_profit,
                     'user_id'=>$user->id,
                     'gnumber'=>$user->gnumber,
-                    'name'=>$cpv,
+                    'name'=>'cpv',
                     'type'=>'credit',
                     'description'=>$pv_profit.' Point value received from '.ucfirst($package->name).
                     ' package level '.$level.' referral commission' 
