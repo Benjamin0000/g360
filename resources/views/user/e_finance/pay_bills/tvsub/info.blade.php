@@ -5,8 +5,7 @@ $cur = App\Http\Helpers::LOCAL_CURR_SYMBOL;
   <div class="form-group">
       <h4>Confirmation</h4>
       <div><b>Name</b>: {{$data['name']}}</div>
-      <div><b>Address</b>: {{$data['address']}}</div>
-      <div><b>Provider</b>: {{$data['disco']}}</div>
+      <div><b>Provider</b>: {{$data['provider_name']}}</div>
       <div><b>Smart card number</b>: {{$data['number']}}</div>
       <div><b>Amount</b>: {{$cur.number_format($data['amt'])}}</div>
       <div><b>Charge</b>: {{$cur.$data['charge']}}</div>

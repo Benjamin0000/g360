@@ -8,7 +8,7 @@ use App\Models\GsClubH;
 use App\Models\WalletHistory;
 class GsClubController extends G360
 {
-    public $formular = [1.25, 0.75, 0.5];
+    public const formular = [1.25, 0.75, 0.5];
     /**
     * Creates a new controller instance
     *
@@ -82,10 +82,10 @@ class GsClubController extends G360
                 $member->wbal = 0;
                 $member->save();
                 self::shareCommision($user->ref_gnum, $amt, $user->placed_by);
-                $refAmt = (array_sum($this->formular) / 100)*$amt;
+                $refAmt = (array_sum(self::formular) / 100)*$amt;
                 $amt = $amt - $refAmt;
-                $user->self::$pend_balance += $amt;
-                $user->self::$h_token += $h_token;
+                $user->pend_balance += $amt;
+                $user->h_token += $h_token;
                 $user->save();
                 GsClubH::create([
                     'id'=>Helpers::genTableId(GsClubH::class),
@@ -151,7 +151,7 @@ class GsClubController extends G360
     private static function shareCommision($gnumber, $amt, $placed_by, $level=0)
     {
         if($level >= 3)return;
-        $reward = ($this->formular[$level] / 100) * $amt;
+        $reward = (self::formular[$level] / 100) * $amt;
         $hamt = (1.5/100)*$reward;
         $assoc_amt = (1.5/100)*$reward;
         $reward -= $hamt;
@@ -173,8 +173,8 @@ class GsClubController extends G360
 
     private function finishCredit(User $user, $reward, $h_token)
     {
-        $user->self::$pend_balance += $reward;
-        $user->self::$h_token += $h_token;
+        $user->pend_balance += $reward;
+        $user->h_token += $h_token;
         $user->save();
         WalletHistory::create([
             'id'=>Helpers::genTableId(WalletHistory::class),
@@ -183,8 +183,8 @@ class GsClubController extends G360
             'gnumber'=>$user->gnumber,
             'name'=>self::$h_token,
             'type'=>'credit',
-            'description'=>self::$cur.number_format($h_token).' GSTeam level '.
-            $level+1 . ' ref commision'
+            'description'=>$h_token.' GSTeam '.
+            Helpers::ordinal($level+1).' Gen ref commision'
         ]);
         WalletHistory::create([
             'id'=>Helpers::genTableId(WalletHistory::class),
@@ -193,8 +193,8 @@ class GsClubController extends G360
             'gnumber'=>$user->gnumber,
             'name'=>self::$pend_balance,
             'type'=>'credit',
-            'description'=>self::$cur.number_format($reward).' GSTeam level '.
-            $level+1 . ' ref commision'
+            'description'=>self::$cur.number_format($reward).' GSTeam '.
+            Helpers::ordinal($level+1).' Gen ref commision'
         ]);
     }
 

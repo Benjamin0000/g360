@@ -24,7 +24,7 @@ $user = Auth::user();
                   @if($member && $member->wbal >= 1000)
                   <form action="{{route('user.gsclub.cashout')}}" method="post" style="display:inline;">
                     @csrf
-                    <button class="btn btn-primary btn-sm blink" onclick="confirm('A vat fee of 50 will be charged')">Cashout</button>
+                    <button class="btn btn-primary btn-sm blink" onclick="return confirm('A vat fee of 50 will be charged')">Cashout</button>
                   </form>
                   @endif
                 </h4>

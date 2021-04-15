@@ -498,15 +498,14 @@ class Task extends G360
         $r_count = $gtr->r_count;
         $pay_back = $gtr->pay_back;
         $hours = $gtr->r_hours;
-        $dateCheck = Carbon::now()->subMinutes($hours);
+        $dateCheck = Carbon::now()->subMinutes($hours)->toDateTimeString();
         $receiver = GsClub::where([
             ['id', '<>', "$r_id"],
             ['status', 0],
             ['g', 0],
             ['gbal', $giver->gbal]
-        ])->orderBy('created_at', 'ASC')->first();
-
-        if($receiver && Carbon::parse($receiver->lastr)->diffInMinutes() >= $hours){
+        ])->where('lastr', '>=', $dateCheck)->orderBy('created_at', 'ASC')->first();
+        if($receiver){
             $receiver->r_count+=1;
             if($receiver->r_count >= $r_count){
                 $total = $giver->gbal * $r_count;
@@ -546,7 +545,7 @@ class Task extends G360
                     'amount'=>$giver->gbal,
                     'type'=>0,
                     'description'=>self::$cur.number_format($giver->gbal)." Received from ".
-                    $giver->user->fname.' '.$giver->user->lname
+                    $giver->user->fname.' '.$giver->user->lname.'['.$giver->user->gnumber.']'
                 ]);
                 GsClubH::create([
                     'id'=>Helpers::genTableId(GsClubH::class),
@@ -554,7 +553,7 @@ class Task extends G360
                     'amount'=>$giver->gbal,
                     'type'=>1,
                     'description'=>self::$cur.number_format($giver->gbal)." Sent to ".
-                    $receiver->user->fname.' '.$receiver->user->lname
+                    $receiver->user->fname.' '.$receiver->user->lname.'['.$receiver->user->gnumber.']'
                 ]);
             }
         }
