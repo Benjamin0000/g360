@@ -44,7 +44,7 @@
                              @if($gsclub->g)
                                <span class="badge badge-success">Giving</span>
                              @else
-                               <span class="badge badge-success">Receiving</span>
+                               <span class="badge badge-warning">Receiving</span>
                              @endif
                            </td>
                            <td>{{Carbon::parse($gsclub->lastg)->diffForHumans()}}</td>
