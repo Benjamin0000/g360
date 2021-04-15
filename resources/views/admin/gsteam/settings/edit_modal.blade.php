@@ -40,8 +40,8 @@
             <div class="row">
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="">Receivers Days</label>
-                    <input type="text" name="r_days" class="form-control" value="{{$gtr->r_days}}">
+                    <label for="">Receivers Hours</label>
+                    <input type="text" name="r_hours" class="form-control" value="{{$gtr->r_hours}}">
                   </div>
                 </div>
                 <div class="col-md-6">

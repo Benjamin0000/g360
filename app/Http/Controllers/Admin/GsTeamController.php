@@ -51,7 +51,7 @@ class GsTeamController extends Controller
             'pay_back'=>['required', 'numeric'],
             'r_count'=>['required', 'numeric'],
             'g_hours'=>['required', 'numeric'],
-            'r_days'=>['required', 'numeric'],
+            'r_hours'=>['required', 'numeric'],
             'total_ref'=>['required', 'numeric']
         ]);
         if($request->input('level')) return;

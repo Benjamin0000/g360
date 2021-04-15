@@ -497,8 +497,8 @@ class Task extends G360
         $last = GTR::orderBy('id', 'DESC')->first()->id;
         $r_count = $gtr->r_count;
         $pay_back = $gtr->pay_back;
-        $days = $gtr->r_days;
-        $dateCheck = Carbon::now()->subMinutes($days);
+        $hours = $gtr->r_hours;
+        $dateCheck = Carbon::now()->subMinutes($hours);
         $receiver = GsClub::where([
             ['id', '<>', $r_id],
             ['status', 0],

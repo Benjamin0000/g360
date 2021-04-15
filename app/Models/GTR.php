@@ -16,7 +16,6 @@ class GTR extends Model
         'r_count',
         'r_hours',
         'g_hours',
-        'r_days',
         'total_ref',
         'level',
     ];

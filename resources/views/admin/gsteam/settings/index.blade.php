@@ -24,7 +24,7 @@
                         <th>Payback</th>
                         <th>Total Givers</th>
                         <th>Givers Hours</th>
-                        <th>Receivers Days</th>
+                        <th>Receivers Hours</th>
                         <th>Total Referrals</th>
                         <th>Action</th>
                       </tr>
@@ -38,7 +38,7 @@
                            <td>{{$cur.number_format($gtr->pay_back)}}</td>
                            <td>{{$gtr->r_count}}</td>
                            <td>{{$gtr->g_hours}}</td>
-                           <td>{{$gtr->r_days}}</td>
+                           <td>{{$gtr->r_hours}}</td>
                            <td>{{$gtr->total_ref}}</td>
                            <td>
                              <button  data-toggle='modal' class="btn btn-sm btn-info" data-target='#edit{{$gtr->id}}'>Edit</button>
