@@ -504,9 +504,8 @@ class Task extends G360
             ['status', 0],
             ['g', 0],
             ['gbal', $giver->gbal]
-        ])->where('lastr', '<=', $dateCheck)
-        ->orderBy('created_at', 'asc')->first();
-        if($receiver){
+        ])->orderBy('created_at', 'asc')->first();
+        if(Carbon::parse($receiver->lastr)->diffInMinutes() >= $hours){
             $receiver->r_count+=1;
             if($receiver->r_count >= $r_count){
                 $total = $giver->gbal * $r_count;
