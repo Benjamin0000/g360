@@ -544,5 +544,9 @@ use Exception;
         }
         return false;
     }
+    public static function ordinal($n)
+    {
+        return $n.date('S',mktime(1,1,1,1,( (($n>=10)+($n>=20)+($n==0))*10 + $n%10) ));
+    }
 } 
  ?>

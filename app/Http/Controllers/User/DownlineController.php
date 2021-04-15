@@ -25,7 +25,9 @@ class DownlineController extends Controller
     public function direct()
     {
         $user = Auth::user();
-        $referals = User::where('ref_gnum', $user->gnumber)->latest()->paginate(10);
+        $referals = User::where('ref_gnum', $user->gnumber)
+        ->orWhere('placed_by', $user->gnumber)
+        ->latest()->paginate(10);
         return view('user.downline.direct', compact('referals'));
     }
     /**

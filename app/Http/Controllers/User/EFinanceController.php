@@ -5,6 +5,7 @@ use App\Http\Controllers\G360;
 use App\Lib\Epayment\Airtime as Pairtime;
 use App\Lib\Epayment\Data as DataSubscription;
 use App\Lib\Epayment\Electricity;
+use App\Lib\Epayment\CableTv as ECableTv;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\WalletHistory;
@@ -12,6 +13,7 @@ use App\Models\Airtime;
 use App\Models\DataSub;
 use App\Models\FAccount;
 use App\Models\EDisco;
+use App\Models\CableTv;
 class EFinanceController extends G360
 {
     /**
@@ -56,20 +58,32 @@ class EFinanceController extends G360
             'meter_number'=>['required', 'numeric'],
             'amount'=>['required', 'numeric']
         ]);
-        $elect = new Electricity($request->meter_number, $request->disco, $request->amount);
+        $amount = $request->amount;
+        if($amount < 0)
+            return ['error'=>"Invalid amount"];
+        if(!$disco = EDisco::where('code', $request->disco)->first())
+            return ['error'=>"Invalid Disco selected"];
+        $elect = new Electricity($request->meter_number, $disco, $amount);
+        $user = Auth::user();
         switch($request->type)
         {
-            case 1: 
+            case 1:
+                $total = $amount + $disco->charge;
+                if($user->trx_balance < $total)
+                    return ['error'=>"Insufficient fund"];
                 $data = $elect->validateMeter();
                 if(isset($data['error']))
                     return $data;
                 $data['amt'] = $request->amount;
-                $data['service'] = $request->disco;
+                $data['service'] = $disco->code;
+                $data['charge'] = $disco->charge;
                 $view = view('user.e_finance.pay_bills.electricity.info', compact('data'));
                 return ['status'=>"$view"];
             break;
             case 2:
-                return $data = $elect->purchase();
+                if($elect->purchase())
+                    return back()->with('success', 'Transaction completed');
+                return back()->with('error', 'Cound not complete transaction');
                 break;
             default: 
                 return ['error'=>'invalid operation'];
@@ -197,7 +211,55 @@ class EFinanceController extends G360
      */
     public function tvSub()
     {
-        return view('user.e_finance.pay_bills.tvsub.index');
+        $providers = CableTv::all();
+        return view('user.e_finance.pay_bills.tvsub.index', compact('providers'));
+    }
+    public function tvPlans($p = 0)
+    {
+        if($provider = CableTv::find($p)){
+            $ecable = new ECableTv($provider->code);
+            $plans = $ecable->getPriceList()['products'];
+            return view('user.e_finance.pay_bills.tvsub.plans', compact('plans'));
+        }
+        return ["<div class='alert alert-danger'><i class='fa fa-info-circle'></i> Invalid provider</div>"];
+    }
+    public function validateTvAcc(Request $request)
+    {
+        $this->validate($request, [
+            'provider'=>['required', 'numeric'],
+            'smart_card'=>['required', 'numeric'],
+            'package'=>['required']
+        ]);
+        if($provider = CableTv::find($request->provider)){
+            $ecable = new ECableTv($provider->code);
+            $data = $ecable->validateSmartCard($request->smart_card);
+            if($ecable->proceed){
+                $data['provider_name'] = $provider->name;
+                $data['provider_id'] = $provider->id;
+                $data['package'] = $request->package;
+                $data['package_name'] = 
+                $data['amt'] = 
+                $value = view('user.e_finance.pay_bills.tvsub.info', compact('data'));
+                return ['status'=>"$value"];
+            }
+            return ['error'=>'Incorrect Smart card number'];
+        }
+        return back()->with('error', 'Invalid provider');
+    }
+    public function finishSubTv(Request $request)
+    {
+        $this->validate($request, [
+            'provider'=>['required', 'numeric'],
+            'smart_card'=>['required', 'numeric'],
+            'package'=>['required']
+        ]);
+        if($provider = CableTv::find($p)){
+            $ecable = new ECableTv($provider->code);
+
+            
+        
+        }
+        return back()->with('error', 'Invalid provider');
     }
     /**
      * Show waterSub pay bills page

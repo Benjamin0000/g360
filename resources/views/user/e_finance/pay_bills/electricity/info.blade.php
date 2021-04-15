@@ -15,9 +15,12 @@ $cur = App\Http\Helpers::LOCAL_CURR_SYMBOL;
       @endif
       <div><b>Meter</b>: {{$data['number']}}</div>
       <div><b>Amount</b>: {{$cur.number_format($data['amt'])}}</div>
+      <div><b>Charge</b>: {{$cur.$data['charge']}}</div>
+      <div><b>Total</b>: {{$cur.number_format($data['amt'] + $data['charge'])}}</div>
   </div>
   @csrf
   <div class="form-group">
-  <a href="{{url()->current()}}" class="btn btn-danger">Cancel</a>   <button class="btn btn-primary" name="button">Continue</button>
+    <a href="{{url()->current()}}" class="btn btn-danger">Cancel</a>
+    <button class="btn btn-primary" name="button">Continue</button>
   </div>
 </form>

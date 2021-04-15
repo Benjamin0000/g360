@@ -1,6 +1,7 @@
 <?php
 use App\Lib\Epayment\Airtime;
 use App\Lib\Epayment\Data;
+use App\Lib\Epayment\CableTv;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\GmarketController;
@@ -49,6 +50,9 @@ use App\Http\Helpers;
 |
 */
 Route::get('/test', function(){
+     $val = new EFinanceController();
+    return $val->tvPlans(3);
+    // return Helpers::ordinal(1);
     // return Helpers::ripeForUpgrade();
     // $url = 'https://passport.interswitchng.com/passport/oauth/token';
     // $clientID = "IKIAC7E97F86359001BC72CDBD9BEE2AF4B3BEE7C2F9";
@@ -164,7 +168,11 @@ Route::group(['prefix'=>'portal'],  function(){
     Route::post('/e-finance/airtime-data/ERgtj4Thy', [EFinanceController::class, 'getDataPlan'])->name('user.pay_bills.getdata_plan');
     Route::post('/e-finance/airtime-data/edbuFsBubYr', [EFinanceController::class, 'purchaseData'])->name('user.pay_bills.purchaseData');
     Route::get('/e-finance/water', [EFinanceController::class, 'waterSub'])->name('user.pay_bills.waterSub.index');
+    #TV
     Route::get('/e-finance/tv', [EFinanceController::class, 'tvSub'])->name('user.pay_bills.tvSub.index');
+    Route::get('/e-finance/tv/ktujmh/{id?}', [EFinanceController::class, 'tvPlans'])->name('user.pay_bills.tvSub.plans');
+    Route::post('/e-finance/tv/jdkeis', [EFinanceController::class, 'validateTvAcc'])->name('user.pay_bills.validateTvAcc');
+    Route::post('/e-finance/tv', [EFinanceController::class, 'finishSubTv'])->name('user.pay_bills.finishSubTv');
     #Gmarket
     Route::get('/g-market', [UGmarket::class, 'index'])->name('user.gmarket.index');
     #shop
