@@ -118,7 +118,7 @@ $ppp_g_trail = Helpers::getRegData('ppp_grace_trail');
                   <div class="">
                       <h2 class="font-light" style="font-size:18px;">
                         <span class="">
-                          <i class="fa fa-users text-success"></i><span> {{$user->totalNotPlaced()}}</span> <span class="text-danger">{{$user->totalPlaced()}}</span>
+                          <i class="fa fa-users text-success"></i><span> {{$user->totalNotPlaced()}}</span> : <span class="text-danger">{{$user->totalPlaced()}}</span>
                         </span>
                         <span class="float-right">
                            <i class="mdi mdi-trophy-award text-danger"></i>{{$ppp->point}}
