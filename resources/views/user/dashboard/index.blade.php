@@ -303,10 +303,10 @@ $ppp_g_trail = Helpers::getRegData('ppp_grace_trail');
                               <tr>
                                 <td>{{$count++}}</td>
                                 <td>
-                                  {{-- @if($history->name != "cpv" && $history->name != 'h_token') --}}
-                                    {{-- {{$cur}} --}}
-                                  {{-- @endif --}}
-                                  {{$cur.number_format($history->amount,2,'.',',')}}
+                                  @if($history->name != "cpv" && $history->name != 'h_token')
+                                    {{$cur}}
+                                  @endif
+                                  {{number_format($history->amount,2,'.',',')}}
                                   @if($history->type == 'debit')
                                       <span class="badge badge-danger">Debit</span>
                                   @elseif($history->type == 'credit')

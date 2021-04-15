@@ -21,7 +21,7 @@
                             </div>
                             @csrf
                             <div class="form-group text-center">
-                                <button class="btn btn-success">Continue</button>
+                              <a href="{{url()->current()}}" class="btn btn-danger">Cancel</a>  <button class="btn btn-success">Continue</button>
                             </div>
                         </form>
                       </div>
