@@ -500,12 +500,12 @@ class Task extends G360
         $hours = $gtr->r_hours;
         $dateCheck = Carbon::now()->subMinutes($hours);
         $receiver = GsClub::where([
-            ['id', '<>', $r_id],
+            ['id', '<>', "$r_id"],
             ['status', 0],
             ['g', 0],
             ['gbal', $giver->gbal]
         ])->orderBy('created_at', 'ASC')->first();
-        
+
         if($receiver && Carbon::parse($receiver->lastr)->diffInMinutes() >= $hours){
             $receiver->r_count+=1;
             if($receiver->r_count >= $r_count){
