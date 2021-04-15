@@ -69,8 +69,8 @@ class EFinanceController extends G360
                 return ['status'=>"$view"];
             break;
             case 2:
-                
-                $data = $elect->purchase();
+                return $data = $elect->purchase();
+                break;
             default: 
                 return ['error'=>'invalid operation'];
         }

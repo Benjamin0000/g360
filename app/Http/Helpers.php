@@ -395,19 +395,22 @@ use Exception;
                 $pv_profit = (int)$ref_pv[$level-1];
             }
             if($user->canEarnFromLevel($level)){ 
-                $user->h_token += $h_token_profit;
+                if($h_token_profit)
+                    $user->h_token += $h_token_profit;
                 $user->cpv += $pv_profit;
                 $user->save();
-                WalletHistory::create([
-                    'id'=>self::genTableId(WalletHistory::class),
-                    'amount'=>$h_token_profit,
-                    'user_id'=>$user->id,
-                    'gnumber'=>$user->gnumber,
-                    'name'=>'h_token',
-                    'type'=>'credit',
-                    'description'=>$h_token_profit.' Health token received from '.ucfirst($package->name).
-                    ' package level '.$level.' referral commission' 
-                ]);
+                if($h_token_profit){
+                    WalletHistory::create([
+                        'id'=>self::genTableId(WalletHistory::class),
+                        'amount'=>$h_token_profit,
+                        'user_id'=>$user->id,
+                        'gnumber'=>$user->gnumber,
+                        'name'=>'h_token',
+                        'type'=>'credit',
+                        'description'=>$h_token_profit.' Health token received from '.ucfirst($package->name).
+                        ' package level '.$level.' referral commission' 
+                    ]);
+                }
                 WalletHistory::create([
                     'id'=>self::genTableId(WalletHistory::class),
                     'amount'=>$pv_profit,

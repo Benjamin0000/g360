@@ -60,7 +60,7 @@ class Electricity
             "meter"=>$this->meter,
             "amount"=>$this->amount
         ]);
-        $data = json_decode($response, true);
+        return $data = json_decode($response, true);
         if(isset($data['status']) && $data['status'] == 201){
             VtuTrx::create([
                 'id'=>$refCode,

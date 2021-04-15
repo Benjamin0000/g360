@@ -132,8 +132,22 @@ class User extends Authenticatable
     public function totalValidRef()
     {
         return self::where([ 
-            ['ref_gnum', $this->gnumber], 
-            ['pkg_id', '>', 1] 
+            ['ref_gnum', $this->gnumber],
+            ['pkg_id', '>', 1], 
+        ])->orWhere('placed_by', $this->gnumber)->count();
+    }
+    public function totalPlaced()
+    {
+        return self::where([ 
+            ['placed_by', $this->gnumber],
+            ['pkg_id', '>', 1], 
+        ])->count();
+    }
+    public function totalNotPlaced()
+    {
+        return self::where([ 
+            ['ref_gnum', $this->gnumber],
+            ['pkg_id', '>', 1], 
         ])->count();
     }
     /**

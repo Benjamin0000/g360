@@ -10,11 +10,14 @@ $cur = App\Http\Helpers::LOCAL_CURR_SYMBOL;
       <h4>Confirmation</h4>
       <div><b>Name</b>: {{$data['name']}}</div>
       <div><b>Address</b>: {{$data['address']}}</div>
+      @if(isset($data['disco']))
       <div><b>Disco</b>: {{$data['disco']}}</div>
+      @endif
+      <div><b>Meter</b>: {{$data['number']}}</div>
       <div><b>Amount</b>: {{$cur.number_format($data['amt'])}}</div>
   </div>
   @csrf
   <div class="form-group">
-    <button class="btn btn-primary" name="button">Continue</button>
+  <a href="{{url()->current()}}" class="btn btn-danger">Cancel</a>   <button class="btn btn-primary" name="button">Continue</button>
   </div>
 </form>
