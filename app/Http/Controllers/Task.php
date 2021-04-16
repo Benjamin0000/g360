@@ -304,7 +304,7 @@ class Task extends G360
                     $last_payed = Carbon::parse($lmp->last_payed);
                 else
                     $last_payed = $lmp->created_at;
-                if($last_payed->diffInDays() >= self::$month_end){
+                if($last_payed->diffInMinutes() >= self::$month_end){
                     if($user = User::find($lmp->user_id)){
                         $user->pend_trx_balance += $lmp->amount;
                         $user->save();
