@@ -116,7 +116,7 @@ Route::post('/register', [RegisterController::class, 'store'])->name('register')
 Route::get('/verify-email/{token}/{email}', [RegisterController::class, 'verifyEmail'])->name('register.verify');
 #user
 Route::group(['prefix'=>'portal'],  function(){
-    Route::get('/', [DashboardController::class, 'index'])->name('user.dasbhoard.index');
+    Route::get('/', [DashboardController::class, 'index'])->name('user.dashboard.index');
     Route::post('/kAVRnEzhwNxKXuZ', [DashboardController::class, 'reactivateSuperAssoc'])->name('user.dashboard.rassoc');
     Route::post('/zGPLAHHAsPLgJzE', [DashboardController::class, 'reactivatePPP'])->name('user.dashboard.rappp');
     #package
