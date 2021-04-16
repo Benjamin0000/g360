@@ -71,17 +71,20 @@ class GsClubController extends G360
             $amt = $member->wbal;
             $vat = (7.5/100)*$amt;
             $fee = (7/100)*$amt;
-            $hamt = (1.5/100)*$amt;
+            $health_amt = (1.5/100)*$amt;
             $assoc_amt = (1.5/100)*$amt;
-            $h_token = $hamt / self::$h_token_price;
+            $h_token = $health_amt / self::$h_token_price;
             if($amt >= 1000){
                 $amt -= $vat;
                 $amt -= $fee;
-                $amt -= $hamt;
+                $amt -= $health_amt;
                 $amt -= $assoc_amt;
                 $member->wbal = 0;
                 $member->save();
-                self::shareCommision($user->ref_gnum, $amt, $user->placed_by);
+
+                if($user->ref_gnum)
+                    self::shareCommision($user, $amt);
+
                 $refAmt = (array_sum(self::formular) / 100)*$amt;
                 $amt = $amt - $refAmt;
                 $user->pend_balance += $amt;
@@ -104,9 +107,9 @@ class GsClubController extends G360
                 GsClubH::create([
                     'id'=>Helpers::genTableId(GsClubH::class),
                     'user_id'=>$user->id,
-                    'amount'=>$hamt,
+                    'amount'=>$health_amt,
                     'type'=>4,
-                    'description'=>self::$cur.number_format($hamt)."Health insurance"
+                    'description'=>self::$cur.number_format($health_amt)."Health insurance"
                 ]);
                 GsClubH::create([
                     'id'=>Helpers::genTableId(GsClubH::class),
@@ -148,30 +151,27 @@ class GsClubController extends G360
      * @param  \Illuminate\Http\Request  $request
      * @return Void
     */
-    private static function shareCommision($gnumber, $amt, $placed_by, $level=0)
+    private static function shareCommision(User $user, $amt, $level=0)
     {
         if($level >= 3)return;
         $reward = (self::formular[$level] / 100) * $amt;
-        $hamt = (1.5/100)*$reward;
+        $health_amt = (1.5/100)*$reward;
         $assoc_amt = (1.5/100)*$reward;
-        $reward -= $hamt;
+        $reward -= $health_amt;
         $reward -= $assoc_amt;
-        $h_token = $hamt / self::$h_token_price;
-        if($placed_by){
-            $user = User::where('gnumber', $placed_by)->first();
-            if($user){
-                $this->finishCredit($user, $reward, $h_token);
-                return self::shareCommision($user->ref_gnum, $amt, $user->placed_by, $level+1);
-            }
-        }
-        $user = User::where('gnumber', $gnumber)->first();
-        if($user){
-            $this->finishCredit($user, $reward, $h_token);
-        }
-        return self::shareCommision($user->ref_gnum, $amt, $user->placed_by, $level+1);
-    }
+        $h_token = $health_amt / self::$h_token_price;
 
-    private function finishCredit(User $user, $reward, $h_token)
+        if($user->placed_by)
+            $user = User::where('gnumber', $user->placed_by)->first();
+        else    
+            $user = User::where('gnumber', $user->ref_gnum)->first();
+        if($user){
+            self::finishCredit($user, $reward, $h_token, $level+1);
+            if($user->ref_gnum)
+                self::shareCommision($user, $amt, $level+1);
+        }
+    }
+    private static function finishCredit(User $user, $reward, $h_token, $level=0)
     {
         $user->pend_balance += $reward;
         $user->h_token += $h_token;
@@ -184,7 +184,7 @@ class GsClubController extends G360
             'name'=>self::$h_token,
             'type'=>'credit',
             'description'=>$h_token.' GSTeam '.
-            Helpers::ordinal($level+1).' Gen ref commision'
+            Helpers::ordinal($level).' Gen ref commision'
         ]);
         WalletHistory::create([
             'id'=>Helpers::genTableId(WalletHistory::class),
@@ -194,7 +194,7 @@ class GsClubController extends G360
             'name'=>self::$pend_balance,
             'type'=>'credit',
             'description'=>self::$cur.number_format($reward).' GSTeam '.
-            Helpers::ordinal($level+1).' Gen ref commision'
+            Helpers::ordinal($level).' Gen ref commision'
         ]);
     }
 
