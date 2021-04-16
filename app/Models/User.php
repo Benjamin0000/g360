@@ -192,6 +192,6 @@ class User extends Authenticatable
     }
     public function refPercent($CPV)
     {
-        return (int)(100 * $this->cpv)/$CPV;
+        return (int)((100 * $this->cpv)/$CPV);
     }
 }
