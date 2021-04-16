@@ -22,6 +22,7 @@
                       <tr>
                         <th>No</th>
                         <th>Name</th>
+                        <th>Total ref.</th>
                         <th>Wbal</th>
                         <th>G-bal</th>
                         <th>Type</th>
@@ -38,6 +39,7 @@
                          <tr>
                            <td>{{$count++}}</td>
                            <td>{{$gsclub->user->fname.' '.$gsclub->user->lname}}</td>
+                           <td>{{$gsclub->user->totalValidRef()}}</td>
                            <td>{{$cur.number_format($gsclub->wbal)}}</td>
                            <td>{{$cur.number_format($gsclub->gbal)}}</td>
                            <td>

@@ -54,4 +54,5 @@
         </div>
     </div>
 </div>
+@include('admin.gsteam.settings.more')
 @endsection
