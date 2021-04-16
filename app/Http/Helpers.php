@@ -437,18 +437,17 @@ use Exception;
     {
         $legs = 4;
         $referrals = User::where('ref_gnum', $user->gnumber)
+        ->orWhere('placed_by', $user->gnumber)
         ->orderBy('cpv', 'DESC')->take(4)->get();
         $min = $pv/$legs;
         if($referrals->count()){
             foreach($referrals as $referral){
-                if($referral->cpv < $min){
+                if($referral->cpv < $min)
                     return false;
-                }
             }
             return true;
-        }else{
-            return false;
         }
+        return false;
     }
     /**
       * Get Cities
