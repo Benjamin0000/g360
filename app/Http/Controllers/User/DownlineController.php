@@ -27,6 +27,7 @@ class DownlineController extends Controller
         $user = Auth::user();
         $referals = User::where('ref_gnum', $user->gnumber)
         ->orWhere('placed_by', $user->gnumber)
+        ->orderBy('cpv', 'DESC')
         ->latest()->paginate(10);
         return view('user.downline.direct', compact('referals'));
     }
