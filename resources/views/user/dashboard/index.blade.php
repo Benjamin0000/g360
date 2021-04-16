@@ -1,4 +1,4 @@
-@extends('user.layout', ['title'=>'Dasbhoard'])
+@extends('user.layout', ['title'=>'Dashboard'])
 @php
 use Carbon\Carbon;
 use App\Http\Helpers;

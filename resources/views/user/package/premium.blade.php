@@ -65,7 +65,7 @@ function selectP(id){
             if(data.status){
                 $('#pkge'+id).html("<div class='alert alert-success'><i class='fa fa-check-circle'></i> Upgrade successfull</div>");
                 setTimeout(function(){
-                    window.location.href = '{{route('user.dasbhoard.index')}}';
+                    window.location.href = '{{route('user.dashboard.index')}}';
                 },2000);
             }else{
                 $ele.text($ele.data('text'));

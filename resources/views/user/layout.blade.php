@@ -131,7 +131,7 @@
                 <nav class="sidebar-nav">
                     <ul id="sidebarnav">
                         <li>
-                            <a href="{{route('user.dasbhoard.index')}}" >
+                            <a href="{{route('user.dashboard.index')}}" >
                                 <i class="mdi mdi-gauge"></i>
                                 <span class="hide-menu">Dashboard </span>
                             </a>

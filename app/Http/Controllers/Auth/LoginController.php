@@ -25,7 +25,7 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -42,7 +42,7 @@ class LoginController extends Controller
         if( $check = User::where('username', $request->username)->first() ){
             if( password_verify($request->password, $check->password) ){
                 $d = [
-                    'd'=>  ['r'=>route('user.dasbhoard.index')]
+                    'd'=>  ['r'=>route('user.dashboard.index')]
                 ];
                 $rem = $request->rem ? true : false;
                 Auth::login($check, $rem);
@@ -58,7 +58,7 @@ class LoginController extends Controller
     {
         if($request->email){
             if($user = User::where('email', $request->email)->first()){
-                $check = Token::where([ 
+                $check = Token::where([
                     ['email', $request->email],
                     ['status', 0]
                 ])->first();
@@ -66,7 +66,7 @@ class LoginController extends Controller
                 if( $check ){
                     if( $check->created_at->diffInHours() >= 12 )
                         $check->delete();
-                    else 
+                    else
                         $allow = false;
                 }
                 if( $allow ){
@@ -97,7 +97,7 @@ class LoginController extends Controller
 
     public function showUpdatePassForm($token, $email)
     {
-        $token = Token::where([ 
+        $token = Token::where([
             ['email', $email],
             ['token', $token],
             ['status', 0]
@@ -117,9 +117,9 @@ class LoginController extends Controller
         $this->validate($request, [
             'password'=> ['required', 'min:6', 'confirmed']
         ]);
-        
+
         if( $request->token && $request->email ){
-            $check = Token::where([ 
+            $check = Token::where([
                 ['email', $request->email],
                 ['token', $request->token],
                 ['status', 0]
@@ -147,7 +147,7 @@ class LoginController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function logout() 
+    public function logout()
     {
         Auth::logout();
         return redirect( route('login') )->with('logout', 'not empty');

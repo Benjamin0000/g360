@@ -20,7 +20,7 @@ class PartnershipController extends G360
         $this->middleware('auth');
         $this->middleware(function ($request, $next) {
             if(!Auth::user()->partner)
-                return redirect(route('user.dasbhoard.index'))->with('error', "You don't have permission to visit that resource");
+                return redirect(route('user.dashboard.index'))->with('error', "You don't have permission to visit that resource");
             return $next($request);
         });
     }

@@ -34,7 +34,7 @@ class PackageController extends Controller
         $no_pkg = 0;
         $user = Auth::user();
         if($user->pkg_id > $no_pkg)
-            return redirect(route('user.dasbhoard.index'))
+            return redirect(route('user.dashboard.index'))
             ->with('error', 'Sorry you can\'t access that page');
         return view('user.package.index');
     }
@@ -48,7 +48,7 @@ class PackageController extends Controller
         $last_pkg = 7;
         $user = Auth::user();
         if($user->pkg_id == $last_pkg)
-            return redirect(route('user.dasbhoard.index'))
+            return redirect(route('user.dashboard.index'))
             ->with('error', 'Sorry you can\'t access that page');
         $packages = Package::where('name', '<>', 'free')->get();
         return view('user.package.premium', compact('packages'));
@@ -74,10 +74,10 @@ class PackageController extends Controller
             ]);
             $user->pkg_id = $package->id;
             $user->save();
-            return redirect(route('user.dasbhoard.index'))
+            return redirect(route('user.dashboard.index'))
             ->with('success', 'Free package has been activated'); 
         }
-        return redirect(route('user.dasbhoard.index'))
+        return redirect(route('user.dashboard.index'))
         ->with('error', 'Sorry you can\'t access that page'); 
     }
     /**
@@ -280,7 +280,7 @@ class PackageController extends Controller
                 'description'=>$cur.$amount.' Debited for '.ucfirst($package->name).' package'
             ]);
             if($package->activate($user, $request->h, 'pkg_balance')){
-                return redirect(route('user.dasbhoard.index'))->with('success', ucwords($package->name).' Package activated');
+                return redirect(route('user.dashboard.index'))->with('success', ucwords($package->name).' Package activated');
             }
         }
         return back();
