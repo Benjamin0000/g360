@@ -435,14 +435,16 @@ use Exception;
     */
     public static function checkLegBalance(User $user, $pv)
     {
-        $legs = 4;
+        $legs = 3;
         $referrals = User::where('ref_gnum', $user->gnumber)
         ->orWhere('placed_by', $user->gnumber)
-        ->orderBy('cpv', 'DESC')->take(4)->get();
-        $min = $pv/$legs;
-        if($referrals->count()){
+        ->orderBy('cpv', 'DESC')->take($legs)->get();
+        $max = $pv*0.4;
+        if($count = $referrals->count()){
+            if($count < $legs) 
+                return false;
             foreach($referrals as $referral){
-                if($referral->cpv < $min)
+                if($referral->cpv > $max)
                     return false;
             }
             return true;
