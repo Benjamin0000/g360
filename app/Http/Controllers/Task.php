@@ -210,6 +210,11 @@ class Task extends G360
                         $sA->balance_leg = 1; #balance leg
                     }
                     $sA->save();
+                }else{
+                    if($sA->balance_leg == 1){
+                        $sA->balance_leg = 0;
+                        $sA->save();
+                    }
                 }
             }else{
                 $sA->delete();
