@@ -504,7 +504,7 @@ class Task extends G360
             ['status', 0],
             ['g', 0],
             ['gbal', $giver->gbal]
-        ])->where('lastr', '>=', $dateCheck)->orderBy('created_at', 'ASC')->first();
+        ])->where('lastr', '<=', $dateCheck)->orderBy('created_at', 'ASC')->first();
         if($receiver){
             $receiver->r_count+=1;
             if($receiver->r_count >= $r_count){
