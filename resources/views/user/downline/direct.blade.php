@@ -2,6 +2,7 @@
 @section('content')
 @php
 use App\Http\Helpers;
+$user = Auth::user();
 @endphp
 <div class=" clearfix row ">
     <div class="col-sm-12 p-3">
@@ -22,6 +23,7 @@ use App\Http\Helpers;
                                 <th>Package</th>
                                 <th>Join date</th>
                                 <th>Activation date</th>
+                                <th>Percent</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -34,6 +36,7 @@ use App\Http\Helpers;
                                   <td>{{$referal->package->name == 'vip' ? 'VIP': ucfirst($referal->package->name)}}</td>
                                   <td>{{$referal->created_at->isoFormat('lll')}}</td>
                                   <td>{{$referal->upgrade ? $referal->upgrade->created_at->isoFormat('lll') : ''}}</td>
+                                  <td>{{$referal->refPercent($user->cpv)}}%</td>
                                 </tr>
                               @endforeach
                           @endif

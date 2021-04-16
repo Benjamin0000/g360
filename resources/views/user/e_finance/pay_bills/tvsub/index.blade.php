@@ -52,21 +52,23 @@ onReady(function(){
      $.ajax({
        type:'get',
        url:"{{route('user.pay_bills.tvSub.plans')}}/"+$(this).val(),
-       timeout:8000,
+       timeout:20000,
        success:function(data){
          $('#plan').html(data);
        },
        error:function(xmlhttprequest, textstatus, message){
-            if(textstatus==="timeout") {
-                $('#plan').html("<div class='alert alert-danger'><i class='fa fa-info-circle'></i> Endpoint taking too long please select another provider</div>");
-            } else {
-              $('#plan').html("<div class='alert alert-danger'><i class='fa fa-info-circle'></i> Cannot proceed</div>");
-            }
+          if(textstatus==="timeout") {
+              $('#plan').html("<div class='alert alert-danger'><i class='fa fa-info-circle'></i> Provider taking too long try again</div>");
+          }else{
+            $('#plan').html("<div class='alert alert-danger'><i class='fa fa-info-circle'></i> Cannot proceed</div>");
+          }
        }
      });
   });
   $('#tvsf').on('submit', function(e){
+     var er = "<div class='alert alert-danger'><i class='fa fa-info-circle'></i> could not complete</div>";
       e.preventDefault();
+      $('#error').html('');
       var $ele = $('#tvbb');
       $ele.data('text',$ele.text());
       $ele.html(get_loader());
@@ -74,13 +76,25 @@ onReady(function(){
       $.ajax({
         url:"{{route('user.pay_bills.validateTvAcc')}}",
         type:'post',
+        timeout:10000,
         data:$(this).serialize(),
         success:function(data){
-
-
+          if(data.error){
+            $("#error").html("<div class='alert alert-danger'><i class='fa fa-info-circle'></i> "+data.error+"</div>");
+          }else if(data.status){
+            $("#tvs").html(data.status);
+          }else{
+              $('#error').html(er);
+          }
         },
-        error:function(){
-          $('#error').html("<div class='alert alert-danger'><i class='fa fa-info-circle'></i> could not complete</div>");
+        error:function(xmlhttprequest, textstatus, message){
+          if(textstatus==="timeout") {
+              $('#error').html("<div class='alert alert-danger'><i class='fa fa-info-circle'></i> Invalid smartcard number</div>");
+          }else{
+            $('#error').html(er);
+          }
+          $ele.text($ele.data('text'));
+          $ele.prop('disabled',false);
         }
       });
   });

@@ -190,4 +190,8 @@ class User extends Authenticatable
     {
         return $this->hasOne(FAccount::class, 'user_id');
     }
+    public function refPercent($CPV)
+    {
+        return (100 * $this->cpv)/$CPV;
+    }
 }

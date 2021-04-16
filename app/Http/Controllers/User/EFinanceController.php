@@ -228,36 +228,57 @@ class EFinanceController extends G360
         $this->validate($request, [
             'provider'=>['required', 'numeric'],
             'smart_card'=>['required', 'numeric'],
-            'package'=>['required']
+            'package_code'=>['required']
         ]);
+        $user = Auth::user();
         if($provider = CableTv::find($request->provider)){
             $ecable = new ECableTv($provider->code);
+            #validate plan
+            if($package = $ecable->getPlan($request->package_code)){
+                $price = $package['topup_value'] + $provider->charge;
+                if($user->trx_balance < $price)
+                    return ['error'=>"Insufficient fund for this ".$provider->name." package"];
+            }else{
+                return ['error'=>'package not available'];
+            }
             $data = $ecable->validateSmartCard($request->smart_card);
-            if($ecable->proceed){
-                $data['provider_name'] = $provider->name;
-                $data['provider_id'] = $provider->id;
-                $data['package'] = $request->package;
-                $data['package_name'] = 
-                $data['amt'] = 
+            if($ecable->sm_card_okay){
+                $data['provider'] = $provider;
+                $data['package'] = $package;
+                $data['smart_card'] = $request->smart_card;
                 $value = view('user.e_finance.pay_bills.tvsub.info', compact('data'));
                 return ['status'=>"$value"];
             }
             return ['error'=>'Incorrect Smart card number'];
         }
-        return back()->with('error', 'Invalid provider');
+        return ['error'=>'Invalid Provider'];
     }
     public function finishSubTv(Request $request)
     {
         $this->validate($request, [
-            'provider'=>['required', 'numeric'],
-            'smart_card'=>['required', 'numeric'],
-            'package'=>['required']
+            'service'=>['required'],
+            'smartcard_number'=>['required', 'numeric'],
+            'product_code'=>['required']
         ]);
-        if($provider = CableTv::find($p)){
+        if($provider = CableTv::where('code', $request->service)->first()){
             $ecable = new ECableTv($provider->code);
-
-            
-        
+            $user = Auth::user();
+            if($package = $ecable->getPlan($request->product_code)){
+                $price = $package['topup_value']+$provider->charge;
+                if($user->trx_balance < $price)
+                    return back()->with('error', "Insufficient fund for this ".$provider->name." package");
+                $ecable->validateSmartCard($request->smartcard_number);
+                if($ecable->sm_card_okay){
+                    $ecable->purchase($request->smartcard_number, $package, $price);
+                    if($ecable->purchase_done)
+                        return back()->with('success', "Package activation successful");
+                    return back()->with('error', "activation faild"); 
+                }else{
+                    return back()->with('error', 'Invalid smart card number');
+                }
+            }else{
+                return back()->with('error', 'package not available');
+            }
         }
         return back()->with('error', 'Invalid provider');
     }

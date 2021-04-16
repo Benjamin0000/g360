@@ -50,8 +50,8 @@ use App\Http\Helpers;
 |
 */
 Route::get('/test', function(){
-     $val = new EFinanceController();
-    return $val->tvPlans(3);
+    $ecable = new CableTv('BPD-NGCA-AQA');
+    return $ecable->validateSmartCard('1025640366');
     // return Helpers::ordinal(1);
     // return Helpers::ripeForUpgrade();
     // $url = 'https://passport.interswitchng.com/passport/oauth/token';
