@@ -145,6 +145,17 @@ class DashboardController extends G360
                             'extra'=>'Super associate Loan',
                             'expiry_date'=>Carbon::now()->addDays($exp_days)
                         ]);
+                        $user->with_balance += $amount;
+                        WalletHistory::create([
+                            'id'=>Helpers::genTableId(WalletHistory::class),
+                            'user_id'=>$user->id,
+                            'amount'=>$amount,
+                            'gnumber'=>$user->gnumber,
+                            'name'=>self::$with_balance,
+                            'type'=>'credit',
+                            'description'=>self::$cur.$amount.
+                            ' '.$rank->name.' Loan'
+                        ]);
                         $msg = 'Loan activated';
                     }else{
                         return redirect(route('user.dashboard.index'))
