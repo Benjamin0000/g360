@@ -40,6 +40,8 @@ class Kernel extends ConsoleKernel
             Task::ranking();
             Task::gsClub();
             Task::lmp();
+            Task::ppp();
+            Task::rPPP();
         })->everyMinute();
 
         // $schedule->call(function(){
@@ -54,13 +56,13 @@ class Kernel extends ConsoleKernel
             Task::trading();
         })->timezone('Africa/Lagos')->daily();
 
-        $schedule->call(function(){
-            Task::ppp();
-        })->timezone('Africa/Lagos')->dailyAt('01:00');
+        // $schedule->call(function(){
+            
+        // })->timezone('Africa/Lagos')->dailyAt('01:00');
 
-        $schedule->call(function(){
-            Task::rPPP();
-        })->timezone('Africa/Lagos')->dailyAt('02:00');
+        // $schedule->call(function(){
+            
+        // })->timezone('Africa/Lagos')->dailyAt('02:00');
     } 
     /**
      * Register the commands for the application.

@@ -4,7 +4,7 @@ use App\Http\Helpers;
 $ppp_g_trail = Helpers::getRegData('ppp_grace_trail');
 $cur = Helpers::LOCAL_CURR_SYMBOL;
 @endphp
-@if($user->ppp && $user->ppp->status != $ppp_g_trail)
+@if($user->ppp && $user->ppp->status != 3)
  @php $ppp = $user->ppp @endphp
   <div class="col-lg-3 col-md-6">
       <div class="card">
