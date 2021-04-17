@@ -55,9 +55,9 @@ $cur = Helpers::LOCAL_CURR_SYMBOL;
             <li><b>Paid Amount: {{$cur.$active_loan->returned}}</b><span class="badge badge-success"></span></li>
             <li><b>Balance: {{$cur.($active_loan->total_return - $active_loan->returned)}}</b><span class="badge badge-danger mr-2"></span></li>
             @if($active_loan->grace_date)
-              <li><b>Elapse Date: {{Carbon::parse($active_loan->grace_date)->isoFormat()}}</b></li>
+              <li><b>Elapse Date: {{Carbon::parse($active_loan->grace_date)->isoFormat('lll')}}</b></li>
             @else
-              <li><b>Elapse Date: {{Carbon::parse($active_loan->expiry_date)->isoFormat()}}</b></li>
+              <li><b>Elapse Date: {{Carbon::parse($active_loan->expiry_date)->isoFormat('lll')}}</b></li>
             @endif
             <li>
               <form action="{{route('user.loan.pay')}}" method="post">
@@ -128,7 +128,7 @@ $cur = Helpers::LOCAL_CURR_SYMBOL;
                                     @endif
                                   </td>
                                   <td>
-                                    {{$loan->created_at->isoFormat()}}
+                                    {{$loan->created_at->isoFormat('lll')}}
                                   </td>
                                 </tr>
                               @endforeach
