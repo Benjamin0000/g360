@@ -49,7 +49,7 @@ $cur = App\Http\Helpers::LOCAL_CURR_SYMBOL;
                                     PEND-Wallet
                                   @elseif($history->name == 'cpv')
                                     POINT VALUE
-                                  @elseif ($history->name = 'h_token')
+                                  @elseif ($history->name == 'h_token')
                                     HEALTH TOKEN
                                   @elseif($history->name == 'award_point')
                                     POINT AWARD
