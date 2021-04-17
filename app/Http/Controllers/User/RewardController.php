@@ -77,6 +77,18 @@ class RewardController extends G360
             'extra'=>$reward->name.' Loan',
             'expiry_date'=>Carbon::now()->addDays($exp_days)
         ]);
+        $user->with_balance += $reward->loan_amount;
+        $user->save();
+        WalletHistory::create([
+            'id'=>Helpers::genTableId(WalletHistory::class),
+            'user_id'=>$user->id,
+            'amount'=>$reward->loan_amount,
+            'gnumber'=>$user->gnumber,
+            'name'=>self::$with_balance,
+            'type'=>'credit',
+            'description'=>self::$cur.number_format($reward->loan_amount).
+            ' '.$reward->name.' Loan'
+        ]);
         return redirect(route('user.reward.index'))
         ->with('success', 'Loan has been activated');
     }

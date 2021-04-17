@@ -63,7 +63,6 @@ class Task extends G360
     public static function pSharing(User $user, $formular, $type = '')
     {
         $total = $user->pend_balance;
-        $pend_trx = $user->pend_trx_balance;
         $pkg_bal = 0;
         $trx_bal = 0;
         $w_bal = 0;
@@ -110,7 +109,6 @@ class Task extends G360
         $user->with_balance += $w_bal;
         $user->trx_balance += $trx_amount;
         $user->pend_balance = 0;
-        $user->pend_trx_balance = 0;
         $user->save();
         WalletHistory::create([
             'id'=>Helpers::genTableId(WalletHistory::class),
@@ -261,7 +259,7 @@ class Task extends G360
                     }
                     #credit user
                     $user->rank_id = $rank->id;
-                    $user->with_balance += $rank->prize;
+                    $user->pend_balance += $rank->prize;
                     $user->total_loan_balance += $user->loan_elig_balance;
                     $user->loan_elig_balance = 0;
                     WalletHistory::create([
@@ -269,7 +267,7 @@ class Task extends G360
                         'user_id'=>$user->id,
                         'amount'=>$rank->prize,
                         'gnumber'=>$user->gnumber,
-                        'name'=>self::$with_balance, //self::$pend_trx_balance
+                        'name'=>self::$pend_balance,
                         'type'=>'credit',
                         'description'=>self::$cur.$rank->prize.
                         ' earned from '.$rank->name.' reward'
