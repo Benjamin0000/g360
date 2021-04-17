@@ -38,7 +38,7 @@
                                       </td>
                                       <td>
                                         {{$user->phone}}
-                                        {{$user->email}}
+                                        <div>{{$user->email}}</div>
                                       </td>
                                     </tr>
                                   @endforeach
