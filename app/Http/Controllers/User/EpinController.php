@@ -73,7 +73,7 @@ class EpinController extends Controller
                 'amount'=>$total,
                 'user_id'=>$user->id,
                 'gnumber'=>$user->gnumber,
-                'name'=>'trx_wallet',
+                'name'=>'trx_balance',
                 'type'=>'debit',
                 'description'=>$cur.$total.' debited for '.ucfirst($package->name).
                 ' E-pin purchase' 
