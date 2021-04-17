@@ -15,6 +15,7 @@
     <link href="/assets/css/colors/blue.css" rel="stylesheet" type="text/css" />
     <link href="/assets/plugins/datatables.net-bs4/css/dataTables.bootstrap4.css" rel="stylesheet" type="text/css" />
     <script src="https://kit.fontawesome.com/bb8f3fac95.js" crossorigin="anonymous"></script>
+    @php $rewds = Auth::user()->rewards->count() @endphp
     <script>
     var baseurl = "/";
     function onReady(yourMethod) {
@@ -38,6 +39,16 @@
         }
         .form-control{
             /* box-shadow: none !important; */
+        }
+        #rews{
+          background:#F523EE;
+          color:white;
+          padding:5px;
+          border-radius:50%;
+          float:right;
+          width:30px;
+          font-weight: bolder;
+          text-align: center;
         }
     </style>
     <style type="text/css">
@@ -171,7 +182,10 @@
                         <li >
                             <a href="{{route('user.reward.index')}}" >
                                 <i class="mdi mdi-ticket"></i>
-                                <span class="hide-menu">Reward </span>
+                                <span class="hide-menu">Reward
+                                @if($rewds)
+                                  <span id="rews" class="blink">{{$rewds}}</span> </span>
+                                @endif
                             </a>
                         </li>
                         <li >

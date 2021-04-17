@@ -194,4 +194,8 @@ class User extends Authenticatable
     {
         return (int)((100 * $this->cpv)/$CPV);
     }
+    public function rewards()
+    {
+        return $this->hasMany(Reward::class, 'user_id');
+    }
 }

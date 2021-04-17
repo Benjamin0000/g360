@@ -237,7 +237,8 @@ class Task extends G360
         $last_rank = Rank::orderBy('id', 'DESC')->first()->id;
         foreach($ranks as $rank){
             $users = User::where([
-                ['rank_id', '<>', $last_rank]
+                ['rank_id', '<>', $last_rank],
+                ['rank_id', '<', $rank->id]
             ])->get();
             foreach($users as $user){
                 $cpv = $user->cpv;

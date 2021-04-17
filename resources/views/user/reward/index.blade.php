@@ -9,7 +9,7 @@ $cur = App\Http\Helpers::LOCAL_CURR_SYMBOL;
         <div class="card-body">
             <div class="row">
                 <div class="col-lg-12 text-center">
-                    <h3 class="card-title mb-4 text-info">Level One Reward</h3>
+                    <h3 class="card-title mb-4 text-info">{{ucwords($reward->name)}} Reward</h3>
                 </div>
                 <div class="col-lg-6 col-md-6 border-top">
                     <div class="card-body">
