@@ -100,9 +100,18 @@ class Task extends G360
                     self::creditGurantors($loan);
                 }
                 $loan->save();
+                WalletHistory::create([
+                    'id'=>Helpers::genTableId(WalletHistory::class),
+                    'user_id'=>$user->id,
+                    'amount'=>$loan_bal,
+                    'gnumber'=>$user->gnumber,
+                    'name'=>'pend_balance',
+                    'type'=>'debit',
+                    'description'=>self::$cur.number_format($loan_bal).' for loan'
+                ]);
             }
         }
-        $trx_amount = $trx_bal + $excess + $pend_trx;
+        $trx_amount = $trx_bal + $excess;
         if($pkg_bal)
             $user->pkg_balance += $pkg_bal;
         $user->award_point += $award_pt;
