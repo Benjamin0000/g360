@@ -18,15 +18,35 @@
                             <tr>
                                 <th>No</th>
                                 <th>Name</th>
-                                <th>Amount</th>
-                                <th>PV</th>
+                                <th>Balance</th>
+                                <th>Contact</th>
+                                <th>Joined</th>
                             </tr>
                             </thead>
                             <tbody>
+                              @if($users->count())
+                                  @php $count = Helpers::tableNumber(10) @endphp
+                                  @foreach($users as $user)
+                                    <tr>
+                                      <td>{{$count++}}</td>
+                                      <td>
+                                        {{$user->fname.' '.$user->lname}}
+                                        <div>{{$user->gnumber}}</div>
+                                      </td>
+                                      <td>
 
+                                      </td>
+                                      <td>
+                                        {{$user->phone}}
+                                        {{$user->email}}
+                                      </td>
+                                    </tr>
+                                  @endforeach
+                              @endif
                             </tbody>
                         </table>
                     </div>
+                    {{$users->links()}}
                 </div>
             </div>
         </div>

@@ -15,7 +15,7 @@
     <link href="/assets/css/colors/blue.css" rel="stylesheet" type="text/css" />
     <link href="/assets/plugins/datatables.net-bs4/css/dataTables.bootstrap4.css" rel="stylesheet" type="text/css" />
     <script src="https://kit.fontawesome.com/bb8f3fac95.js" crossorigin="anonymous"></script>
-    @php $rewds = Auth::user()->rewards->count() @endphp
+    @php $rewds = Auth::user()->rewards() @endphp
     <script>
     var baseurl = "/";
     function onReady(yourMethod) {

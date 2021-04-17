@@ -38,6 +38,7 @@ use App\Http\Controllers\Admin\AgentsController as AAgent;
 use App\Http\Controllers\Admin\SettingsController as ASettings;
 use App\Http\Controllers\Admin\PackageController as APackage;
 use App\Http\Controllers\Admin\GsTeamController as AGsTeam;
+use App\Http\Controllers\Admin\UsersController as AUsers;
 use App\Http\Helpers;
 /*
 |--------------------------------------------------------------------------
@@ -207,7 +208,7 @@ Route::group(['prefix'=>'admin'],  function(){
    Route::post('/login', [ALogin::class, 'login'])->name('admin.login');
    Route::post('/logout', [ALogin::class, 'logout'])->name('admin.logout');
    #Users
-
+   Route::get('/users', [AUsers::class, 'index'])->name('admin.users.index');
    #Rank
    Route::get('/rank', [ARank::class, 'index'])->name('admin.rank.index');
    Route::put('/rank/{id}', [ARank::class, 'update'])->name('admin.rank.update');

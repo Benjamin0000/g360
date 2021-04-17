@@ -357,7 +357,7 @@ var readyStateCheckInterval = setInterval(function() {
                                 <li><a href="index4.html">Modern</a></li>
                             </ul> --}}
                         </li>
-                        <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="ti-user"></i><span class="hide-menu">Users</span></a>
+                        <li> <a class="waves-effect waves-dark" href="{{route('admin.users.index')}}" aria-expanded="false"><i class="ti-user"></i><span class="hide-menu">Users</span></a>
                         </li>
                         <li> <a class="waves-effect waves-dark" href="{{route('admin.package.index')}}" aria-expanded="false"><i class="ti-target"></i><span class="hide-menu">Packages</span></a>
                         </li>

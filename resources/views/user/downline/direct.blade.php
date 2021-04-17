@@ -33,7 +33,10 @@ $user = Auth::user();
                               @foreach($referals as $referal)
                                 <tr>
                                   <td>{{$count++}}</td>
-                                  <td>{{$referal->fname.' '.$referal->lname}}</td>
+                                  <td>
+                                    {{$referal->fname.' '.$referal->lname}}
+                                    <div>{{$referal->gnumber}}</div>
+                                  </td>
                                   <td>{{$referal->package->name == 'vip' ? 'VIP': ucfirst($referal->package->name)}}</td>
                                   <td>{{$referal->created_at->isoFormat('lll')}}</td>
                                   <td>{{$referal->upgrade ? $referal->upgrade->created_at->isoFormat('lll') : ''}}</td>

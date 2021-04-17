@@ -196,6 +196,9 @@ class User extends Authenticatable
     }
     public function rewards()
     {
-        return $this->hasMany(Reward::class, 'user_id');
+        return Reward::where([ 
+            ['user_id', $this->id],
+            ['status', 0]
+        ])->count();
     }
 }
