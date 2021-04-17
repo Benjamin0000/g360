@@ -83,7 +83,7 @@ class DashboardController extends G360
         $super_pkg_id = 4;
         switch($request->type){
             case 'ac': 
-                if($sA && $sA->status == 1){
+                if($sA && $sA->status == 1 && $user->rank_id == 0){
                     if($user->trx_balance >= $fee){
                         $user->trx_balance -= $fee;
                         $user->save();
@@ -109,7 +109,7 @@ class DashboardController extends G360
                 }
                 break;
             case 'cl': 
-                if($sA && $sA->status == 2){
+                if($sA && $sA->status == 2 && $user->rank_id == 0){
                     if($user->pkg_id < $super_pkg_id){
                         return back()->with('error', 'You must be in the Super package to claim this prize');
                     }
@@ -152,13 +152,13 @@ class DashboardController extends G360
                     }
                     if($sA->grace > 0)
                         $rank->prize = (30/100)*$rank->prize;
-                    $user->pend_trx_balance += $rank->prize;
+                    $user->with_balance += $rank->prize;
                     WalletHistory::create([
                         'id'=>Helpers::genTableId(WalletHistory::class),
                         'user_id'=>$user->id,
                         'amount'=>$rank->prize,
                         'gnumber'=>$user->gnumber,
-                        'name'=>self::$pend_trx_balance,
+                        'name'=>self::$with_balance,
                         'type'=>'credit',
                         'description'=>self::$cur.$rank->prize.
                         ' earned from '.$rank->name.' reward'

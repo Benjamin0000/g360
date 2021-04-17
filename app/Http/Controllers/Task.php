@@ -199,16 +199,20 @@ class Task extends G360
                 }else{
                     $sA->status = 1; #faild
                     $sA->save();
-                    return; #disallow flow
+                    continue; #disallow flow
                 }
             }
             if($user = User::find($sA->user_id)){
-                if($user->cpv >= $pv){
-                    if(Helpers::checkLegBalance($user, $pv)){
+                $cpv = $user->cpv;
+                if($cpv >= $pv){
+                    if(Helpers::checkLegBalance($user, $pv))
                         $sA->status = 2; #made it
-                    }else{
+                    else
                         $sA->balance_leg = 1; #balance leg
-                    }
+
+                    if($user->rank_id != 0 || $cpv >= $rank->next()->pv)
+                        $sA->status = 4;
+                    
                     $sA->save();
                 }else{
                     if($sA->balance_leg == 1){
@@ -228,13 +232,12 @@ class Task extends G360
     */
     public static function ranking()
     {
-        $ranks = Rank::all();
+        $sA_rank_id = 1;
+        $ranks = Rank::where('id', '<>', $sA_rank_id)->get();
         $last_rank = Rank::orderBy('id', 'DESC')->first()->id;
-        $no_rank = 0;
         foreach($ranks as $rank){
             $users = User::where([
-                ['rank_id', '<>', $last_rank],
-                ['rank_id', '<>', $no_rank]
+                ['rank_id', '<>', $last_rank]
             ])->get();
             foreach($users as $user){
                 $cpv = $user->cpv;
@@ -242,16 +245,22 @@ class Task extends G360
                     if($cpv >= $rank->pv && $cpv < $rank->next()->pv){
                         #allow the flow
                     }else{
-                        return; #disallow the flow
+                        continue; #disallow the flow
                     }
                 }else{
                     if($cpv < $rank->pv)
-                        return; #disallow the flow
+                        continue; #disallow the flow
                 }
                 if(Helpers::checkLegBalance($user, $rank->pv)){
+                    if($user->rank_id == 0 && $user->superAssoc->status != 3){
+                        if($user->superAssoc->status != 4){
+                            $user->superAssoc->status = 4;
+                            $user->superAssoc->save();
+                        }
+                    }
                     #credit user
                     $user->rank_id = $rank->id;
-                    // $user->self::$with_balance += $rank->prize;
+                    $user->with_balance += $rank->prize;
                     $user->total_loan_balance += $user->loan_elig_balance;
                     $user->loan_elig_balance = 0;
                     WalletHistory::create([
@@ -260,16 +269,6 @@ class Task extends G360
                         'amount'=>$rank->prize,
                         'gnumber'=>$user->gnumber,
                         'name'=>self::$with_balance, //self::$pend_trx_balance
-                        'type'=>'credit',
-                        'description'=>self::$cur.$rank->prize.
-                        ' earned from '.$rank->name.' reward'
-                    ]);
-                    WalletHistory::create([
-                        'id'=>Helpers::genTableId(WalletHistory::class),
-                        'user_id'=>$user->id,
-                        'amount'=>$rank->prize,
-                        'gnumber'=>$user->gnumber,
-                        'name'=>self::$pend_balance,
                         'type'=>'credit',
                         'description'=>self::$cur.$rank->prize.
                         ' earned from '.$rank->name.' reward'
