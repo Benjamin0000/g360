@@ -61,19 +61,23 @@ class Package extends Model
         if($from > 0)
             $from-=1;
 
-        $user->$h_token+=$this->h_token; //asign health token
+        if($this->h_token)
+            $user->$h_token+=$this->h_token; //asign health token
+
         $pv_value = $this->pv - ($basic_pv * $from);
         $user->$cpv+=$pv_value; //asign pv
         $user->save();
-        WalletHistory::create([
-            'id'=>Helpers::genTableId(WalletHistory::class),
-            'user_id'=>$user->id,
-            'amount'=>$this->h_token,
-            'gnumber'=>$user->gnumber,
-            'name'=>$h_token,
-            'type'=>'credit',
-            'description'=>$this->h_token.' Health token received from '.ucfirst($this->name).' package'
-        ]);
+        if($this->h_token){
+            WalletHistory::create([
+                'id'=>Helpers::genTableId(WalletHistory::class),
+                'user_id'=>$user->id,
+                'amount'=>$this->h_token,
+                'gnumber'=>$user->gnumber,
+                'name'=>$h_token,
+                'type'=>'credit',
+                'description'=>$this->h_token.' Health token received from '.ucfirst($this->name).' package'
+            ]);
+        }
         WalletHistory::create([
             'id'=>Helpers::genTableId(WalletHistory::class),
             'user_id'=>$user->id,
