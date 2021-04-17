@@ -304,28 +304,21 @@ class Task extends G360
                     $last_payed = Carbon::parse($lmp->last_payed);
                 else
                     $last_payed = $lmp->created_at;
+                    
                 if($last_payed->diffInMinutes() >= self::$month_end){
                     if($user = User::find($lmp->user_id)){
-                        $user->pend_trx_balance += $lmp->amount;
+                        $vat = (7.5/100) * $lmp->amount;
+                        $amount = $lmp->amount - $vat;
+                        $user->with_balance += $amount;
                         $user->save();
                         WalletHistory::create([
                             'id'=>Helpers::genTableId(WalletHistory::class),
                             'user_id'=>$user->id,
-                            'amount'=>$lmp->amount,
+                            'amount'=>$amount,
                             'gnumber'=>$user->gnumber,
-                            'name'=>self::$pend_trx_balance,
+                            'name'=>self::$with_balance,
                             'type'=>'credit',
-                            'description'=>self::$cur.$lmp->amount.
-                            ' earned from '.$lmp->name.' leadership monthly bonus'
-                        ]);
-                        WalletHistory::create([
-                            'id'=>Helpers::genTableId(WalletHistory::class),
-                            'user_id'=>$user->id,
-                            'amount'=>$lmp->amount,
-                            'gnumber'=>$user->gnumber,
-                            'name'=>self::$pend_balance,
-                            'type'=>'credit',
-                            'description'=>self::$cur.$lmp->amount.
+                            'description'=>self::$cur.$amount.
                             ' earned from '.$lmp->name.' leadership monthly bonus'
                         ]);
                         $lmp->times+=1;

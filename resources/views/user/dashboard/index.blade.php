@@ -103,6 +103,20 @@ $last_pkg = App\Models\Package::orderBy('id', 'DESC')->first();
         </div>
     </div>
 </div>
+<div class="col-lg-3 col-md-6">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Award Point</h4>
+            <div class="text-right">
+                <h2 class="font-light mb-0"><i class="mdi mdi-trophy-award  text-info"></i>{{$user->award_point}}</h2>
+                <span class="text-muted"><br></span>
+            </div>
+            <div class="progress">
+                <div class="progress-bar bg-info" role="progressbar" style="width: 100%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+    </div>
+</div>
 @include('user.dashboard.ppp')
 @include('user.dashboard.sa')
 </div>

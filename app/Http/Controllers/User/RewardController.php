@@ -41,7 +41,7 @@ class RewardController extends G360
     public function selectLoan(Request $request, $id)
     {
         $user = Auth::user();
-        $month_end = 27;
+        $month_end = self::$month_end;
         $reward = Reward::where([
             ['id', $id],
             ['user_id', $user->id],
@@ -111,7 +111,7 @@ class RewardController extends G360
         $reward->save();
         #store loan amount in loan eligibility
         $amount = $reward->loan_amount-$reward->lmp_amount;
-        $user->self::$loan_elig_balance+=$amount;
+        $user->loan_elig_balance+=$amount;
         $user->save();
         WalletHistory::create([
             'id'=>Helpers::genTableId(WalletHistory::class),

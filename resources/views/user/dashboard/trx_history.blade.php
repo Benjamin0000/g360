@@ -26,7 +26,9 @@ $cur = App\Http\Helpers::LOCAL_CURR_SYMBOL;
                               <tr>
                                 <td>{{$count++}}</td>
                                 <td>
-                                  @if($history->name != "cpv" && $history->name != 'h_token')
+                                  @if($history->name != "cpv" &&
+                                      $history->name != 'h_token' &&
+                                      $history->name != 'award_point')
                                     {{$cur}}
                                   @endif
                                   {{number_format($history->amount,2,'.',',')}}

@@ -166,7 +166,22 @@
                                 <span class="hide-menu">Gs-Team </span>
                             </a>
                         </li>
-
+                        <li>
+                            <a class="has-arrow " href="#" aria-expanded="false"><i class="mdi mdi-vector-polyline"></i><span class="hide-menu">Downline</span></a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="{{route('user.downline.direct')}}">Direct Referals</a></li>
+                                <li><a href="{{route('user.downline.indirect')}}">Indirect Referal</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="{{route('user.reward.index')}}" >
+                                <i class="mdi mdi-ticket"></i>
+                                <span class="hide-menu">Reward
+                                @if($rewds)
+                                  <span id="rews" class="blink">{{$rewds}}</span> </span>
+                                @endif
+                            </a>
+                        </li>
                         <li>
                             <a href="{{route('user.trading.index')}}" aria-expanded="false" >
                                 <i class="mdi mdi-trending-up"></i>
@@ -179,15 +194,7 @@
                                 <span class="hide-menu">Loan </span>
                             </a>
                         </li>
-                        <li >
-                            <a href="{{route('user.reward.index')}}" >
-                                <i class="mdi mdi-ticket"></i>
-                                <span class="hide-menu">Reward
-                                @if($rewds)
-                                  <span id="rews" class="blink">{{$rewds}}</span> </span>
-                                @endif
-                            </a>
-                        </li>
+
                         <li >
                             <a href="{{route('user.epin.index')}}" >
                                 <i class="mdi mdi-vector-arrange-above"></i>
@@ -203,13 +210,7 @@
                         <li>
                             <a class="" href="{{route('user.gmarket.index')}}" aria-expanded="false"><i class="mdi mdi-cart"></i><span class="hide-menu">G-Market</span></a>
                         </li>
-                        <li>
-                            <a class="has-arrow " href="#" aria-expanded="false"><i class="mdi mdi-vector-polyline"></i><span class="hide-menu">Downline</span></a>
-                            <ul aria-expanded="false" class="collapse">
-                                <li><a href="{{route('user.downline.direct')}}">Direct Referals</a></li>
-                                <li><a href="{{route('user.downline.indirect')}}">Indirect Referal</a></li>
-                            </ul>
-                        </li>
+
                         <li>
                             <a class="has-arrow " href="#" aria-expanded="false"><i class="mdi mdi-history"></i><span class="hide-menu">Transaction History</span></a>
                             <ul aria-expanded="false" class="collapse">
