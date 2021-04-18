@@ -259,7 +259,7 @@ class Task extends G360
                     if($cpv < $rank->pv)
                         continue; #disallow the flow
                 }
-                if(Helpers::checkLegBalance($user, $rank->pv)){
+                if(Helpers::checkLegBalance($user, $cpv)){
                     if($user->rank_id == 0 && $user->superAssoc->status != 3){
                         if($user->superAssoc->status != 4){
                             $user->superAssoc->status = 4;
