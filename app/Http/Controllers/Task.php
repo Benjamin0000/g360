@@ -638,7 +638,7 @@ class Task extends G360
                 if($user = User::find($ppp->user_id)){
                     $value = intval($user->cpv/$pv);
                     $value -= $ppp->point;
-                    if($value > 0){
+                    if($value > 0 && Helpers::checkLegBalance($user, $user->cpv)){
                         $amt = $reward * $value;
                         $user->pend_balance += $amt;
                         $user->save();

@@ -41,6 +41,8 @@ class Kernel extends ConsoleKernel
 
         $schedule->call(function(){
             Task::lmp();
+            Task::ppp();
+            Task::rPPP();
         })->everyTwoMinutes();
 
         $schedule->call(function(){
