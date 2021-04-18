@@ -37,7 +37,7 @@ class Kernel extends ConsoleKernel
             // Task::shareSignupProfit();
             // Task::sAgentRGcoin();
             Task::superAssocReward();
-        })->everyThreeMinute();
+        })->everyThreeMinutes();
 
         $schedule->call(function(){
             Task::lmp();
