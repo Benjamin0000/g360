@@ -38,7 +38,10 @@
                        @foreach($gsclubs as $gsclub)
                          <tr>
                            <td>{{$count++}}</td>
-                           <td>{{$gsclub->user->fname.' '.$gsclub->user->lname}}</td>
+                           <td>
+                             {{$gsclub->user->fname.' '.$gsclub->user->lname}}
+                             <div>{{$gsclub->user->gnumber}}</div>
+                           </td>
                            <td>{{$gsclub->user->totalValidRef()}}</td>
                            <td>{{$cur.number_format($gsclub->wbal)}}</td>
                            <td>{{$cur.number_format($gsclub->gbal)}}</td>

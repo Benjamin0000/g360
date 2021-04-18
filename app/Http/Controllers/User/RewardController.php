@@ -84,7 +84,7 @@ class RewardController extends G360
             'user_id'=>$user->id,
             'amount'=>$reward->loan_amount,
             'gnumber'=>$user->gnumber,
-            'name'=>self::$with_balance,
+            'name'=>'with_balance',
             'type'=>'credit',
             'description'=>self::$cur.number_format($reward->loan_amount).
             ' '.$reward->name.' Loan'
@@ -126,16 +126,6 @@ class RewardController extends G360
         $amount = $reward->loan_amount-$reward->lmp_amount;
         $user->loan_elig_balance+=$amount;
         $user->save();
-        WalletHistory::create([
-            'id'=>Helpers::genTableId(WalletHistory::class),
-            'amount'=>$amount,
-            'user_id'=>$user->id,
-            'gnumber'=>$user->gnumber,
-            'name'=>self::$loan_elig_balance,
-            'type'=>'credit',
-            'description'=>self::$cur.$amount.' received from '
-            .$reward->name.' loan amount'
-        ]);
         return redirect(route('user.reward.index'))
         ->with('success', 'Leadership monthly bonus has been activated');
     }
