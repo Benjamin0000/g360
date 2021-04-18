@@ -212,7 +212,7 @@ class Task extends G360
             if($user = User::find($sA->user_id)){
                 $cpv = $user->cpv;
                 if($cpv >= $pv){
-                    if(Helpers::checkLegBalance($user, $pv))
+                    if(Helpers::checkLegBalance($user, $cpv))
                         $sA->status = 2; #made it
                     else
                         $sA->balance_leg = 1; #balance leg
