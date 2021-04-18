@@ -34,19 +34,23 @@ class Kernel extends ConsoleKernel
         })->timezone('Africa/Lagos')->dailyAt('00:30');
 
         $schedule->call(function(){
-            Task::shareSignupProfit();
-            Task::sAgentRGcoin();
+            // Task::shareSignupProfit();
+            // Task::sAgentRGcoin();
             Task::superAssocReward();
-            Task::ranking();
-            Task::gsClub();
-            Task::lmp();
-            Task::ppp();
-            Task::rPPP();
-        })->everyMinute();
+        })->everyThreeMinute();
 
-        // $schedule->call(function(){
-        //     Task::ranking();
-        // })->everyTwoMinutes();
+        $schedule->call(function(){
+            Task::lmp();
+        })->everyTwoMinutes();
+
+        $schedule->call(function(){
+            Task::ranking();
+        })->everyFiveMinutes();
+
+
+        $schedule->call(function(){
+            Task::gsClub();
+        })->everyThirtyMinutes();
 
         // $schedule->call(function(){
             
