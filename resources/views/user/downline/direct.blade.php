@@ -37,7 +37,13 @@ $user = Auth::user();
                                     {{$referal->fname.' '.$referal->lname}}
                                     <div>{{$referal->gnumber}}</div>
                                   </td>
-                                  <td>{{$referal->package->name == 'vip' ? 'VIP': ucfirst($referal->package->name)}}</td>
+                                  <td>
+                                    @if($referal->package)
+                                      {{$referal->package->name == 'vip' ? 'VIP': ucfirst($referal->package->name)}}
+                                    @else
+                                      None
+                                    @endif
+                                  </td>
                                   <td>{{$referal->created_at->isoFormat('lll')}}</td>
                                   <td>{{$referal->upgrade ? $referal->upgrade->created_at->isoFormat('lll') : ''}}</td>
                                   <td>{{$referal->cpv}}</td>
