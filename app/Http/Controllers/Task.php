@@ -291,7 +291,7 @@ class Task extends G360
                         'name'=>self::$pend_balance,
                         'type'=>'credit',
                         'description'=>self::$cur.$rank->prize.
-                        ' earned from '.$rank->name.' reward'
+                        ' '.$rank->name.' reward'
                     ]);
                     Reward::create([
                         'id'=>Helpers::genTableId(Reward::class),
@@ -338,7 +338,7 @@ class Task extends G360
                             'name'=>self::$with_balance,
                             'type'=>'credit',
                             'description'=>self::$cur.$amount.
-                            ' earned from '.$lmp->name.' leadership monthly bonus'
+                            ' '.$lmp->name.' leadership monthly bonus'
                         ]);
                         $lmp->times+=1;
                         if($lmp->times >= $lmp->total_times)
@@ -607,7 +607,7 @@ class Task extends G360
                                     'name'=>self::$pend_balance,
                                     'type'=>'credit',
                                     'description'=>self::$cur.$reward.
-                                    ' earned from personal performance Reward'
+                                    ' personal performance Reward'
                                 ]);
                             }
                             $ppp->status = $acheived;

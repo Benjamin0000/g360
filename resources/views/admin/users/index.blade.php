@@ -38,7 +38,13 @@
                                         <div>{{$user->gnumber}}</div>
                                       </td>
                                       <td>{{$user->rank ? ucwords($user->rank->name): 'Associate'}}</td>
-                                      <td>{{$user->package->id == $last_pkg->id ? strtoupper($last_pkg->name): ucfirst($user->package->name)}}</td>
+                                      <td>
+                                          @if($user->package)
+                                          {{$user->package->id == $last_pkg->id ? strtoupper($last_pkg->name): ucfirst($user->package->name)}}
+                                          @else 
+                                           None
+                                          @endif
+                                        </td>
                                       <td>
                                         <div class="text-success">{{$user->totalNotPlaced()}}</div> 
                                         <div class="text-danger">{{$user->totalPlaced()}}</div>
