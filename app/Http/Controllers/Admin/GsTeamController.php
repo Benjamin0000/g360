@@ -67,7 +67,7 @@ class GsTeamController extends Controller
         $gsclubs = GsClub::where([
             ['gbal', $gtr->amount],
             ['g', $type]
-        ])->latest()->paginate(20);
+        ])->orderBy('created_at', 'ASC')->paginate(20);
         return view('admin.gsteam.show', compact('gsclubs', 'gtr', 'type'));
     }
 }
