@@ -100,6 +100,7 @@ class Task extends G360
                     self::creditGurantors($loan);
                 }
                 $loan->save();
+                $loan_bal -= $excess;
                 WalletHistory::create([
                     'id'=>Helpers::genTableId(WalletHistory::class),
                     'user_id'=>$user->id,
@@ -111,12 +112,12 @@ class Task extends G360
                 ]);
             }
         }
-        $trx_amount = $trx_bal + $excess;
+        $trx_amount = $trx_bal;
         if($pkg_bal)
             $user->pkg_balance += $pkg_bal;
         $user->award_point += $award_pt;
         $user->with_balance += $w_bal;
-        $user->trx_balance += $trx_amount;
+        $user->trx_balance += ($trx_amount + $excess);
         $user->pend_balance = 0;
         $user->save();
         WalletHistory::create([
@@ -128,6 +129,17 @@ class Task extends G360
             'type'=>'credit',
             'description'=>self::$cur.number_format($trx_amount).' daily earning'
         ]);
+        if($excess){
+            WalletHistory::create([
+                'id'=>Helpers::genTableId(WalletHistory::class),
+                'user_id'=>$user->id,
+                'amount'=>$excess,
+                'gnumber'=>$user->gnumber,
+                'name'=>'trx_balance',
+                'type'=>'credit',
+                'description'=>self::$cur.number_format($excess).' Loan excess'
+            ]); 
+        }
         WalletHistory::create([
             'id'=>Helpers::genTableId(WalletHistory::class),
             'user_id'=>$user->id,
