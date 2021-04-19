@@ -256,6 +256,7 @@ Route::group(['prefix'=>'admin'],  function(){
    Route::put('/admin/package/{id}', [APackage::class, 'update'])->name('admin.package.update');
    #Gs-Team
    Route::get('/admin/gsteam', [AGsTeam::class, 'index'])->name('admin.gsteam.index');
+   Route::get('/admin/gsteam/{id}/{type}', [AGsTeam::class, 'show'])->name('admin.gsteam.show');
    Route::get('/admin/gsteam-settings', [AGsTeam::class, 'settings'])->name('admin.gsteam.settings');
    Route::put('/admin/gsteam-settings/{id}', [AGsTeam::class, 'update'])->name('admin.gsteam.update');
 });

@@ -19,4 +19,11 @@ class GTR extends Model
         'total_ref',
         'level',
     ];
+    public function gsTeamType($amt, $type)
+    {
+        return GsClub::where([
+            ['gbal', $amt],
+            ['g', $type]
+        ])->count();
+    }
 }

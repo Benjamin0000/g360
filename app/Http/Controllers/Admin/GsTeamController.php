@@ -24,8 +24,8 @@ class GsTeamController extends Controller
      */
     public function index()
     {
-        $gsclubs = GsClub::paginate(10);
-        return view('admin.gsteam.index', compact('gsclubs'));
+        $levels = GTR::all();
+        return view('admin.gsteam.index', compact('levels'));
     }
     /**
      * Show the form for creating a new resource.
@@ -60,5 +60,14 @@ class GsTeamController extends Controller
             return back()->with('success', 'GSteam updated');
         }   
         return back()->with('error', 'Not found');
+    }
+    public function show($id, $type)
+    {
+        $gtr = GTR::find($id);
+        $gsclubs = GsClub::where([
+            ['gbal', $gtr->amount],
+            ['g', $type]
+        ])->paginate(20);
+        return view('admin.gsteam.show', compact('gsclubs', 'gtr', 'type'));
     }
 }
