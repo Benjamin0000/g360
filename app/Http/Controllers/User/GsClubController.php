@@ -197,5 +197,23 @@ class GsClubController extends G360
             Helpers::ordinal($level).' Gen ref commision'
         ]);
     }
+    public function wheel()
+    {
+        $user = Auth::user();
+        $member = GsClub::where([ 
+            ['user_id', $user->id], 
+            ['status', 0]   
+        ])->first();
+        if($member){
+            $members = GsClub::where([ 
+                ['gbal', $member->gbal],
+                ['g', $member->g],
+                ['status', 0]   
+            ])->orderBy('created_at', 'ASC')->paginate(10);
+        }else{
+            return back()->with('error', "You are not part of Gsteam wheel");
+        }
+        return view('user.gsclub.wheel', compact('members'));
+    }
 
 }

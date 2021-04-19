@@ -188,6 +188,7 @@ Route::group(['prefix'=>'portal'],  function(){
     Route::get('/gsteam', [GsClubController::class, 'index'])->name('user.gsclub.index');
     Route::get('/myueynjsyh', [GsClubController::class, 'moreHistories'])->name('user.gsclub.morehis');
     Route::post('/NalQpdnl', [GsClubController::class, 'cashout'])->name('user.gsclub.cashout');
+    Route::get('/gsteam/wheel', [GsClubController::class, 'wheel'])->name('user.gsclub.wheel');
     #Trading
     Route::get('/trading', [TradingController::class, 'index'])->name('user.trading.index');
     Route::post('/trading/{id}', [TradingController::class, 'selectPkg'])->name('user.trading.selectPkg');

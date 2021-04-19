@@ -77,9 +77,12 @@ $user = Auth::user();
 </div>
 <div class="card" style="min-height:80vh;margin:0;">
   <div class="card-header text-center" style="background:#eee;">
-    <h3>Transaction History</h3>
+    <h3>HISTORY</h3>
   </div>
   <div class="card-body">
+    <p>
+      <a href="{{route('user.gsclub.wheel')}}" class="btn btn-primary">WHEEL</a>
+    </p>
     <div class="table-responsive">
       <table class="table table-bordered table-hover">
         <thead>
@@ -87,7 +90,7 @@ $user = Auth::user();
              <th>No</th>
              <th>Amount</th>
              <th>Description</th>
-             <th>Created</th>
+             <th>Time</th>
            </tr>
         </thead>
         <tbody id="tbodyt">
