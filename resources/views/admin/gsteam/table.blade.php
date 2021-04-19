@@ -31,7 +31,12 @@
               </td>
               <td>{{$gsclub->user->totalValidRef()}}</td>
               <td>{{$cur.number_format($gsclub->wbal)}}</td>
-              <td>{{$cur.number_format($gsclub->gbal)}}</td>
+              <td>
+                {{$cur.number_format($gsclub->gbal)}}
+                @if(!$gsclub->g)
+                  <div>X {{$gsclub->r_count}}</div>
+                @endif
+              </td>
               <td>
                 @if($gsclub->g)
                   <span class="badge badge-success">Giving</span>
