@@ -15,7 +15,10 @@ use App\Http\Helpers;
          @endif
        </td>
        <td>{{$history->description}}</td>
-       <td>{{$history->created_at->isoFormat('lll')}}</td>
+       <td>
+         {{$history->created_at->isoFormat('lll')}}
+         <div>{{$history->created_at->diffForHumans()}}</div>
+        </td>
     </tr>
   @endforeach
 @endif
