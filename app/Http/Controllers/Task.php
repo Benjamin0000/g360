@@ -662,7 +662,7 @@ class Task extends G360
                             'name'=>self::$pend_balance,
                             'type'=>'credit',
                             'description'=>self::$cur.$amt.
-                            ' earned from personal performance point'
+                            ' personal performance point'
                         ]);
                         $ppp->point += $value;
                         $ppp->save();

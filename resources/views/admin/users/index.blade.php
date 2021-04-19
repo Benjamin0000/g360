@@ -1,9 +1,10 @@
 @extends('admin.layout', ['title'=>'USERS'])
 @section('content')
-    @php
-        use App\Http\Helpers;
-        $cur = Helpers::LOCAL_CURR_SYMBOL;
-    @endphp
+@php
+    use App\Http\Helpers;
+    $cur = Helpers::LOCAL_CURR_SYMBOL;
+    $last_pkg = App\Models\Package::orderBy('id', 'DESC')->first();
+@endphp
     <style>tr{text-align:center;}</style>
     <div class="row">
         <div class="col-lg-12 col-md-12">
@@ -18,6 +19,9 @@
                             <tr>
                                 <th>No</th>
                                 <th>Name</th>
+                                <th>Rank</th>
+                                <th>Package</th>
+                                <th>Total Refs.</th>
                                 <th>Balance</th>
                                 <th>Contact</th>
                                 <th>Joined</th>
@@ -33,13 +37,29 @@
                                         {{$user->fname.' '.$user->lname}}
                                         <div>{{$user->gnumber}}</div>
                                       </td>
+                                      <td>{{$user->rank ? ucwords($user->rank->name): 'Associate'}}</td>
+                                      <td>{{$user->package->id == $last_pkg->id ? strtoupper($last_pkg->name): ucfirst($user->package->name)}}</td>
                                       <td>
-
+                                        <div class="text-success">{{$user->totalNotPlaced()}}</div> 
+                                        <div class="text-danger">{{$user->totalPlaced()}}</div>
+                                    </td>
+                                      <td style="font-size:15px;font-weight:bold;text-align:left;">
+                                        <div>With Bal: {{$cur.number_format($user->with_balance, 2, '.', ',')}}</div> 
+                                        <div>TRX Bal: {{$cur.number_format($user->trx_balance, 2, '.', ',')}}</div>
+                                        <div>PEND Bal: {{$cur.number_format($user->pend_balance, 2, '.', ',')}}</div>
+                                        <div>PKG Bal: {{$cur.number_format($user->pkg_balance, 2, '.', ',')}}</div>
+                                        <div>Award Point: {{$cur.number_format($user->award_point, 2, '.', ',')}}</div>
+                                        <div>CPV: {{$user->cpv}}</div>
+                                        <div>H-TOKEN: {{$user->h_token}}</div>
                                       </td>
                                       <td>
                                         {{$user->phone}}
                                         <div>{{$user->email}}</div>
                                       </td>
+                                      <td>
+                                          {{$user->created_at->isoFormat('lll')}}
+                                          <div>{{$user->created_at->diffForHumans()}}</div>
+                                        </td>
                                     </tr>
                                   @endforeach
                               @endif
