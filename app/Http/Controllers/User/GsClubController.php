@@ -30,7 +30,7 @@ class GsClubController extends G360
             ['user_id', $user->id], 
             ['status', 0]   
         ])->first();
-        $histories = GsClubH::where('user_id', $user->id)->paginate(10);
+        $histories = GsClubH::where('user_id', $user->id)->latest()->paginate(10);
         $total_his = $histories->count();
         $totalE = GsClubH::where([ ['user_id', $user->id], ['type', 0] ])->sum('amount');
         return view('user.gsclub.index', compact('member', 'histories', 'total_his', 'totalE'));
