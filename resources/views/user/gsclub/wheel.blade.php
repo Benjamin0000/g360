@@ -34,6 +34,9 @@ $user = Auth::user();
                     <td>
                         {{$member->user->fname.' '.$member->user->lname}}
                         <div>{{$member->user->gnumber}}</div>
+                        @if($member->user_id == Auth::id())
+                            <span class="badge badge-success">You</span>
+                        @endif
                     </td>
                     <td>
                         {{$cur.number_format($member->gbal, 2, '.', ',')}}
