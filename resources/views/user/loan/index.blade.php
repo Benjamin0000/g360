@@ -98,6 +98,7 @@ $cur = Helpers::LOCAL_CURR_SYMBOL;
                             <th>Elapse Date</th>
                             <th>Status</th>
                             <th>Approved</th>
+                            <th>Extra</th>
                             <th>Created</th>
                           </tr>
                       </thead>
@@ -138,6 +139,9 @@ $cur = Helpers::LOCAL_CURR_SYMBOL;
                                 @else
                                   Yes <span class="fa fa-check-circle text-success"></span>
                                 @endif
+                              </td>
+                              <td>
+                                {{$loan->extra}}
                               </td>
                               <td>
                                 {{$loan->created_at->isoFormat('lll')}}
