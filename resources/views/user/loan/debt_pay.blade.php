@@ -20,13 +20,17 @@ $user = Auth::user();
         <div class="col-md-6">
           <form action="{{route('user.loan.loanExtend', $loan->id)}}" method="POST">
             @csrf
-            <button class='btn btn-primary'>Extend Loan</button>
+            <div class="text-center">
+              <button class='btn btn-primary'>Extend Loan</button>
+            </div>
           </form>
         </div>
         <div class="col-md-6">
           <form action="{{route('user.loan.pay')}}" method="POST">
             @csrf
-            <button class='btn btn-primary'>Pay Loan</button>
+            <div class="text-center">
+               <button class='btn btn-primary'>Pay Loan</button>
+            </div>
           </form>
         </div>
       </div>
