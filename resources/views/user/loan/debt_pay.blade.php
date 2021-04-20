@@ -6,7 +6,7 @@ $user = Auth::user();
 @endphp
 @section('content')
 <div class="card">
-    <div class="card-header text-center">
+    <div class="card-header text-center" style="background:#eee;">
         Loan Debt
     </div>
     <div class="card-body">
