@@ -250,7 +250,7 @@ class LoanController extends G360
             ['id', $id],
             ['user_id', $user->id],
             ['status', 0],
-            ['defaulted', '<>', 0]
+            ['defaulted', 0]
         ])->first();
         if($loan){
             $debt = $loan->total_return - $loan->returned;

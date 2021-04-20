@@ -41,7 +41,8 @@ class Authenticate extends Middleware
            $currentUrl == route('user.upgrade') ||
            $currentUrl == route('user.loan.debt') ||
            $currentUrl == route('user.loan.pay') || 
-           $currentUrl == route('user.loan.loanExtend')
+           str_contains($currentUrl, '/loan/extend/') == true ||
+           str_contains($currentUrl, '/gfund') == true
         )return $next($request);
         $user = Auth::user();
         if($user->hasLoanDebt())

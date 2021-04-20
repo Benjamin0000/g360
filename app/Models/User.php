@@ -104,12 +104,22 @@ class User extends Authenticatable
     }
     public function hasLoanDebt()
     {
-        return Loan::where([
+       $first = Loan::where([
             ['user_id', $this->id], 
             ['status', 0],
             ['defaulted', 0],
             ['expiry_date', '<=', Carbon::now()]
         ])->whereNull('grace_date')->exists();
+        if($first){
+            return true;
+        }else{
+            return Loan::where([
+                ['user_id', $this->id], 
+                ['status', 0],
+                ['defaulted', '<>', 0],
+                ['grace_date', '<=', Carbon::now()]
+            ])->exists();
+        };
     }
     /**
      * Super associate bonus

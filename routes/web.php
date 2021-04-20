@@ -129,11 +129,11 @@ Route::group(['prefix'=>'portal'],  function(){
     Route::post('/upgrade', [PackageController::class, 'autoUpgrade'])->name('user.autoupgrade');
     #Gfund
     Route::get('/gfund', [GfundController::class, 'index'])->name('user.gfund.index');
-    Route::post('/SaxRwepRJAHAIzG', [GfundController::class, 'withdrawalWalletTransfer'])->name('user.gfund.withdrawalTransfer');
-    Route::post('/tMsUqzRZTCSUuZh', [GfundController::class, 'trxWalletTransfer'])->name('user.gfund.trxWalletTransfer');
-    Route::post('/1bCwyWnqlC8qzbL', [GfundController::class, 'getMemeberDetail'])->name('user.gfund.getMemeberDetail');
-    Route::post('/LSF5Z9ozY3cwLGA', [GfundController::class, 'transMembers'])->name('user.gfund.transMembers');
-    Route::post('/kKCQFLskAdHXQxs', [GfundController::class, 'transBankAccount'])->name('user.gfund.transBankAccount');
+    Route::post('/gfund/SaxRwepRJAHAIzG', [GfundController::class, 'withdrawalWalletTransfer'])->name('user.gfund.withdrawalTransfer');
+    Route::post('/gfund/tMsUqzRZTCSUuZh', [GfundController::class, 'trxWalletTransfer'])->name('user.gfund.trxWalletTransfer');
+    Route::post('/gfund/1bCwyWnqlC8qzbL', [GfundController::class, 'getMemeberDetail'])->name('user.gfund.getMemeberDetail');
+    Route::post('/gfund/LSF5Z9ozY3cwLGA', [GfundController::class, 'transMembers'])->name('user.gfund.transMembers');
+    Route::post('/gfund/kKCQFLskAdHXQxs', [GfundController::class, 'transBankAccount'])->name('user.gfund.transBankAccount');
     #Epin
     Route::get('/epin', [EpinController::class, 'index'])->name('user.epin.index');
     Route::get('/epin/buy', [EpinController::class, 'buy'])->name('user.epin.buy');
