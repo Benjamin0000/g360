@@ -18,6 +18,7 @@ $user = Auth::user();
       </div>
       <div class="row">
         <div class="col-md-6">
+          <h4>Extend Loan with a 10% interest for 3months</h4>
           <form action="{{route('user.loan.loanExtend', $loan->id)}}" method="POST">
             @csrf
             <div class="text-center">
