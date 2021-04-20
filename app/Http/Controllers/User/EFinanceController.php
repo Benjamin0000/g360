@@ -322,13 +322,4 @@ class EFinanceController extends G360
         }
         return back()->with('error', 'Invalid provider');
     }
-    /**
-     * Show waterSub pay bills page
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function waterSub()
-    {
-        return view('user.e_finance.pay_bills.waterSub.index');
-    }
 }

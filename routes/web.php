@@ -27,18 +27,18 @@ use App\Http\Controllers\User\AgentController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use App\Lib\Interswitch\BillPayment;
-use App\Http\Controllers\Admin\DashboardController as ADashboard;
-use App\Http\Controllers\Admin\RankController as ARank;
-use App\Http\Controllers\Admin\TradingController as ATrading;
-use App\Http\Controllers\Admin\LoginController as ALogin;
-use App\Http\Controllers\Admin\FinanceController as AFinance;
-use App\Http\Controllers\Admin\GmarketController as AGMarket;
-use App\Http\Controllers\Admin\PartnersController as APartner;
-use App\Http\Controllers\Admin\AgentsController as AAgent;
-use App\Http\Controllers\Admin\SettingsController as ASettings;
-use App\Http\Controllers\Admin\PackageController as APackage;
-use App\Http\Controllers\Admin\GsTeamController as AGsTeam;
-use App\Http\Controllers\Admin\UsersController as AUsers;
+use App\Http\Controllers\AdminDashboardController as ADashboard;
+use App\Http\Controllers\AdminRankController as ARank;
+use App\Http\Controllers\AdminTradingController as ATrading;
+use App\Http\Controllers\AdminLoginController as ALogin;
+use App\Http\Controllers\AdminFinanceController as AFinance;
+use App\Http\Controllers\AdminGmarketController as AGMarket;
+use App\Http\Controllers\AdminPartnersController as APartner;
+use App\Http\Controllers\AdminAgentsController as AAgent;
+use App\Http\Controllers\AdminSettingsController as ASettings;
+use App\Http\Controllers\AdminPackageController as APackage;
+use App\Http\Controllers\AdminGsTeamController as AGsTeam;
+use App\Http\Controllers\AdminUsersController as AUsers;
 use App\Http\Helpers;
 /*
 |--------------------------------------------------------------------------
@@ -51,8 +51,8 @@ use App\Http\Helpers;
 |
 */
 Route::get('/test', function(){
-    $ecable = new CableTv('BPD-NGCA-AQA');
-    return $ecable->validateSmartCard('1025640366');
+    // $ecable = new CableTv('BPD-NGCA-AQA');
+    // return $ecable->validateSmartCard('1025640366');
     // return Helpers::ordinal(1);
     // return Helpers::ripeForUpgrade();
     // $url = 'https://passport.interswitchng.com/passport/oauth/token';
@@ -84,6 +84,35 @@ Route::get('/test', function(){
     // $epay = new Data();
     // return $epay->getDataPlan('07066571490');
     // return bcrypt('anole22@101');
+    $data = '{ "_id":"605db9767f0e4f023173e207","updatedAt":"2021-03-26T10:37:52.094Z","createdAt":"2021-03-26T10:37:42.465Z","exec_agent":null,"exec_ip":"192.241.155.216","exec_by":"6057a9cd8e91c40269
+        ee1cb9","test":false,"operator_reference":"4b601310-8e1f-11eb-a683-
+        176daa8e08be","client_apireqbody":{"meter":"45056459105","product_id":"BPE-NGCABABA-
+        OR","denomination":"600","customer_reference":"1542-
+        494846"},"app_host":"gra46","subtype":"electricity","type":"billpay","channel":"api","opera
+        tor_name":"Abuja
+        Prepaid","country":"Nigeria","customer_reference":"5e2619dae30f4873ae91148f#1542-
+        494846","paid_currency":"NGN","paid_amount":591,"topup_currency":"NGN","topup_amount":600,"ta
+        rget":"45056459105","txkey":"213261137410461111","state":"fin","wholesaler":"586d78cfb7746627
+        5ba0bd2d","account":"5e2619dae30f4873ae91148f","product_id":"BPE-NGCABABA-
+        OR","__v":2,"wh_com":-9,"client_apiresponse":{"status":201,"message":"Operation
+        Successful, Recharge created, Reference :
+        4b601310-8e1f-11eb-a683-176daa8e08be","reference":"4b601310-8e1f-11eb-a683-
+        176daa8e08be","code":"RECHARGE_COMPLETE","paid_amount":591,"paid_currency":"NGN",
+        "topup_amount":600,"topup_currency":"NGN","target":"45056459105","product_id":"BP
+        E-NGCABABA-OR","time":"2021-03-
+        26T10:37:52.094Z","country":"Nigeria","operator_name":"Abuja
+        Prepaid","completed_in":10262,"customer_reference":"1542-
+        494846","pin_based":true,"pin_code":"11726918305519546894","pin_option1":"Token:
+        11726918305519546894; Units : 13.4Kwh; Debt Amount : N/A; Debt Remaining : N/A; Recept No:
+        210326954352;
+        "},"code":"RECHARGE_COMPLETE","completed_in":10262,"message":"Operation
+        Successful","pin_based":true,"pin_code":"11726918305519546894","pin_option1":"Token:
+        11726918305519546894; Units :
+        13.4Kwh; Debt Amount : N/A; Debt Remaining : N/A; Recept No: 210326954352;
+        ","success":true,"ws_host":"210326954352","custom_details":[],"related_transactions":["605db9
+        757f0e4f023173e206","605db9807f0e4f023173e209","605db9767f0e4f023173e207"],"time":"2021-03-
+        26T10:37:42.464Z"}';
+        return json_encode($data);
 });
 
 // function SHA256($signaturecipher)

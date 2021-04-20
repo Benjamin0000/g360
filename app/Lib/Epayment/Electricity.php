@@ -73,7 +73,8 @@ class Electricity
                 'amount'=>$this->amount,
                 'type'=>'electricity',
                 'service'=>$disco->name,
-                'description'=>$disco->name.' ['.$this->meter.']'
+                'description'=>$data
+                // 'description'=>$disco->name.' meter ['.$this->meter.'] Unit'.
             ]);
             $user->trx_balance -= $total;
             $user->save();
