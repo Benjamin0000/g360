@@ -90,7 +90,7 @@ $cur = Helpers::LOCAL_CURR_SYMBOL;
                   <h4 class="card-title">Loan History</h4>
               </div>
               <div class="table-responsive">
-                  <table class="table stylish-table">
+                  <table class="table table-bordered stylish-table">
                       <thead>
                           <tr>
                             <th>No</th>
