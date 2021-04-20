@@ -27,9 +27,8 @@ class LoanController extends G360
     public function index()
     {
         $user = Auth::user();
-        $loans = Loan::where('user_id', Auth::id());
-        $total = $loans->count();
-        $loans = $loans->latest()->paginate(15);
+        $loans = Loan::where('user_id', $user->id)->latest()->paginate(15);
+        #loan request aproval
         $loanRequests = Loan::where([
             ['garant', $user->id],
             ['status', 0],
@@ -40,8 +39,8 @@ class LoanController extends G360
             ['status', 0],
         ])->whereNotNull('expiry_date')->first();
         return view('user.loan.index', 
-        compact('loans', 'total', 'loanRequests', 'active_loan'));
-    }
+        compact('loans', 'loanRequests', 'active_loan'));
+    } 
     /**
      * Show the form for creating a new resource.
      *
@@ -86,9 +85,9 @@ class LoanController extends G360
         $total_return = (($intrest/100)*$amount) + $amount;
         
         if($request->nn == 1){
-            if($user->self::$loan_elig_balance >= $amount){
-                $user->self::$loan_elig_balance -= $amount;
-                $user->self::$trx_balance += $amount;
+            if($user->loan_elig_balance >= $amount){
+                $user->loan_elig_balance -= $amount;
+                $user->with_balance += $amount;
                 $user->save();
                 Loan::create([
                     'id'=>Helpers::genTableId(Loan::class),
@@ -106,16 +105,16 @@ class LoanController extends G360
                     'user_id'=>$user->id,
                     'amount'=>$amount,
                     'gnumber'=>$user->gnumber,
-                    'name'=>self::$trx_balance,
+                    'name'=>self::$with_balance,
                     'type'=>'credit',
                     'description'=>self::$cur.$amount.
-                    ' received from loan'
+                    ' loan'
                 ]);
                 return back()
                 ->with('success', 'Congrates! your loan has been credited to you.');
             }else{
                 return back()
-                ->with('error', 'You are not eligible for a loan at the moment');
+                ->with('error', "You can't access a loan of this amount");
             }
         }else{    
             $garantor = User::find($garant);
@@ -124,8 +123,8 @@ class LoanController extends G360
                     return back()
                     ->with('error', 'Your guarantor is on a loan which he is yet to pay');
                 }
-                if($garantor->self::$loan_elig_balance >= $amount){
-                    $garantor->self::$loan_elig_balance -= $amount;
+                if($garantor->loan_elig_balance >= $amount){
+                    $garantor->loan_elig_balance -= $amount;
                     $garantor->save();
                     Loan::create([
                         'id'=>Helpers::genTableId(Loan::class),
@@ -144,53 +143,13 @@ class LoanController extends G360
                     ->with('success', 'Loan has been submited and awaiting the approval of your guarantor');
                 }else{
                     return back()
-                    ->with('error', 'Your Guarantor is not eligible for this loan');
+                    ->with('error', 'Your Guarantor cannot grant you this loan');
                 }
             }else{
                 return back()
-                ->with('error', 'Your first Guarantor is not in our system, are you sure the Gnumber is correct?');
+                ->with('error', 'Your Guarantor is not in our system, are you sure the Gnumber is correct?');
             }
         }
-    }
-    /**
-     *pay loan 
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function pay(Request $request)
-    {
-        $user = Auth::user();
-        $loan = Loan::where([
-            ['user_id', $user->id],
-            ['status', 0]
-        ])->first();
-        if($loan){
-            $left_amt = $loan->total_return - $loan->returned;
-            if($user->self::$trx_balance >= $left_amt){
-                $user->self::$trx_balance -= $left_amt;
-                $user->save();
-                WalletHistory::create([
-                    'id'=>Helpers::genTableId(WalletHistory::class),
-                    'user_id'=>$user->id,
-                    'amount'=>$left_amt,
-                    'gnumber'=>$user->gnumber,
-                    'name'=>self::$trx_balance,
-                    'type'=>'debit',
-                    'description'=>self::$cur.$left_amt.
-                    ' debited for loan payment'
-                ]);
-                $loan->returned += $left_amt;
-                $loan->status = 1;
-                $loan->save();
-                Task::creditGurantors($loan);
-                return back()->with('success', 'your loan has been cleared');
-            }else{
-                return back()
-                ->with('error', 'Insufficent fund in your TRX-wallet to clear your loan');
-            }
-        }
-        return back();
     }
     /**
      *Guarantors loan approval 
@@ -201,7 +160,7 @@ class LoanController extends G360
     public function loanApprove($id)
     {
         $user = Auth::user();
-        $loan::where([
+        $loan = Loan::where([
             ['id', $id],
             ['garant', $user->id],
             ['status', 0],
@@ -219,15 +178,64 @@ class LoanController extends G360
                     $loan->g_approve = 2;
                     $loan->expiry_date = "";
                     $loan->save();
-                    $user->self::$loan_elig_balance += $loan->amount;
+                    $user->loan_elig_balance += $loan->amount;
                     $user->save();
                     return back()->with('success', 'Loan has been disapproved');
                 default: 
-                    return back()->with('error', 'Invalid loan');
+                    return back()->with('error', 'Invalid operation');
             }
         }else{
             return back()->with('error', 'Loan not found');
         }
+    }
+    public function promptLoanPayment()
+    {
+        $user = Auth::user();
+        $loan = Loan::where([
+            ['user_id', $user->id],
+            ['status', 0],
+        ])->whereNotNull('expiry_date')->first();
+        return view('user.loan.debt_pay', compact('loan'));
+    }
+    /**
+     *pay loan 
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function pay(Request $request)
+    {
+        $user = Auth::user();
+        $loan = Loan::where([
+            ['user_id', $user->id],
+            ['status', 0]
+        ])->first();
+        if($loan){
+            $left_amt = $loan->total_return - $loan->returned;
+            if($user->trx_balance >= $left_amt){
+                $user->trx_balance -= $left_amt;
+                $user->save();
+                WalletHistory::create([
+                    'id'=>Helpers::genTableId(WalletHistory::class),
+                    'user_id'=>$user->id,
+                    'amount'=>$left_amt,
+                    'gnumber'=>$user->gnumber,
+                    'name'=>self::$trx_balance,
+                    'type'=>'debit',
+                    'description'=>self::$cur.$left_amt.
+                    ' loan payment'
+                ]);
+                $loan->returned += $left_amt;
+                $loan->status = 1;
+                $loan->save();
+                Task::creditGurantors($loan);
+                return back()->with('success', 'your loan has been cleared');
+            }else{
+                return back()
+                ->with('error', 'Insufficent fund in your TRX-wallet to clear your loan');
+            }
+        }
+        return back();
     }
     /**
      *Extend loan with interest
@@ -242,7 +250,7 @@ class LoanController extends G360
             ['id', $id],
             ['user_id', $user->id],
             ['status', 0],
-            ['defaulted', 1]
+            ['defaulted', '<>', 0]
         ])->first();
         if($loan){
             $debt = $loan->total_return - $loan->returned;
@@ -250,6 +258,7 @@ class LoanController extends G360
             $exp_days = $loan->grace_months*self::$month_end;
             $loan->grace_date = Carbon::now()->addDays($exp_days);
             $loan->total_return += $amount;
+            $loan->defaulted = 1;
             $loan->save();
             return back()->with('success', 'Loan has been extended');
         }else{

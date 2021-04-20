@@ -27,7 +27,7 @@ class CreateLoansTable extends Migration
             $table->integer('grace_months'); // grace expiry months
             $table->boolean('status')->default(0);
             $table->boolean('g_approve')->default(0);
-            $table->boolean('defaulted')->default(0);
+            $table->integer('defaulted')->default(0);
             $table->text('extra')->nullable();
             $table->timestamp('expiry_date')->nullable();
             $table->timestamp('grace_date')->nullable();

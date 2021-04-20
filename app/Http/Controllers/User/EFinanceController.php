@@ -39,6 +39,7 @@ class EFinanceController extends G360
                 'user_id'=>$user->id
             ]);
         }
+        sleep(2);
         return view('user.e_finance.index');
     }
     /**

@@ -38,9 +38,14 @@ class Authenticate extends Middleware
         if($currentUrl == route('user.package.index') || 
            $currentUrl == route('user.package.select_free') ||
            $currentUrl == route('user.package.show_premium') || 
-           $currentUrl == route('user.upgrade')
+           $currentUrl == route('user.upgrade') ||
+           $currentUrl == route('user.loan.debt')
         )return $next($request);
-        if(Auth::user()->pkg_id){
+        $user = Auth::user();
+        if($user->hasLoanDebt())
+            return redirect(route('user.loan.debt'));
+        
+        if($user->pkg_id){
             if(Helpers::ripeForUpgrade()){
                 return redirect(route('user.upgrade'));
             }

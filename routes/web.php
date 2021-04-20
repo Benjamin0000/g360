@@ -150,6 +150,7 @@ Route::group(['prefix'=>'portal'],  function(){
     #loan
     Route::get('/loan', [LoanController::class, 'index'])->name('user.loan.index');
     Route::get('/loan/apply', [LoanController::class, 'apply'])->name('user.loan.apply');
+    Route::get('/loan/loan-debt', [LoanController::class, 'promptLoanPayment'])->name('user.loan.debt');
     Route::post('/loan/request-loan', [LoanController::class, 'requestLoan'])->name('user.loan.requestLoan');
     Route::post('/loan/pay', [LoanController::class, 'pay'])->name('user.loan.pay');
     Route::post('/loan/approve/{id}', [LoanController::class, 'loanApprove'])->name('user.loan.approve');
@@ -184,7 +185,7 @@ Route::group(['prefix'=>'portal'],  function(){
     Route::put('/shop/{id}', [UShop::class, 'update'])->name('user.shop.update');
     Route::delete('/shop/{id}', [UShop::class, 'destroy'])->name('user.shop.destroy');
     Route::get('/BRrbPKqRyyJcMei/{name?}', [UShop::class, 'getCities'])->name('user.shop.getCities');
-    #GTClub
+    #GTClub 
     Route::get('/gsteam', [GsClubController::class, 'index'])->name('user.gsclub.index');
     Route::get('/myueynjsyh', [GsClubController::class, 'moreHistories'])->name('user.gsclub.morehis');
     Route::post('/NalQpdnl', [GsClubController::class, 'cashout'])->name('user.gsclub.cashout');
