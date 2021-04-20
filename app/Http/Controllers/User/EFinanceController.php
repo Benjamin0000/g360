@@ -14,6 +14,7 @@ use App\Models\DataSub;
 use App\Models\FAccount;
 use App\Models\EDisco;
 use App\Models\CableTv;
+use App\Models\VtuTrx;
 class EFinanceController extends G360
 {
     /**
@@ -97,9 +98,17 @@ class EFinanceController extends G360
      */
     public function airtimeData()
     {
+        $user = Auth::user();
         $airtimes = Airtime::all();
         $datasub = DataSub::all();
-        return view('user.e_finance.pay_bills.airtime_data.index', compact('airtimes', 'datasub'));
+
+        $histories = VtuTrx::where([
+            ['user_id', $user->id],
+            ['type', 'airtime']
+        ])->orWhere('type', 'data')->latest()->paginate(10);
+
+        return view('user.e_finance.pay_bills.airtime_data.index', 
+        compact('airtimes', 'datasub', 'histories'));
     }
     public function buyAirtime(Request $request)
     {
@@ -108,28 +117,30 @@ class EFinanceController extends G360
             'mobile_number'=>['required', 'numeric'],
             'amount'=>['required', 'numeric']
         ]);
-        if(!$request->operator){
+        if(!$request->operator)
             return ['error'=>'Select a network provider'];
-        }
+        
         $airtime = Airtime::where('name', $request->operator)->first();
-        if(!$airtime){
+        if(!$airtime)
             return ['error'=>'Select a network provider'];
-        }
+        
         $amt = $request->amount;
-        if($amt < $airtime->min_buy){
-            return ['error'=>'Minimum is '.$airtime->min_buy.' naira'];
-        }
-        if($amt > $airtime->max_buy){
-            return ['error'=>'Maximum is '.$airtime->max_buy.' naira'];
-        }
+        if($amt < $airtime->min_buy)
+            return ['error'=>'Minimum is '.self::$cur.$airtime->min_buy]; 
+        
+        if($amt > $airtime->max_buy)
+            return ['error'=>'Maximum is '.self::$cur.$airtime->max_buy];
+        
         $user = Auth::user();
-        if($user->trx_balance < $amt){
+        if($user->trx_balance < $amt)
             return ['error'=>'Insufficient fund in your TRX-Wallet'];
-        }
+        
         $req = new Pairtime();
         $data = $req->validatePhone($request->mobile_number, $request->operator, $amt);
+
         if(isset($data['error']))
             return ['error'=>'Invalid number for this mobile operator'];
+
         if($data == true && $req->purchase()){
             $com = $amt*($airtime->comm/100);
             $user->pend_balance += $com;
@@ -144,8 +155,13 @@ class EFinanceController extends G360
                 'name'=>self::$pend_balance,
                 'type'=>'credit',
                 'description'=>self::$cur.$com.
-                ' earned from airtime cashback'
+                ' airtime cashback'
             ]);
+            #credit upline
+            $value = (int)($user->faccount->vtu_deca/50);
+            $value - $user->faccount->v_deca_c;
+            if($value > 0)
+                $req->creditUpline($airtime, $user);
             return ['status'=>'success'];
         }
         return ['error'=>'Not available at the moment'];
@@ -169,21 +185,33 @@ class EFinanceController extends G360
             'plan'=>['required'],
             'operator'=>['required']
         ]);
-        if(!$request->operator){
+        if(!$request->operator)
             return ['error'=>'Select a network provider'];
-        }
+        
         $check = DataSub::where('name', $request->operator)->first();
-        if(!$check){
+        if(!$check)
             return ['error'=>'Select a network provider'];
-        }
+        
         $data = new DataSubscription();
         $plan = explode(',', $request->plan);
-        $price = (float)$plan[2];
-        $user = Auth::user();
-        if($user->trx_balance < $price){ 
-            return ['error'=>'Insufficient Fund in your TRX-Wallet'];
+        $product = $data->getDataPlanPrice($request->mobile_number, $plan[0]);
+        if(isset($product['denomination'])){
+            $price = $product['denomination'];
+            $product_id = $product['product_id'];
+            $data_amt = $product['data_amount'];
+            $mobile_number = $request->mobile_number;
+            $operator = $request->operator;
+            $validity = $product['validity'];
+        }else{
+            return ['error'=>'Unvailable'];
         }
-        $p = $data->purchase($plan[0], $request->mobile_number, $plan[1], $price, $request->operator, $plan[3]);
+        $user = Auth::user();
+        if($price <= 0)
+            return ['error'=>'not available'];
+        if($user->trx_balance < $price)
+            return ['error'=>'Insufficient Fund in your TRX-Wallet'];
+        
+        $p = $data->purchase($product_id, $mobile_number, $data_amt, $price, $operator, $validity);
         if($p){
             $com = $price*($check->comm/100);
             $user->pend_balance += $com;
@@ -198,8 +226,14 @@ class EFinanceController extends G360
                 'name'=>self::$pend_balance,
                 'type'=>'credit',
                 'description'=>self::$cur.$com.
-                ' earned from data purchase cashback'
+                ' data purchase cashback'
             ]);
+            #credit upline
+            $value = (int)($user->faccount->vtu_deca/50);
+            $value - $user->faccount->v_deca_c;
+            if($value > 0)
+                $data->creditUpline($check, $user);
+        
             return ['status'=>1];
         }else{
             return ['error'=>'Operation could not process'];

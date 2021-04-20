@@ -6,6 +6,7 @@ use App\Http\Helpers;
 use App\Models\WalletHistory;
 use App\Models\VtuTrx;
 use App\Models\Register;
+use App\Models\Airtime as RCard;
 class Airtime
 {
     private $bearer;
@@ -67,14 +68,14 @@ class Airtime
         ]);
         $data = json_decode($response, true);
         if(isset($data['status']) && $data['status'] == 201){
+            $user = Auth::user();
             VtuTrx::create([
                 'id'=>$refCode,
-                'user_id'=>Auth::id(),
+                'user_id'=>$user->id,
                 'amount'=>$this->amount,
                 'type'=>'airtime',
                 'service'=>$this->service
             ]);
-            $user = Auth::user();
             $user->trx_balance -= $this->amount;
             $user->save();
             WalletHistory::create([
@@ -100,5 +101,39 @@ class Airtime
         ]);
         $data = json_decode($response, true);
         return $data;
+    }
+     /**
+     * Share referral commissions
+     *
+     * @return null
+    */ 
+    public function creditUpline(RCard $airtime, User $user, $level = 1)
+    {
+        $cur = Helpers::LOCAL_CURR_SYMBOL;
+        $formular = explode(',', $airtime->ref_amt);
+        $levels = count($formular);
+        if($level > $levels) return;
+        if($user->placed_by)
+            $user = User::where([ ['gnumber', $user->placed_by], ['status', 1] ])->first();
+        else
+            $user = User::where([ ['gnumber', $user->ref_gnum], ['status', 1] ])->first();
+        $amt = (float)$formular[$level - 1];
+        $user->pend_balance += $amt;
+        $user->save();
+        WalletHistory::create([
+            'id'=>Helpers::genTableId(WalletHistory::class),
+            'amount'=>$amt,
+            'user_id'=>$user->id,
+            'gnumber'=>$user->gnumber,
+            'name'=>'pend_balance',
+            'type'=>'credit',
+            'description'=>$cur.$amt.' '.Helpers::ordinal($level)." Gen referral commision" 
+        ]);
+        $user->faccount->deca += $amt;
+        $user->faccount->save();
+        if($user->ref_gnum)
+            $this->creditUpline($airtime, $user, $level+1);
+        else 
+            return;
     }
 }

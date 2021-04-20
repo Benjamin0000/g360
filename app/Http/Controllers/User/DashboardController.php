@@ -213,6 +213,7 @@ class DashboardController extends G360
                     'description'=>self::$cur.$fee.' debited for personal performance point reactivation'
                 ]);
                 $ppp->status = 0;
+                $ppp->grace += 1;
                 $ppp->graced_at = Carbon::now();
                 $ppp->save();
                 return back()->with('success', 'Personal performance point reactivated for another 30days');

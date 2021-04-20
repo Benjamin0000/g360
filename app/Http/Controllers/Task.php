@@ -615,7 +615,6 @@ class Task extends G360
                         }else{
                             if($ppp->graced_at != ''){
                                 if(Carbon::parse($ppp->graced_at)->diffInMinutes() >= $graced_minutes){
-                                    $ppp->grace += 1;
                                     if($ppp->grace >= $grace_trail)
                                         $ppp->status = $faild;
                                     else

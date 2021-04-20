@@ -17,7 +17,7 @@ class CreateVtuTrxesTable extends Migration
             $table->decimal('amount', 65, 2);
             $table->string('type');
             $table->string('service');
-            $table->string('description')->nullable();
+            $table->string('description', 1000)->nullable();
             $table->timestamps();
         });
     }

@@ -107,7 +107,7 @@ $cur = Helpers::LOCAL_CURR_SYMBOL;
                           @foreach($loans as $loan)
                             <tr>
                               <td>{{$count++}}</td>
-                              <td>{{$cur.number_format($loan->$amount)}}</td>
+                              <td>{{$cur.number_format($loan->amount)}}</td>
                               <td>
                                 @if($loan->grace_date)
                                   {{Carbon::parse($loan->grace_date)->isoFormat('lll')}}

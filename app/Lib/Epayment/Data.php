@@ -6,13 +6,11 @@ use App\Http\Helpers;
 use App\Models\WalletHistory;
 use App\Models\VtuTrx;
 use App\Models\Register;
+use App\Models\DataSub;
 class Data
 {
     private $bearer;
-    public $product_code;
-    public $service;
-    public $amount;
-    public $phone;
+
     public function __construct()
     {
        $reg = Register::where('name', 'epay_bearer')->first();
@@ -36,6 +34,15 @@ class Data
         $check = VtuTrx::find($code);
         return $check ? $this->genRefNo() : $code;
     }
+    public function getDataPlanPrice($number, $code)
+    {
+        $products = $this->getDataPlan($number)['products'];
+        foreach($products as $product){
+            if($product['product_id'] == $code)
+                return $product;
+        }
+        return false;
+    }
     public function purchase($code, $phone, $data_amount, $price, $service, $validity)
     {
         $phone = preg_replace('/^0/','234', $phone);
@@ -52,15 +59,15 @@ class Data
         ]);
         $data = json_decode($response, true);
         if(isset($data['status']) && $data['status'] == 201){
+            $user = Auth::user();
             VtuTrx::create([
                 'id'=>$refCode,
-                'user_id'=>Auth::id(),
+                'user_id'=>$user->id,
                 'amount'=>$price,
                 'type'=>'data',
                 'service'=>$service,
                 'description'=>$data_amount.'MB'.$validity.' Mobile data purchase'
             ]);
-            $user = Auth::user();
             $user->trx_balance -= $price;
             $user->save();
             WalletHistory::create([
@@ -88,5 +95,39 @@ class Data
         if(isset($data['status']) && $data['status'] == 200)
             return true;
         return false;
+    }
+    /**
+     * Share referral commissions
+     *
+     * @return null
+    */ 
+    public function creditUpline(DataSub $data, User $user, $level = 1)
+    {
+        $cur = Helpers::LOCAL_CURR_SYMBOL;
+        $formular = explode(',', $data->ref_amt);
+        $levels = count($formular);
+        if($level > $levels) return;
+        if($user->placed_by)
+            $user = User::where([ ['gnumber', $user->placed_by], ['status', 1] ])->first();
+        else
+            $user = User::where([ ['gnumber', $user->ref_gnum], ['status', 1] ])->first();
+        $amt = (float)$formular[$level - 1];
+        $user->pend_balance += $amt;
+        $user->save();
+        WalletHistory::create([
+            'id'=>Helpers::genTableId(WalletHistory::class),
+            'amount'=>$amt,
+            'user_id'=>$user->id,
+            'gnumber'=>$user->gnumber,
+            'name'=>'pend_balance',
+            'type'=>'credit',
+            'description'=>$cur.$amt.' '.Helpers::ordinal($level)." Gen referral commision" 
+        ]);
+        $user->faccount->deca += $amt;
+        $user->faccount->save();
+        if($user->ref_gnum)
+            $this->creditUpline($data, $user, $level+1);
+        else 
+            return;
     }
 }
