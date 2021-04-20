@@ -104,7 +104,7 @@ class EpinController extends Controller
             $epins = Epin::where([
                 ['user_id', Auth::id()],
                 ['pkg_id', $package->id]
-            ]);
+            ])->orderBy('status', 'ASC');
             $total = $epins->count();
             // $epins = $epins->paginate(10);
             $epins = $epins->get();
