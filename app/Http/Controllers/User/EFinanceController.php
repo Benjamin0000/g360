@@ -160,8 +160,11 @@ class EFinanceController extends G360
             #credit upline
             $value = (int)($user->faccount->vtu_deca/50);
             $value - $user->faccount->v_deca_c;
-            if($value > 0)
+            if($value > 0){
                 $req->creditUpline($airtime, $user);
+                $user->faccount->v_deca_c += $value;
+                $user->faccount->save();
+            }
             return ['status'=>'success'];
         }
         return ['error'=>'Not available at the moment'];
@@ -231,9 +234,11 @@ class EFinanceController extends G360
             #credit upline
             $value = (int)($user->faccount->vtu_deca/50);
             $value - $user->faccount->v_deca_c;
-            if($value > 0)
+            if($value > 0){
                 $data->creditUpline($check, $user);
-        
+                $user->faccount->v_deca_c += $value;
+                $user->faccount->save();
+            }
             return ['status'=>1];
         }else{
             return ['error'=>'Operation could not process'];
