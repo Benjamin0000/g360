@@ -70,12 +70,12 @@ class RegisterController extends Controller
                     $data['ref_gnum'] = $data['sponsor'];
                 }
                 $user = User::create($data);
-                $token = Token::create([
-                    'id'=>Helpers::genTableId(Token::class),
-                    'user_id'=>$user['id'],
-                    'email'=>$user['email'],
-                    'token'=>Helpers::getVToken()
-                ]);
+                // $token = Token::create([
+                //     'id'=>Helpers::genTableId(Token::class),
+                //     'user_id'=>$user['id'],
+                //     'email'=>$user['email'],
+                //     'token'=>Helpers::getVToken()
+                // ]);
 
                 // $mailSent = false;
                 // try{
