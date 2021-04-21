@@ -77,22 +77,22 @@ class RegisterController extends Controller
                     'token'=>Helpers::getVToken()
                 ]);
 
-                $mailSent = false;
-                try{
-                    Helpers::storeEmail($token['email'], 'registered');
-                    Mail::to($user)->send( new VerifyEmail($token) );
-                    $mailSent = true; 
-                }catch(Exception $err){
-                    Error::create([
-                        'name'=> 'email verification',
-                        'message'=>$err->getMessage()
-                    ]);
-                }
-                if(!$mailSent){
-                    $user->delete();
-                    $token->delete();
-                    die(Helpers::ajaxOut('', false));
-                }
+                // $mailSent = false;
+                // try{
+                //     Helpers::storeEmail($token['email'], 'registered');
+                //     Mail::to($user)->send( new VerifyEmail($token) );
+                //     $mailSent = true; 
+                // }catch(Exception $err){
+                //     Error::create([
+                //         'name'=> 'email verification',
+                //         'message'=>$err->getMessage()
+                //     ]);
+                // }
+                // if(!$mailSent){
+                //     $user->delete();
+                //     $token->delete();
+                //     die(Helpers::ajaxOut('', false));
+                // }
             }
             return Helpers::ajaxOut($out, $noError);
         }
