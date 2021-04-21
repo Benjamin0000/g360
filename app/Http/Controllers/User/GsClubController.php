@@ -8,7 +8,6 @@ use App\Models\GsClubH;
 use App\Models\WalletHistory;
 class GsClubController extends G360
 {
-    public const formular = [1.25, 0.75, 0.5];
     /**
     * Creates a new controller instance
     *
@@ -62,6 +61,13 @@ class GsClubController extends G360
      */
     public function cashout(Request $request)
     {
+        $h_token_price = Helpers::getRegData('h_token_price');
+        $h_token_percent = Helpers::getRegData('gs_h_token_percent');
+        $fee_percent = Helpers::getRegData('gs_fee_percent');
+        $assoc_percent = Helpers::getRegData('gs_assoc_percent');
+        $vat_percent = Helpers::getRegData('vat');
+        $min_cashout = Helpers::getRegData('gs_min_cashout');
+        $formular = explode(',', Helpers::getRegData('gs_ref_com_percent'));
         $user = Auth::user();
         $member = GsClub::where([ 
             ['user_id', $user->id], 
@@ -69,54 +75,54 @@ class GsClubController extends G360
         ])->first();
         if($member){
             $amt = $member->wbal;
-            $vat = (7.5/100)*$amt;
-            $fee = (7/100)*$amt;
-            $health_amt = (1.5/100)*$amt;
-            $assoc_amt = (1.5/100)*$amt;
-            $h_token = $health_amt / self::$h_token_price;
-            if($amt >= 1000){
-                $amt -= $vat;
+            // $vat = ($vat_percent/100)*$amt;
+            $fee = ($fee_percent/100)*$amt;
+            $health_amt = ($h_token_percent/100)*$amt;
+            $assoc_amt = ($assoc_percent/100)*$amt;
+            $h_token = $health_amt / $h_token_price;
+            if($amt >= $min_cashout){ 
+                // $amt -= $vat;
                 $amt -= $fee;
                 $amt -= $health_amt;
                 $amt -= $assoc_amt;
                 $member->wbal = 0;
                 $member->save();
 
-                if($user->ref_gnum)
+                if($user->ref_gnum){
                     self::shareCommision($user, $amt);
-
-                $refAmt = (array_sum(self::formular) / 100)*$amt;
-                $amt = $amt - $refAmt;
+                    $refAmt = (array_sum($formular) / 100)*$amt;
+                    $amt = $amt - $refAmt;
+                }
                 $user->pend_balance += $amt;
                 $user->h_token += $h_token;
                 $user->save();
-                GsClubH::create([
-                    'id'=>Helpers::genTableId(GsClubH::class),
-                    'user_id'=>$user->id,
-                    'amount'=>$vat,
-                    'type'=>2,
-                    'description'=>self::$cur.number_format($vat)." VAT fee"
-                ]);
+                // GsClubH::create([
+                //     'id'=>Helpers::genTableId(GsClubH::class),
+                //     'user_id'=>$user->id,
+                //     'amount'=>$vat,
+                //     'type'=>2,
+                //     'description'=>self::$cur.number_format($vat)." VAT fee"
+                // ]);
                 GsClubH::create([
                     'id'=>Helpers::genTableId(GsClubH::class),
                     'user_id'=>$user->id,
                     'amount'=>$fee,
                     'type'=>3,
-                    'description'=>self::$cur.number_format($fee)."Processing fee"
+                    'description'=>self::$cur.number_format($fee, 2, '.', ',')."Processing fee"
                 ]);
                 GsClubH::create([
                     'id'=>Helpers::genTableId(GsClubH::class),
                     'user_id'=>$user->id,
                     'amount'=>$health_amt,
                     'type'=>4,
-                    'description'=>self::$cur.number_format($health_amt)."Health insurance"
+                    'description'=>self::$cur.number_format($health_amt, 2, '.', ',')."Health insurance"
                 ]);
                 GsClubH::create([
                     'id'=>Helpers::genTableId(GsClubH::class),
                     'user_id'=>$user->id,
                     'amount'=>$amt,
                     'type'=>5,
-                    'description'=>self::$cur.number_format($amt)." Sent to P-Wallet"
+                    'description'=>self::$cur.number_format($amt, 2, '.', ',')." Sent to P-Wallet"
                 ]);
                 WalletHistory::create([
                     'id'=>Helpers::genTableId(WalletHistory::class),
@@ -125,7 +131,7 @@ class GsClubController extends G360
                     'gnumber'=>$user->gnumber,
                     'name'=>self::$pend_balance,
                     'type'=>'credit',
-                    'description'=>self::$cur.number_format($amt).' GSTeam cashout'
+                    'description'=>self::$cur.number_format($amt, 2, '.', ',').' GSTeam cashout'
                 ]);
                 WalletHistory::create([
                     'id'=>Helpers::genTableId(WalletHistory::class),
@@ -134,12 +140,12 @@ class GsClubController extends G360
                     'gnumber'=>$user->gnumber,
                     'name'=>self::$h_token,
                     'type'=>'credit',
-                    'description'=>self::$cur.number_format($h_token).' GSTeam cashout'
+                    'description'=>$h_token.' GSTeam cashout'
                 ]);
                 return back()->with('success', 'Cashout Successfull');
             }else{
                 return back()->with('error', 'You can only cashout a minimum of '
-                .self::$cur.'1,000');
+                .self::$cur.number_format($min_cashout));
             }
         }else{
             return back()->with('error', 'You are not a member of GSTeam');
@@ -153,14 +159,20 @@ class GsClubController extends G360
     */
     private static function shareCommision(User $user, $amt, $level=0)
     {
-        if($level >= 3)return;
-        $reward = (self::formular[$level] / 100) * $amt;
-        $health_amt = (1.5/100)*$reward;
-        $assoc_amt = (1.5/100)*$reward;
+        $h_token_price = Helpers::getRegData('h_token_price');
+        $h_token_percent = Helpers::getRegData('gs_h_token_percent');
+        $assoc_percent = Helpers::getRegData('gs_assoc_percent');
+
+        $formular = explode(',', Helpers::getRegData('gs_ref_com_percent')); 
+        if( $level >= count($formular) )return;
+        $reward = ($formular[$level] / 100) * $amt;
+        
+        $health_amt = ($h_token_percent / 100)*$reward;
+        $assoc_amt = ($assoc_percent / 100)*$reward;
         $reward -= $health_amt;
         $reward -= $assoc_amt;
-        $h_token = $health_amt / self::$h_token_price;
-
+        $h_token = $health_amt / $h_token_price;
+        
         if($user->placed_by)
             $user = User::where('gnumber', $user->placed_by)->first();
         else    
@@ -173,6 +185,7 @@ class GsClubController extends G360
     }
     private static function finishCredit(User $user, $reward, $h_token, $level=0)
     {
+        if($reward <= 0 || $h_token <= 0)return;
         $user->pend_balance += $reward;
         $user->h_token += $h_token;
         $user->save();

@@ -5,6 +5,7 @@ use Carbon\Carbon;
 use App\Http\Helpers;
 $cur = Helpers::LOCAL_CURR_SYMBOL;
 $user = Auth::user();
+$min_cashout = (float)Helpers::getRegData('gs_min_cashout');
 @endphp
 @if(!$member)
 <div class="alert alert-danger">
@@ -21,10 +22,10 @@ $user = Auth::user();
         <div class="card" style="margin:0;">
             <div class="card-body">
                 <h4 class="card-title">GST-Balance
-                  @if($member && $member->wbal >= 1000)
+                  @if($member && $member->wbal >= $min_cashout)
                   <form action="{{route('user.gsclub.cashout')}}" method="post" style="display:inline;">
                     @csrf
-                    <button class="btn btn-primary btn-sm blink" onclick="return confirm('A vat fee of 50 will be charged')">Cashout</button>
+                    <button class="btn btn-primary btn-sm blink" onclick="return confirm('Are you sure?')">Cashout</button>
                   </form>
                   @endif
                 </h4>

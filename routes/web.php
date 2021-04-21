@@ -280,8 +280,10 @@ Route::group(['prefix'=>'admin'],  function(){
    Route::get('/agents/settings', [AAgent::class, 'settings'])->name('admin.agents.settings');
    Route::post('/agents/settings/update', [AAgent::class, 'updateAgent'])->name('admin.agents.settings.update');
    Route::post('/superagents/settings/update', [AAgent::class, 'updateSuperAgent'])->name('admin.superagent.settings.update');
+   #settings
    Route::get('/settings', [ASettings::class, 'index'])->name('admin.settings.index');
    Route::post('/settings/ppp', [ASettings::class, 'ppp'])->name('admin.settings.ppp');
+   Route::post('/settings/psharing', [ASettings::class, 'updatePsharing'])->name('admin.settings.psharing');
    #package
    Route::get('/admin/package', [APackage::class, 'index'])->name('admin.package.index');
    Route::put('/admin/package/{id}', [APackage::class, 'update'])->name('admin.package.update');
@@ -290,4 +292,7 @@ Route::group(['prefix'=>'admin'],  function(){
    Route::get('/admin/gsteam/{id}/{type}', [AGsTeam::class, 'show'])->name('admin.gsteam.show');
    Route::get('/admin/gsteam-settings', [AGsTeam::class, 'settings'])->name('admin.gsteam.settings');
    Route::put('/admin/gsteam-settings/{id}', [AGsTeam::class, 'update'])->name('admin.gsteam.update');
+   Route::get('/admin/gsteam/default/{id}', [AGsTeam::class, 'showDefaultUsers'])->name('admin.gsteam.showDefaultUsers');
+   Route::put('/admin/gsteam-settings/default/{id}', [AGsTeam::class, 'addDefault'])->name('admin.gsteam.addDefault');
+   Route::post('/admin/gsteam-settings', [AGsTeam::class, 'setting'])->name('admin.gsteam.setting');
 });

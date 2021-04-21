@@ -18,35 +18,35 @@ $cur = Helpers::LOCAL_CURR_SYMBOL;
                        <form action="{{route('admin.settings.ppp')}}" method="post">
                          <div class="form-group">
                              <label for="">Minutes</label>
-                             <input type="text" name="minutes" value="{{Helpers::getRegData('ppp_minutes')}}">
+                             <input class="form-control" type="text" name="minutes" value="{{Helpers::getRegData('ppp_minutes')}}">
                          </div>
                          <div class="form-group">
                             <label for="">Grace Minutes</label>
-                            <input type="text" name="grace_minutes" value="{{Helpers::getRegData('ppp_grace_minutes')}}">
+                            <input class="form-control" type="text" name="grace_minutes" value="{{Helpers::getRegData('ppp_grace_minutes')}}">
                          </div>
                          <div class="form-group">
                             <label for="">Required Referrals</label>
-                            <input type="text" name="total_referrals" value="{{Helpers::getRegData('ppp_total_referrals')}}">
+                            <input class="form-control" type="text" name="total_referrals" value="{{Helpers::getRegData('ppp_total_referrals')}}">
                          </div>
                          <div class="form-group">
                             <label for="">Circle PV</label>
-                            <input type="text" name="pv" value="{{Helpers::getRegData('ppp_pv')}}">
+                            <input class="form-control" type="text" name="pv" value="{{Helpers::getRegData('ppp_pv')}}">
                          </div>
                          <div class="form-group">
                             <label for="">Instant Reward amount</label>
-                            <input type="text" name="reward_amount" value="{{Helpers::getRegData('ppp_reward_amount')}}">
+                            <input class="form-control" type="text" name="reward_amount" value="{{Helpers::getRegData('ppp_reward_amount')}}">
                          </div>
                          <div class="form-group">
                             <label for="">Circle Payment</label>
-                            <input type="text" name="payment" value="{{Helpers::getRegData('ppp_payment')}}">
+                            <input class="form-control" type="text" name="payment" value="{{Helpers::getRegData('ppp_payment')}}">
                          </div>
                          <div class="form-group">
                            <label for="">Total Grace Trail</label>
-                           <input type="text" name="grace_trail" value="{{Helpers::getRegData('ppp_grace_trail')}}">
+                           <input class="form-control" type="text" name="grace_trail" value="{{Helpers::getRegData('ppp_grace_trail')}}">
                          </div>
                          <div class="form-group">
                            <label for="">Reactivation Fee</label>
-                           <input type="text" name="reactivation_fee" value="{{Helpers::getRegData('ppp_r_fee')}}">
+                           <input class="form-control" type="text" name="reactivation_fee" value="{{Helpers::getRegData('ppp_r_fee')}}">
                          </div>
                          @csrf
                           <div class="form-group">
@@ -55,7 +55,28 @@ $cur = Helpers::LOCAL_CURR_SYMBOL;
                        </form>
                    </div>
                    <div class="col-md-3">
-
+                       
+                       
+                    <h3 class="text-center"><b>Others</b></h3>
+                    <form action="{{route('admin.settings.psharing')}}" method="POST">
+                        @csrf
+                        <div class="form-group">
+                            <label for="">Pend-Wallet Sharing formular</label>
+                            <div>Ap, with, PKG, Loan, TRX</div>
+                            <input type="text" name="formular" value="{{Helpers::getRegData('p_share_formular')}}" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="">VAT %</label>
+                            <input name="vat" class="form-control" value="{{Helpers::getRegData('vat')}}" type="text">
+                        </div>
+                        <div class="form-group">
+                            <label for="">H-Token Price</label>
+                            <input name="h_token_price" class="form-control" value="{{Helpers::getRegData('h_token_price')}}" type="text">
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-info">UPDATE</button>
+                        </div>
+                    </form>
                    </div>
                </div>
             </div>

@@ -1,6 +1,5 @@
 <?php
 namespace App\Http\Controllers;
-use Illuminate\Http\Request;
 use App\Http\Controllers\User\TradingController as TradeCon;
 use App\Models\TrackFreeUser;
 use App\Models\WalletHistory;
@@ -31,7 +30,10 @@ class Task extends G360
     */
     public static function sharePendingWallet()
     { 
-        $last_pkg_id = 7;
+        $f = Helpers::getRegData('p_share_formular');
+        if(!$f)return;
+        $f = json_decode('[' . $f . ']', true);
+        $last_pkg_id = Package::orderBy('id', 'DESC')->first()->id;
         $users = User::all();
         if($users->count()){
             foreach($users as $user){
@@ -45,15 +47,15 @@ class Task extends G360
                     if($user->haveUnPaidLoan())
                         $billForLoan = true;
                     if($billForLoan && $billForPkg){
-                        $formular = [20, 5, 15, 15, 45];
+                        $formular = $f;
                     }elseif($billForPkg || $billForLoan){
                         if($billForLoan)
                             $type = 'loan';
                         else
                             $type = 'pkg';
-                        $formular = [20, 5, 30, 45];
+                        $formular = [ $f[0], $f[1], $f[2]+$f[3], $f[4] ];
                     }else{
-                        $formular = [20, 5,  0, 75];
+                        $formular = [ $f[0], $f[1],  0, $f[2] + $f[3] + $f[4] ];
                     }
                     self::pSharing($user, $formular, $type);
                 }
@@ -326,8 +328,7 @@ class Task extends G360
                     
                 if($last_payed->diffInMinutes() >= self::$month_end){
                     if($user = User::find($lmp->user_id)){
-                        $vat = (7.5/100) * $lmp->amount;
-                        $amount = $lmp->amount - $vat;
+                        $amount = $lmp->amount;
                         $user->with_balance += $amount;
                         $user->save();
                         WalletHistory::create([
@@ -427,11 +428,19 @@ class Task extends G360
             if(!$receiver->user->validPartner()){
                 if($receiver->user->totalValidRef() < $gtr->total_ref)
                     $notEligible = true;
-            }else{
-                // $receiver->status = 0;
             }
-            if($receiver->agent){
-                #requirement
+            #default user
+            if($receiver->def){
+               $formular = json_decode('['.$receiver->def_refs.']', true);
+               if( isset($formular[$gtr->id -1]) ){
+                    $req_ref = $formular[$gtr->id -1];
+                    if($req_ref > $receiver->user->totalValidRef())
+                        $notEligible = true;
+                    else 
+                        $notEligible = false;
+               }else{
+                    $notEligible = false;
+               }
             }
             if($notEligible){
                 self::gsclubR($giver, $gtr, $receiver->id);

@@ -42,9 +42,11 @@
                            <td>{{$gtr->total_ref}}</td>
                            <td>
                              <button  data-toggle='modal' class="btn btn-sm btn-info" data-target='#edit{{$gtr->id}}'>Edit</button>
+                             <a  href="{{route('admin.gsteam.showDefaultUsers', $gtr->id)}}" class='btn btn-sm btn-info'>Def</button>
                            </td>
                          </tr>
                          @include('admin.gsteam.settings.edit_modal')
+                         {{-- @include('admin.gsteam.settings.addDefault_modal') --}}
                        @endforeach
                      @endif
                    </tbody>

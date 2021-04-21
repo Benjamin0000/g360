@@ -1,11 +1,10 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\GTR;
 use App\Models\GsClub;
+use App\Http\Helpers;
 class GsTeamController extends Controller
 {
     /**
@@ -69,5 +68,28 @@ class GsTeamController extends Controller
             ['g', $type]
         ])->orderBy('created_at', 'ASC')->paginate(20);
         return view('admin.gsteam.show', compact('gsclubs', 'gtr', 'type'));
+    }
+    public function setting(Request $request)
+    { 
+        Helpers::saveRegData('gs_h_token_percent', $request->gs_h_token_percent);
+        Helpers::saveRegData('gs_fee_percent', $request->gs_fee_percent);
+        Helpers::saveRegData('gs_assoc_percent', $request->gs_assoc_percent);
+        Helpers::saveRegData('gs_min_cashout', $request->gs_min_cashout);
+        Helpers::saveRegData('gs_ref_com_percent', $request->gs_ref_com_percent);
+        return back()->with('success', 'Updated');
+    }
+    public function showDefaultUsers($id)
+    {
+        $gtr = GTR::find($id);
+        $gsclubs = GsClub::where([
+            ['gbal', $gtr->amount],
+            ['def', 1]
+        ])->orderBy('created_at', 'ASC')->paginate(20);
+        return view('admin.gsteam.settings.default_users', compact('gsclubs', 'gtr'));
+    }
+
+    public function addDefault(Request $request, $id)
+    {
+
     }
 }
