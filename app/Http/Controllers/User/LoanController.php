@@ -229,7 +229,7 @@ class LoanController extends G360
                 $loan->status = 1;
                 $loan->save();
                 Task::creditGurantors($loan);
-                return back()->with('success', 'your loan has been cleared');
+                return redirect(route('user.loan.index'))->with('success', 'your loan has been cleared');
             }else{
                 return back()
                 ->with('error', 'Insufficent fund in your TRX-wallet to clear your loan');
