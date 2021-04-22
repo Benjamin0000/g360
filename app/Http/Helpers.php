@@ -504,7 +504,7 @@ use Exception;
             }
         }
     }
-    public static function saveRegData($name, $value)
+    public static function saveRegData($name, $value='')
     {
        $reg = Register::where('name', $name)->first();
        if($reg){
@@ -549,6 +549,21 @@ use Exception;
     public static function ordinal($n)
     {
         return $n.date('S',mktime(1,1,1,1,( (($n>=10)+($n>=20)+($n==0))*10 + $n%10) ));
+    }
+    public static function gsTeamSwitch($set = '')
+    {
+       if($set == 0 || $set == 1){
+         self::saveRegData('gsteam_switch', $set);
+         return;
+       }
+
+       $value = self::getRegData('gsteam_switch');
+       if($value == 0 || $value == 1){
+            return (int)$value;
+       }else{
+            self::saveRegData('gsteam_switch', 0);
+            return 0;
+       }
     }
 
 } 

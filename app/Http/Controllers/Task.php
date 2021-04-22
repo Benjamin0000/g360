@@ -376,16 +376,29 @@ class Task extends G360
     */
     public static function gsClub()
     {
+       $switch = Helpers::gsTeamSwitch();
        $givers = GsClub::where([
           ['status', 0],
-          ['g', 1]
-       ])->orderBy('created_at', 'ASC')->get();
-       if($givers->count()){
-            foreach ($givers as $giver) {
+          ['g', 1],
+          ['switch', $switch]
+       ])->orderBy('created_at', 'ASC')->take(50);
+       if($givers->exists()){
+            foreach ($givers->get() as $giver) {
                 if($gtr = GTR::where('amount', $giver->gbal)->first()){
                     if(Carbon::parse($giver->lastg)->diffInMinutes() >= $gtr->g_hours)
                         self::gsclubR($giver, $gtr);
                 }
+                if($switch == 0)
+                    $giver->switch = 1;
+                else
+                    $giver->switch = 0;
+                $giver->save();
+            }
+        }else{
+            if($switch == 0){
+                Helpers::gsTeamSwitch(1);
+            }else{
+                Helpers::gsTeamSwitch(0);
             }
         }
     }
@@ -426,10 +439,6 @@ class Task extends G360
                 }
             }
             $notEligible = false;
-            if(!$receiver->user->validPartner()){
-                if($receiver->user->totalValidRef() < $gtr->total_ref)
-                    $notEligible = true;
-            }
             #default user
             if($receiver->def){
                $formular = json_decode('['.$receiver->def_refs.']', true);

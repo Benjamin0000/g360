@@ -73,6 +73,9 @@ class GsClubController extends G360
             ['user_id', $user->id], 
             ['status', 0]   
         ])->first();
+        if($member->def)
+            return back()->with('error', 'Cannot cashout, please contact admin');
+        
         if($member){
             $amt = $member->wbal;
             // $vat = ($vat_percent/100)*$amt;

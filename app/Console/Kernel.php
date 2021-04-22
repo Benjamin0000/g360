@@ -34,6 +34,11 @@ class Kernel extends ConsoleKernel
         })->timezone('Africa/Lagos')->dailyAt('00:30');
 
         $schedule->call(function(){
+            Task::gsClub();
+        })->everyMinute();
+        
+
+        $schedule->call(function(){
             // Task::shareSignupProfit();
             // Task::sAgentRGcoin();
             Task::superAssocReward();
@@ -50,9 +55,9 @@ class Kernel extends ConsoleKernel
         })->everyFiveMinutes();
 
 
-        $schedule->call(function(){
-            Task::gsClub();
-        })->everyThirtyMinutes();
+        // $schedule->call(function(){
+        //     Task::gsClub();
+        // })->everyThirtyMinutes();
 
         // $schedule->call(function(){
             

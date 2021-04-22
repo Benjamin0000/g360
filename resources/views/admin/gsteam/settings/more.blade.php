@@ -22,7 +22,7 @@ use App\Http\Helpers;
                 </div>
                 <div class="col-md-2">
                     <div class="form-group">
-                        <label for="">Associate %</label>
+                        <label for="">Union %</label>
                         <input type="text" value="{{Helpers::getRegData('gs_assoc_percent')}}" name="gs_assoc_percent" class="form-control">
                     </div>
                 </div>
