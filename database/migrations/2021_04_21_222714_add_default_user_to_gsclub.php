@@ -26,7 +26,7 @@ class AddDefaultUserToGsclub extends Migration
     public function down()
     {
         Schema::table('gs_clubs', function (Blueprint $table) {
-            $table->dropColumn(['def', 'def_refs', 'tag']);
+            $table->dropColumn(['def', 'def_refs', 'tag', 'switch']);
         });
     }
 }
