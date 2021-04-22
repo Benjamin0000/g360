@@ -285,14 +285,15 @@ Route::group(['prefix'=>'admin'],  function(){
    Route::post('/settings/ppp', [ASettings::class, 'ppp'])->name('admin.settings.ppp');
    Route::post('/settings/psharing', [ASettings::class, 'updatePsharing'])->name('admin.settings.psharing');
    #package
-   Route::get('/admin/package', [APackage::class, 'index'])->name('admin.package.index');
-   Route::put('/admin/package/{id}', [APackage::class, 'update'])->name('admin.package.update');
+   Route::get('/package', [APackage::class, 'index'])->name('admin.package.index');
+   Route::put('/package/{id}', [APackage::class, 'update'])->name('admin.package.update');
    #Gs-Team
-   Route::get('/admin/gsteam', [AGsTeam::class, 'index'])->name('admin.gsteam.index');
-   Route::get('/admin/gsteam/{id}/{type}', [AGsTeam::class, 'show'])->name('admin.gsteam.show');
-   Route::get('/admin/gsteam-settings', [AGsTeam::class, 'settings'])->name('admin.gsteam.settings');
-   Route::put('/admin/gsteam-settings/{id}', [AGsTeam::class, 'update'])->name('admin.gsteam.update');
-   Route::get('/admin/gsteam/default/{id}', [AGsTeam::class, 'showDefaultUsers'])->name('admin.gsteam.showDefaultUsers');
-   Route::put('/admin/gsteam-settings/default/{id}', [AGsTeam::class, 'addDefault'])->name('admin.gsteam.addDefault');
-   Route::post('/admin/gsteam-settings', [AGsTeam::class, 'setting'])->name('admin.gsteam.setting');
+   Route::get('/gsteam', [AGsTeam::class, 'index'])->name('admin.gsteam.index');
+   Route::get('/gsteam/{id}/{type}', [AGsTeam::class, 'show'])->name('admin.gsteam.show');
+   Route::get('/gsteam-settings', [AGsTeam::class, 'settings'])->name('admin.gsteam.settings');
+   Route::put('/gsteam-settings/{id}', [AGsTeam::class, 'update'])->name('admin.gsteam.update');
+   Route::get('/gsteam-settings/default/{id}', [AGsTeam::class, 'showDefaultUsers'])->name('admin.gsteam.showDefaultUsers');
+   Route::put('/gsteam-settings/default/{id}', [AGsTeam::class, 'addDefault'])->name('admin.gsteam.addDefault');
+   Route::put('/gsteam-settings/default/{gtr_id}/{gsclub_id}', [AGsTeam::class, 'updateDefaultUser'])->name('admin.gsteam.UpdateDefaultUser');
+   Route::post('/gsteam-settings', [AGsTeam::class, 'setting'])->name('admin.gsteam.setting');
 });

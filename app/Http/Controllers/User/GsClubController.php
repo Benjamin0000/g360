@@ -165,7 +165,7 @@ class GsClubController extends G360
 
         $formular = explode(',', Helpers::getRegData('gs_ref_com_percent')); 
         if( $level >= count($formular) )return;
-        $reward = ($formular[$level] / 100) * $amt;
+        $reward = ((float)$formular[$level] / 100) * $amt;
         
         $health_amt = ($h_token_percent / 100)*$reward;
         $assoc_amt = ($assoc_percent / 100)*$reward;

@@ -524,5 +524,16 @@ var readyStateCheckInterval = setInterval(function() {
             $('#chat, #msg, #comment, #todo').perfectScrollbar();
         });
     </script>
+    <script>
+        onReady(function(){
+          $(".rmdef").on('click', function(){
+              var con = confirm("Are you sure about this?");
+              if(con){
+                  var form = $(this).attr('data-f');
+                  $('#'+form).submit();
+              }
+          });
+        });
+      </script>
 </body>
 </html>

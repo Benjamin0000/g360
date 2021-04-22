@@ -394,7 +394,7 @@ class Task extends G360
      *
      * @return void
     */
-    private static function gsclubR(GsClub $giver, GTR $gtr, $r_id = 0)
+    private static function gsclubR(GsClub $giver, GTR $gtr, $r_ids = [])
     {
         $first_amt = GTR::orderBy('id', 'ASC')->first()->amount;
         $last = GTR::orderBy('id', 'DESC')->first()->id;
@@ -403,11 +403,12 @@ class Task extends G360
         $hours = $gtr->r_hours;
         $dateCheck = Carbon::now()->subMinutes($hours)->toDateTimeString();
         $receiver = GsClub::where([
-            ['id', '<>', "$r_id"],
             ['status', 0],
             ['g', 0],
             ['gbal', $giver->gbal]
-        ])->where('lastr', '<=', $dateCheck)->orderBy('created_at', 'ASC')->first();
+        ])->whereNotIn('id', $r_ids)
+        ->where('lastr', '<=', $dateCheck)
+        ->orderBy('created_at', 'ASC')->first();
         if($receiver){
             $receiver->r_count+=1;
             if($receiver->r_count >= $r_count){
@@ -443,7 +444,8 @@ class Task extends G360
                }
             }
             if($notEligible){
-                self::gsclubR($giver, $gtr, $receiver->id);
+                array_push($r_ids, $receiver->id);
+                self::gsclubR($giver, $gtr, $r_ids);
             }else{
                 $receiver->save();
                 #convert giver to a receiver

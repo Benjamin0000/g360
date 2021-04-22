@@ -12,7 +12,9 @@
               <div class="">
                   <h5 class="card-title float-left">GSTEAM SETTINGS</h5>
                   <div class="float-right">
-                    <a href="{{route('admin.gsteam.index')}}" class=" float-right btn btn-info btn-sm">Back</a>
+                    <a href="{{route('admin.gsteam.index')}}" style="margin-left:4px;" class="float-right btn btn-info btn-sm">Back</a>
+                      
+                    {{-- <a href="" class=" float-right btn btn-info btn-sm">Default Users</a>  --}}
                   </div>
               </div>
                 <div class="table-responsive">
@@ -42,11 +44,10 @@
                            <td>{{$gtr->total_ref}}</td>
                            <td>
                              <button  data-toggle='modal' class="btn btn-sm btn-info" data-target='#edit{{$gtr->id}}'>Edit</button>
-                             <a  href="{{route('admin.gsteam.showDefaultUsers', $gtr->id)}}" class='btn btn-sm btn-info'>Def</button>
+                             <a  href="{{route('admin.gsteam.showDefaultUsers', $gtr->id)}}" class='btn btn-sm btn-info'>Def [{{$gtr->totalDefault()}}]</a>
                            </td>
                          </tr>
                          @include('admin.gsteam.settings.edit_modal')
-                         {{-- @include('admin.gsteam.settings.addDefault_modal') --}}
                        @endforeach
                      @endif
                    </tbody>

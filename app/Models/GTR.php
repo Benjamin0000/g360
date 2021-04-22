@@ -26,4 +26,11 @@ class GTR extends Model
             ['g', $type]
         ])->count();
     }
+    public function totalDefault()
+    {
+        return GsClub::where([
+            ['def', 1],
+            ['gbal', $this->amount]
+        ])->count();
+    }
 }

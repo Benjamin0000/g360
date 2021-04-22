@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use App\Models\GTR;
 use App\Models\GsClub;
 use App\Http\Helpers;
+use App\Models\User;
 class GsTeamController extends Controller
 {
     /**
@@ -90,6 +91,58 @@ class GsTeamController extends Controller
 
     public function addDefault(Request $request, $id)
     {
-
+        if($request->ajax()){
+            if($gtr = GTR::find($id)){
+                $user = User::where('gnumber', $request->gnumber)->first();
+                if(!$user) return ['error'=>"User not found"];
+                $gsclub = GsClub::where('user_id', $user->id)->first();
+                if($gsclub){
+                    if($gsclub->gbal != $gtr->amount)
+                        $gsclub->r_count = 0;
+                }else{
+                    return ['error'=>'GsTeam member not found'];
+                }
+                switch((int)$request->con){
+                    case 0: 
+                        return ['info'=>"<div class='text-center'><H4><b>User Info</b></H4> <div>".
+                        $user->fname.' '.$user->lname."</div> </div><br>"];
+                    case 1: 
+                        $gsclub->def = 1;
+                        $gsclub->gbal = $gtr->amount;
+                        $gsclub->status = 0;
+                        $gsclub->g = 0;
+                        $gsclub->tag = $request->tag;
+                        $gsclub->def_refs = $request->referrals;
+                        $gsclub->save();
+                        return ['success'=>'done'];
+                    default: 
+                        return ['error'=>'Invalid Operation'];
+                }
+            }
+            return ['error'=>'Invalid operation'];
+        }
+    }
+    public function updateDefaultUser(Request $request, $gtr_id, $gsclub_id)
+    {
+        if($gtr = GTR::find($gtr_id)){
+            $gsclub = GsClub::where([
+                ['id', "$gsclub_id"],
+                ['gbal', $gtr->amount],
+                ['def', 1]
+            ])->first();
+            if($gsclub){
+                if((int)$request->del){
+                    $gsclub->def = 0;
+                    $gsclub->save();
+                    return back()->with('success', 'Default user removed');
+                }else{
+                    $gsclub->tag = $request->tag;
+                    $gsclub->def_refs = $request->referrals;
+                    $gsclub->save();
+                    return back()->with('success', 'Default user updated');
+                }
+            }
+        }   
+        return back()->with('error', 'not found');
     }
 }
