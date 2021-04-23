@@ -35,7 +35,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->call(function(){
             Task::gsClub();
-        })->everyFiveMinutes();
+        })->everyMinute();
         
 
         $schedule->call(function(){
