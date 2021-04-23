@@ -210,7 +210,8 @@ class Task extends G360
         $minutes = $rank->minutes;
         $graced_minutes = $rank->graced_minutes;
         
-        $sAs = SuperAssociate::where('status', 0)->get();
+        $sAs = SuperAssociate::where('status', 0)
+        ->orWhere('status', 1)->get();
         foreach($sAs as $sA){
             if($sA->created_at->diffInMinutes() <= $minutes){
                 #allow flow
@@ -218,7 +219,11 @@ class Task extends G360
                 if($sA->last_grace != '' && Carbon::parse($sA->last_grace)->diffInMinutes() <= $graced_minutes){
                     #allow flow
                 }else{
-                    $sA->status = 1; #faild
+                    if($sA->status == 1 && $cpv >= $rank->next()->pv){
+                        $sA->status = 4;
+                    }else{
+                        $sA->status = 1; #faild
+                    }
                     $sA->save();
                     continue; #disallow flow
                 }
@@ -439,7 +444,8 @@ class Task extends G360
                 }
             }
             $notEligible = false;
-            #default user
+
+            
             if($receiver->def == 1){
                $formular = json_decode('['.$receiver->def_refs.']', true);
                if( isset($formular[$gtr->id -1]) ){
@@ -451,7 +457,11 @@ class Task extends G360
                }else{
                     $notEligible = false;
                }
+            }else{
+                if($receiver->user->totalValidRef() < $gtr->total_ref)
+                    $notEligible = true;
             }
+
             if($notEligible){
                 array_push($r_ids, $receiver->id);
                 self::gsclubR($giver, $gtr, $r_ids);
