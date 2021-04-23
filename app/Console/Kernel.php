@@ -41,7 +41,7 @@ class Kernel extends ConsoleKernel
         $schedule->call(function(){
             // Task::shareSignupProfit();
             // Task::sAgentRGcoin();
-            // Task::superAssocReward();
+            Task::superAssocReward();
         })->everyThreeMinutes();
 
         $schedule->call(function(){

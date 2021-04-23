@@ -25,6 +25,7 @@ class CreateRanksTable extends Migration
             $table->integer('pv');
             $table->integer('loan_exp_m'); #expiry months
             $table->decimal('total_lmp', 65, 2);
+            $table->decimal('carry_over', 65, 2)->default(0);
             $table->integer('lmp_months'); #total months to pay lmp
             $table->timestamps();
         });

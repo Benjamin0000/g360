@@ -64,6 +64,11 @@
                        <label for="">Fee</label>
                        <input type="text" name="fee" value="{{(int)$rank->fee}}" class="form-control">
                     </div>
+                  @else 
+                    <div class="form-group">
+                      <label for="">Carry over</label>
+                      <input type="text" name="carry_over" value="{{(int)$rank->carry_over}}" class="form-control">
+                    </div>
                   @endif
                 </div>
             </div>
@@ -81,6 +86,10 @@
                          <input type="text" name="graced_minutes" value="{{$rank->graced_minutes}}" class="form-control">
                       </div>
                   </div>
+              </div>
+              <div class="form-group">
+                <label for="">Carry over</label>
+                <input type="text" name="carry_over" value="{{(int)$rank->carry_over}}" class="form-control">
               </div>
             @endif
             @method('put')

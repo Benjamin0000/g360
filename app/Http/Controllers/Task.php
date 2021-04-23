@@ -285,6 +285,24 @@ class Task extends G360
                             $user->superAssoc->save();
                         }
                     }
+                    $prev_ranks = $rank->id - $user->rank_id;
+                    if($prev_ranks > 1){
+                        for($i = $user->rank_id+1; $i < $rank->id; $i++){
+                            $leftRank = Rank::find($i);
+                            $user->pend_balance += $leftRank->carry_over;
+                            $user->save();
+                            WalletHistory::create([
+                                'id'=>Helpers::genTableId(WalletHistory::class),
+                                'user_id'=>$user->id,
+                                'amount'=>$leftRank->carry_over,
+                                'gnumber'=>$user->gnumber,
+                                'name'=>self::$pend_balance,
+                                'type'=>'credit',
+                                'description'=>self::$cur.$leftRank->carry_over.
+                                ' '.$leftRank->name.' Compensation reward'
+                            ]);
+                        }
+                    }
                     #credit user
                     $user->rank_id = $rank->id;
                     $user->pend_balance += $rank->prize;
