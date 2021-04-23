@@ -42,7 +42,10 @@
                              @endif
                            </td>
                            <td>{{$rank->pv}}</td>
-                           <td>{{$cur.number_format($rank->prize)}}</td>
+                           <td>
+                             {{$cur.number_format($rank->prize)}}
+                             <div class="text-danger">{{$cur.number_format($rank->carry_over)}}</div>
+                            </td>
                            <td>{{$cur.number_format($rank->loan)}}</td>
                            <td>{{$rank->loan_exp_m}} months</td>
                            <td>{{$cur.number_format($rank->total_lmp)}}</td>
