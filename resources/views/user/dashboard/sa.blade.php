@@ -3,9 +3,10 @@ use Carbon\Carbon;
 $sup_as_rank = App\Models\Rank::find(1);
 $sa_fee = $sup_as_rank->fee;
 $cur = App\Http\Helpers::LOCAL_CURR_SYMBOL;
+$user = Auth::user();
 @endphp
 @if($associate = $user->superAssoc)
-  @if($associate->status != 3 && $associate->status != 4)
+  @if($associate->status != 3 && $associate->status != 4 && $user->cpv < $sup_as_rank->next()->pv)
     <div class="col-lg-3 col-md-6">
         <div class="card">
             <div class="card-body">
