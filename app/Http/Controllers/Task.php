@@ -440,7 +440,7 @@ class Task extends G360
             }
             $notEligible = false;
             #default user
-            if($receiver->def){
+            if($receiver->def == 1){
                $formular = json_decode('['.$receiver->def_refs.']', true);
                if( isset($formular[$gtr->id -1]) ){
                     $req_ref = $formular[$gtr->id -1];
