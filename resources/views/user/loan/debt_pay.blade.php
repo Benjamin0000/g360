@@ -12,29 +12,38 @@ $user = Auth::user();
     <div class="card-body">
       <div class="text-center">
         @php
-         $debt = $loan->total_return - $loan->returned; 
+         $debt = $loan->total_return - $loan->returned;
         @endphp
         <h2>{{$cur.number_format($debt, 2,'.', ',')}}</h2>
       </div>
-      <div class="row">
-        <div class="col-md-6">
-          <h4>Extend Loan with a 10% interest for 3months</h4>
-          <form action="{{route('user.loan.loanExtend', $loan->id)}}" method="POST">
-            @csrf
-            <div class="text-center">
-              <button class='btn btn-primary'>Extend Loan</button>
-            </div>
-          </form>
+      @if($loan->defaulted == 0)
+        <div class="row">
+          <div class="col-md-6">
+            <h4 class="text-center">Extend Loan with a {{$loan->grace_interest}}% interest for {{$loan->grace_months}}months</h4>
+            <form action="{{route('user.loan.loanExtend', $loan->id)}}" method="POST">
+              @csrf
+              <div class="text-center">
+                <button class='btn btn-primary'>Extend Loan</button>
+              </div>
+            </form>
+          </div>
+          <div class="col-md-6">
+            <form action="{{route('user.loan.pay')}}" method="POST">
+              @csrf
+              <div class="text-center">
+                <button class='btn btn-primary'>Pay Loan</button>
+              </div>
+            </form>
+          </div>
         </div>
-        <div class="col-md-6">
-          <form action="{{route('user.loan.pay')}}" method="POST">
-            @csrf
-            <div class="text-center">
-               <button class='btn btn-primary'>Pay Loan</button>
-            </div>
-          </form>
+      @else
+      <form action="{{route('user.loan.pay')}}" method="POST">
+        @csrf
+        <div class="text-center">
+          <button class='btn btn-primary'>Pay Loan</button>
         </div>
-      </div>
+      </form>
+      @endif
     </div>
 </div>
 @endsection

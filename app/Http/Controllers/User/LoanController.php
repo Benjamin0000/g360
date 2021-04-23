@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Loan;
 use App\Models\WalletHistory;
+use App\Models\LoanSetting;
 use App\Http\Helpers;
 class LoanController extends G360
 {
@@ -256,7 +257,7 @@ class LoanController extends G360
                 return back()->with('error', 'Cannot extend this loan');
             
             $debt = $loan->total_return - $loan->returned;
-            $amount = (self::$loan_interest / 100) * $debt;
+            $amount = ($loan->grace_interest / 100) * $debt;
             $exp_days = $loan->grace_months*self::$month_end;
             $loan->grace_date = Carbon::now()->addDays($exp_days);
             $loan->total_return += $amount;

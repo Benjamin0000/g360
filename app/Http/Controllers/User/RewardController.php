@@ -71,9 +71,10 @@ class RewardController extends G360
             'gnumber'=>$user->gnumber,
             'amount'=>$reward->loan_amount,
             'total_return'=>$reward->loan_amount,
-            'interest'=>10,
+            'interest'=>$reward->loan_interest,
+            'grace_interest'=>$reward->loan_grace_interest,
             'exp_months'=>$reward->loan_month,
-            'grace_months'=>3,
+            'grace_months'=>$reward->loan_grace_month,
             'extra'=>$reward->name.' Loan',
             'expiry_date'=>Carbon::now()->addDays($exp_days)
         ]);

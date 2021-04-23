@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use App\Models\Airtime;
 use App\Models\DataSub;
 use App\Models\EDisco;
+use App\Models\LoanSetting;
 class FinanceController extends Controller
 {
     /**
@@ -64,7 +65,7 @@ class FinanceController extends Controller
         }
     }
     /**
-     * Update the specified resource in storage.
+     * Update Mobile data
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -86,15 +87,30 @@ class FinanceController extends Controller
             return back()->with('error', 'network not found');
         }
     }
+    /**
+     * Show electricity page
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function electricity()
     {
         return view('admin.finance.elect.index');
     }
+    /**
+     * Show electricity settings page
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function electSettings()
     {
         $discos = EDisco::all();
         return view('admin.finance.elect.settings', compact('discos'));
     }
+     /**
+     * Update electricity discos
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function updateDisco(Request $request, $id)
     {
         $this->validate($request, [
@@ -111,5 +127,68 @@ class FinanceController extends Controller
             return back()->with('success', 'Disco updated');
         }   
         return back()->with('error', 'Disco not found');
+    }
+    /**
+     * Show Loan page
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function loan()
+    {
+        return view('admin.finance.loan.index');
+    }
+    /**
+     * Show Loan settings page
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function loanSettings()
+    {
+        $loanPlans = LoanSetting::all();
+        return view('admin.finance.loan.setting.index', compact('loanPlans'));
+    }
+    /**
+     * Update LoanSettings
+     * @param Illuminate\Http\Request
+     * @return \Illuminate\Http\Response
+    */
+    public function updateLoanSettings(Request $request, $id="")
+    {
+        $this->validate($request, [
+            'name'=>['required'],
+            'min'=>['required', 'numeric'],
+            'max'=>['required', 'numeric'],
+            'interest'=>['required', 'numeric'],
+            'grace_interest'=>['required', 'numeric'],
+            'expiry_months'=>['required', 'numeric'],
+            'grace_months'=>['required', 'numeric']
+        ]);
+        $id = (int)$id;
+        $data = $request->all();
+        $data['f_interest'] = $data['grace_interest'];
+        $data['exp_months'] = $data['expiry_months'];
+        if($id){
+            if($plan = LoanSetting::find($id)){
+                $plan->update($data);
+                return back()->with('success', 'Loan Plan updated');
+            }
+            return back()->with('error', 'Loan Plan not found');
+        }else{
+            LoanSetting::create($data);
+            return back()->with('success', 'Loan Plan Created');
+        }
+    }
+    /**
+     * Delete Loan plan
+     * @param $id 
+     * @return \Illuminate\Http\RedirectResponse
+    */
+    public function deleteLoanPlan($id)
+    {
+        if($plan = LoanSetting::find($id)){
+            $plan->delete();
+            return back()->with('success', 'Loan Plan deleted');
+        }
+        return back()->with('error', 'Loan plan not found');
     }
 }

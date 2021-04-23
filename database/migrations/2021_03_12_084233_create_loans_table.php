@@ -22,7 +22,8 @@ class CreateLoansTable extends Migration
             $table->decimal('returned', 64, 2)->default(0);
             $table->decimal('total_return', 64, 2); #amount+(amount*interest/100)
             $table->decimal('garant_amt', 64, 2)->nullable();
-            $table->integer('interest')->default(0);
+            $table->decimal('interest', 64, 2)->default(0);
+            $table->decimal('grace_interest', 64, 2)->default(0);
             $table->integer('exp_months'); // expiry months
             $table->integer('grace_months'); // grace expiry months
             $table->boolean('status')->default(0);

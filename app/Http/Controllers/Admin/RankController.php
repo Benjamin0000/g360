@@ -43,6 +43,9 @@ class RankController extends Controller
             'lmp'=>['required', 'numeric'],
             'lmp_exp_months'=>['required', 'numeric'],
             'carry_over'=>['required', 'numeric'],
+            'loan_interest'=>['required', 'numeric'],
+            'loan_grace_interest'=>['required', 'numeric'],
+            'loan_grace_expiry_month'=>['required', 'numeric']
         ]);
         $rank = Rank::find($id);
         if($rank->id == 1){
@@ -63,6 +66,9 @@ class RankController extends Controller
         $rank->total_lmp = $request->lmp;
         $rank->lmp_months = $request->lmp_exp_months;
         $rank->carry_over = $request->carry_over;
+        $rank->loan_interest = $request->loan_interest;
+        $rank->loan_g_interest = $request->loan_grace_interest;
+        $rank->loan_g_exp_m = $request->loan_grace_expiry_month;
         $rank->save();
         return back()->with('success', 'Rank updated');
     }

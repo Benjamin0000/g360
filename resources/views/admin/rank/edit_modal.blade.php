@@ -64,7 +64,7 @@
                        <label for="">Fee</label>
                        <input type="text" name="fee" value="{{(int)$rank->fee}}" class="form-control">
                     </div>
-                  @else 
+                  @else
                     <div class="form-group">
                       <label for="">Carry over</label>
                       <input type="text" name="carry_over" value="{{(int)$rank->carry_over}}" class="form-control">
@@ -92,6 +92,24 @@
                 <input type="text" name="carry_over" value="{{(int)$rank->carry_over}}" class="form-control">
               </div>
             @endif
+            <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="">Loan Interest</label>
+                    <input type="text" name="loan_interest" class="form-control" value="{{$rank->loan_interest}}">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                       <label for="">Loan Grace Interest</label>
+                       <input type="text" name="loan_grace_interest" value="{{$rank->loan_g_interest}}" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+              <label for="">Loan Grace Expiry Month</label>
+              <input type="text" name="loan_grace_expiry_month" class="form-control" value="{{$rank->loan_g_exp_m}}">
+            </div>
             @method('put')
             @csrf
             <div class="form-group">

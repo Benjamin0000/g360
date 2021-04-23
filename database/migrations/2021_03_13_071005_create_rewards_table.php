@@ -21,6 +21,9 @@ class CreateRewardsTable extends Migration
             $table->integer('rank_id');
             $table->decimal('loan_amount', 64, 2);
             $table->integer('loan_month');
+            $table->integer('loan_grace_month')->default(0);
+            $table->decimal('loan_interest', 64, 2)->default(0);
+            $table->decimal('loan_grace_interest', 64, 2)->default(0);
             $table->decimal('lmp_amount', 64, 2);
             $table->integer('lmp_month');
             $table->boolean('status')->default(0);

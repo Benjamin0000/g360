@@ -27,6 +27,9 @@ class Reward extends Model
         'loan_amount',
         'loan_month',
         'lmp_amount',
-        'lmp_month'
+        'lmp_month',
+        'loan_grace_month',
+        'loan_interest',
+        'loan_grace_interest'
     ];
 }

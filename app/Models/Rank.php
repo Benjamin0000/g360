@@ -24,7 +24,10 @@ class Rank extends Model
         'pv',
         'loan_exp_m',
         'total_lmp',
-        'lmp_months'
+        'lmp_months',
+        'loan_interest',
+        'loan_g_interest',
+        'loan_g_exp_m'
     ];
     /**
      * Get next rank

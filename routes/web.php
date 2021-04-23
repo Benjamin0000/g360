@@ -258,6 +258,13 @@ Route::group(['prefix'=>'admin'],  function(){
    Route::get('/disco', [AFinance::class, 'electricity'])->name('admin.finance.disco.index');
    Route::get('/disco/settings', [AFinance::class, 'electSettings'])->name('admin.finance.disco.settings');
    Route::put('/disco/settings/{id}', [AFinance::class, 'updateDisco'])->name('admin.finance.updateDisco');
+   #Loan
+   Route::get('/loan', [AFinance::class, 'loan'])->name('admin.finance.loan.index');
+   Route::put('/loan', [AFinance::class, 'loan'])->name('admin.finance.loan.update');
+   Route::get('/loan/settings', [AFinance::class, 'loanSettings'])->name('admin.finance.loanSettings');
+   Route::post('/loan/settings/{id?}', [AFinance::class, 'updateLoanSettings'])->name('admin.finance.updateLoanSettings');
+   Route::delete('/loan/settings/{id}', [AFinance::class, 'deleteLoanPlan'])->name('admin.finance.deleteLoanPlan');
+   
    #Gmarket
    Route::get('/gmarket/shop', [AGMarket::class, 'shop'])->name('admin.gmarket.shop');
    #Partner

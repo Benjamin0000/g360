@@ -24,6 +24,7 @@ class Loan extends Model
         'total_return',
         'garant_amt',
         'interest',
+        'grace_interest',
         'exp_months',
         'grace_months',
         'g_approve',

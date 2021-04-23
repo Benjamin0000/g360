@@ -391,7 +391,7 @@ var readyStateCheckInterval = setInterval(function() {
                                 <li><a href="{{route('admin.finance.disco.index')}}">Electricity</a></li>
                                 <li><a href="widget-apps.html">Cable TV</a></li>
                                 <li><a href="widget-apps.html">Money transfer</a></li>
-                                <li><a href="widget-apps.html">Loan</a></li>
+                                <li><a href="{{route('admin.finance.loan.index')}}">Loan</a></li>
                             </ul>
                         </li>
                         <li> <a class="waves-effect waves-dark" href="{{route('admin.agents.index')}}" aria-expanded="false"><i class="ti-layout-accordion-merged"></i><span class="hide-menu">Agents</span></a>

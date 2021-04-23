@@ -22,6 +22,7 @@
                         <th>Prize</th>
                         <th>Loan</th>
                         <th>Loan exp. months</th>
+                        <th>Interest</th>
                         <th>LMP</th>
                         <th>LMP exp. Months</th>
                         <th>Action</th>
@@ -47,7 +48,14 @@
                              <div class="text-danger">{{$cur.number_format($rank->carry_over)}}</div>
                             </td>
                            <td>{{$cur.number_format($rank->loan)}}</td>
-                           <td>{{$rank->loan_exp_m}} months</td>
+                           <td>
+                             {{$rank->loan_exp_m}} months
+                             <div>Grace: {{$rank->loan_g_exp_m}} months</div>
+                           </td>
+                           <td>
+                             {{$rank->loan_interest}}%
+                             <div>Grace: {{$rank->loan_g_interest}}%</div>
+                           </td>
                            <td>{{$cur.number_format($rank->total_lmp)}}</td>
                            <td>{{$rank->lmp_months}} months</td>
                            <td>

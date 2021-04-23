@@ -192,8 +192,9 @@ class Task extends G360
                         $user->save();
                         $fUser->status = 1;
                         $fUser->save();
-                    }else
+                    }else{
                         $fUser->delete();
+                    }
                 }
             }
         }
@@ -291,6 +292,7 @@ class Task extends G360
                             $leftRank = Rank::find($i);
                             $user->pend_balance += $leftRank->carry_over;
                             $user->save();
+                            sleep(1);
                             WalletHistory::create([
                                 'id'=>Helpers::genTableId(WalletHistory::class),
                                 'user_id'=>$user->id,
@@ -298,7 +300,7 @@ class Task extends G360
                                 'gnumber'=>$user->gnumber,
                                 'name'=>self::$pend_balance,
                                 'type'=>'credit',
-                                'description'=>self::$cur.$leftRank->carry_over.
+                                'description'=>self::$cur.number_format($leftRank->carry_over).
                                 ' '.$leftRank->name.' Compensation reward'
                             ]);
                         }
@@ -315,7 +317,7 @@ class Task extends G360
                         'gnumber'=>$user->gnumber,
                         'name'=>self::$pend_balance,
                         'type'=>'credit',
-                        'description'=>self::$cur.$rank->prize.
+                        'description'=>self::$cur.number_format($rank->prize).
                         ' '.$rank->name.' reward'
                     ]);
                     Reward::create([
@@ -327,7 +329,10 @@ class Task extends G360
                         'loan_amount'=>$rank->loan,
                         'loan_month'=>$rank->loan_exp_m,
                         'lmp_amount'=>$rank->total_lmp,
-                        'lmp_month'=>$rank->lmp_months
+                        'lmp_month'=>$rank->lmp_months,
+                        'loan_grace_month'=>$rank->loan_g_exp_m,
+                        'loan_interest'=>$rank->loan_interest,
+                        'loan_grace_interest'=>$rank->loan_g_interest
                     ]);
                     $user->save();
                 }
