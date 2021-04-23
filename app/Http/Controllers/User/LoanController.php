@@ -117,7 +117,7 @@ class LoanController extends G360
                 ->with('error', "You can't access a loan of this amount");
             }
         }else{    
-            $garantor = User::find($garant);
+            $garantor = User::where('gnumber', $garant)->first();
             if($garantor){
                 if($garantor->haveUnPaidLoan()){
                     return back()
@@ -250,9 +250,11 @@ class LoanController extends G360
             ['id', $id],
             ['user_id', $user->id],
             ['status', 0],
-            ['defaulted', 0]
         ])->first();
         if($loan){
+            if($loan->defaulted > 0)
+                return back()->with('error', 'Cannot extend this loan');
+            
             $debt = $loan->total_return - $loan->returned;
             $amount = (self::$loan_interest / 100) * $debt;
             $exp_days = $loan->grace_months*self::$month_end;
