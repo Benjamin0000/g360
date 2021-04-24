@@ -121,10 +121,16 @@ $cur = Helpers::LOCAL_CURR_SYMBOL;
                                   <span class="text-warning">Completed</span>
                                 @else
                                   @if($loan->garant)
-                                    <span class="text-warning">Pending</span>
-                                  @else 
-                                    <span class="text-warning">Active</span>
-                                  @endif
+                                     @if($loan->g_approve == 0)
+                                       <span class="text-warning">Pending</span>
+                                     @elseif($loan->g_approve == 1)
+                                       <span class="text-warning">Active</span>
+                                     @else
+                                      ---
+                                     @endif
+                                   @else
+                                      <span class="text-warning">Active</span>
+                                   @endif
                                 @endif
                               </td>
                               <td>

@@ -59,32 +59,46 @@ class LoanController extends G360
      */
     public function requestLoan(Request $request)
     {
+        $settings = LoanSetting::orderBy('min', 'ASC')->get();
+        if(!$settings->count())
+            return back()->with('error', "Loan request not available at this time");
+
         $user = Auth::user();
         $garant = $request->gno_1;
         $amount = $request->amount;
         $period = $request->period;
-        $min = 50000;
-        $max = 5000000;
-        $intrest = 10;
+
+        $min = LoanSetting::orderBy('min', 'ASC')->first()->min;
+        $max = LoanSetting::orderBy('max', 'DESC')->first()->max;
+
         if($amount < $min)
             return back()->with('error', 'Minimum loan amount is '.self::$cur.$min);
         if($amount > $max)
             return back()->with('error', 'Maximum loan amount is '.self::$cur.$max);
-        if($amount >= 50000 && $amount <= 500000)
-            $month = 6;
-        elseif($amount > 500000 && $amount <= 2000000)
-            $month = 12;
-        elseif($amount > 2000000 && $amount <= 5000000)
-            $month = 24;
+          
+        foreach($settings as $setting){
+            if($amount >= $setting->min && $amount <= $setting->max){
+                $month = $setting->exp_months;
+                $grace_month = $setting->grace_months;
+                $interest = $setting->interest;
+                $grace_interest = $setting->f_interest;
+                break;
+            }
+        }
 
         if($period != $month)
             return back()->with('error', 'Invalid period chosen');
 
-        if($user->haveUnPaidLoan())
-            return back()->with('error', 'You still have an unpaid loan');
-
-        $total_return = (($intrest/100)*$amount) + $amount;
-        
+        $loanDebt = abs($user->loanBalance());
+        if($loanDebt > 0){
+            return back()->with('error', 'You have a debt of '.
+            self::$cur.number_format($loanDebt).' pay up then request for another loan');
+        }
+        if($user->loanExists()){
+            return back()->with('error', 'You already have a pending loan 
+            awaiting approval from your guarantor');
+        }
+        $total_return = (($interest/100)*$amount) + $amount;
         if($request->nn == 1){
             if($user->loan_elig_balance >= $amount){
                 $user->loan_elig_balance -= $amount;
@@ -96,9 +110,10 @@ class LoanController extends G360
                     'gnumber'=>$user->gnumber,
                     'amount'=>$amount,
                     'total_return'=>$total_return,
-                    'interest'=>$intrest,
+                    'interest'=>$interest,
+                    'grace_interest'=>$grace_interest,
                     'exp_months'=>$month,
-                    'grace_months'=>3,
+                    'grace_months'=>$grace_month,
                     'extra'=>$request->extra,
                 ]);
                 WalletHistory::create([
@@ -120,7 +135,7 @@ class LoanController extends G360
         }else{    
             $garantor = User::where('gnumber', $garant)->first();
             if($garantor){
-                if($garantor->haveUnPaidLoan()){
+                if($garantor->loanExists()){
                     return back()
                     ->with('error', 'Your guarantor is on a loan which he is yet to pay');
                 }
@@ -135,9 +150,10 @@ class LoanController extends G360
                         'amount'=>$amount,
                         'total_return'=>$total_return,
                         'garant_amt'=>$amount,
-                        'interest'=>$intrest,
+                        'interest'=>$interest,
+                        'grace_interest'=>$grace_interest,
                         'exp_months'=>$month,
-                        'grace_months'=>3,
+                        'grace_months'=>$grace_month,
                         'extra'=>$request->extra,
                     ]);
                     return back()
@@ -171,9 +187,25 @@ class LoanController extends G360
         if($loan){
             switch($request->type){
                 case 'approve': 
-                    $loan->g_approve = 1;
-                    $loan->expiry_date = Carbon::now()->addDays($exp_days);
-                    $loan->save();
+                    if($beneficiary = $loan->user){
+                        $beneficiary->with_balance += $loan->amount;
+                        $beneficiary->save();
+                        WalletHistory::create([
+                            'id'=>Helpers::genTableId(WalletHistory::class),
+                            'user_id'=>$beneficiary->id,
+                            'amount'=>$loan->amount,
+                            'gnumber'=>$beneficiary->gnumber,
+                            'name'=>'with_balance',
+                            'type'=>'credit',
+                            'description'=>self::$cur.number_format($loan->amount).
+                            ' Loan'
+                        ]);
+                        $loan->g_approve = 1;
+                        $loan->expiry_date = Carbon::now()->addDays($exp_days);
+                        $loan->save();
+                    }else{
+                        return back()->with('error', 'Loan beneficiary not found');
+                    }
                     return back()->with('success', 'Loan has been approved');
                 case 'disapprove':
                     $loan->g_approve = 2;
@@ -262,6 +294,7 @@ class LoanController extends G360
             $loan->grace_date = Carbon::now()->addDays($exp_days);
             $loan->total_return += $amount;
             $loan->defaulted = 1;
+            $loan->defaulted_at = Carbon::now();
             $loan->save();
             return back()->with('success', 'Loan has been extended');
         }else{

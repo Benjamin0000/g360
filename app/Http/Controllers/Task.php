@@ -325,7 +325,7 @@ class Task extends G360
                         'name'=>$rank->name,
                         'user_id'=>$user->id,
                         'rank_id'=>$rank->id,
-                        'gnumber'=>$user->gnumber,
+                        'gnumber'=>$user->gnumber, 
                         'loan_amount'=>$rank->loan,
                         'loan_month'=>$rank->loan_exp_m,
                         'lmp_amount'=>$rank->total_lmp,

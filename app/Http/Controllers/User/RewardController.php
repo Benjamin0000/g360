@@ -65,12 +65,13 @@ class RewardController extends G360
         $reward->save();
         #give loan
         $exp_days = $reward->loan_month*$month_end;
+        $total_return = $reward->loan_amount + (($reward->loan_interest/100)*$reward->loan_amount);
         Loan::create([
             'id'=>Helpers::genTableId(Loan::class),
             'user_id'=>$user->id,
             'gnumber'=>$user->gnumber,
             'amount'=>$reward->loan_amount,
-            'total_return'=>$reward->loan_amount,
+            'total_return'=>$total_return,
             'interest'=>$reward->loan_interest,
             'grace_interest'=>$reward->loan_grace_interest,
             'exp_months'=>$reward->loan_month,

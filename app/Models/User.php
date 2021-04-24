@@ -50,11 +50,11 @@ class User extends Authenticatable
      * @return bool
     */      
     public function loanBalance()
-    {
+    { 
         $loan = Loan::where([ 
             ['user_id', $this->id],
             ['status', 0]
-        ]);
+        ])->whereNotNull('expiry_date');
         if($loan->exists()){
             $returned = $loan->sum('returned');
             $total_return = $loan->sum('total_return');
@@ -100,6 +100,14 @@ class User extends Authenticatable
         return Loan::where([
             ['user_id', $this->id], 
             ['status', 0] 
+        ])->whereNotNull('expiry_date')->exists();
+    }
+    public function loanExists()
+    {
+        return Loan::where([
+            ['user_id', $this->id], 
+            ['status', 0],
+            ['g_approve', '<>', 2] 
         ])->exists();
     }
     public function hasLoanDebt()
