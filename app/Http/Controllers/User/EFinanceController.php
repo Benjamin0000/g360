@@ -30,29 +30,39 @@ class EFinanceController extends G360
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
-     */
+    */
     public function index()
     {
         $user = Auth::user();
-        if(!$user->faccount){
+        if(!FAccount::where('user_id', $user->id)->exists()){
             FAccount::create([
                 'id'=>Helpers::genTableId(FAccount::class),
                 'user_id'=>$user->id
             ]);
         }
-        sleep(2);
         return view('user.e_finance.index');
     }
     /**
      * Show electrical pay bills page
      *
      * @return \Illuminate\Http\Response
-     */
+    */
     public function electricity()
     {
+        $user = Auth::user();
         $discos = EDisco::all();
-        return view('user.e_finance.pay_bills.electricity.index', compact('discos'));
+        $histories = VtuTrx::where([
+            ['user_id', $user->id],
+            ['type', 'electricity']
+        ])->latest()->paginate(10);
+        return view('user.e_finance.pay_bills.electricity.index', 
+        compact('discos', 'histories'));
     }
+    /**
+     * Issue Purchase meter unit request
+     *
+     * @return \Illuminate\Http\Response
+    */
     public function buyMeterUnit(Request $request)
     {
         $this->validate($request, [
@@ -110,6 +120,11 @@ class EFinanceController extends G360
         return view('user.e_finance.pay_bills.airtime_data.index', 
         compact('airtimes', 'datasub', 'histories'));
     }
+    /**
+     * Issue buy Airtime request
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function buyAirtime(Request $request)
     {
         if(!$request->ajax()) return;
@@ -154,8 +169,7 @@ class EFinanceController extends G360
                 'gnumber'=>$user->gnumber,
                 'name'=>self::$pend_balance,
                 'type'=>'credit',
-                'description'=>self::$cur.$com.
-                ' airtime cashback'
+                'description'=>'Airtime Cashback'
             ]);
             #credit upline
             $value = (int)($user->faccount->vtu_deca/50);
@@ -169,6 +183,11 @@ class EFinanceController extends G360
         }
         return ['error'=>'Not available at the moment'];
     }
+    /**
+     * Issue get data plan request
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function getDataPlan(Request $request)
     {
         if(!$request->ajax()) return;
@@ -181,6 +200,11 @@ class EFinanceController extends G360
         $products = $data->getDataPlan($mobile)['products'];
         return view('user.e_finance.pay_bills.airtime_data.plan', compact('products'));
     }
+    /**
+     * Issue purchase data request
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function purchaseData(Request $request)
     {
         $this->validate($request, [
@@ -251,9 +275,20 @@ class EFinanceController extends G360
      */
     public function tvSub()
     {
+        $user = Auth::user();
         $providers = CableTv::all();
-        return view('user.e_finance.pay_bills.tvsub.index', compact('providers'));
+        $histories = VtuTrx::where([
+            ['user_id', $user->id],
+            ['type', 'cabletv']
+        ])->latest()->paginate(10);
+        return view('user.e_finance.pay_bills.tvsub.index', 
+        compact('providers', 'histories'));
     }
+    /**
+     * Get Tv plans package
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function tvPlans($p = 0)
     {
         if($provider = CableTv::find($p)){
@@ -263,6 +298,11 @@ class EFinanceController extends G360
         }
         return ["<div class='alert alert-danger'><i class='fa fa-info-circle'></i> Invalid provider</div>"];
     }
+    /**
+     * Validate Tv account number
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function validateTvAcc(Request $request)
     {
         $this->validate($request, [
@@ -293,6 +333,11 @@ class EFinanceController extends G360
         }
         return ['error'=>'Invalid Provider'];
     }
+    /**
+     * Issue Tv Subscription request
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function finishSubTv(Request $request)
     {
         $this->validate($request, [
@@ -321,5 +366,14 @@ class EFinanceController extends G360
             }
         }
         return back()->with('error', 'Invalid provider');
+    }
+    /**
+     * Banking
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function banking()
+    {
+        return view('user.e_finance.banking.index');
     }
 }

@@ -7,6 +7,8 @@ use App\Models\DataSub;
 use App\Models\EDisco;
 use App\Models\LoanSetting;
 use App\Models\Loan;
+use App\Models\VtuTrx; 
+use App\Models\CableTv;
 class FinanceController extends Controller
 {
     /**
@@ -25,7 +27,9 @@ class FinanceController extends Controller
      */
     public function index()
     {
-        return view('admin.finance.vtu.index');
+        $histories = VtuTrx::where('type', 'airtime')
+        ->orWhere('type', 'data')->latest()->paginate(10);
+        return view('admin.finance.vtu.index', compact('histories'));
     }
     /**
      * Show the form for creating a new resource.
@@ -64,7 +68,7 @@ class FinanceController extends Controller
         }else{
             return back()->with('error', 'network not found');
         }
-    }
+    } 
     /**
      * Update Mobile data
      *
@@ -95,7 +99,9 @@ class FinanceController extends Controller
      */
     public function electricity()
     {
-        return view('admin.finance.elect.index');
+        $histories = VtuTrx::where('type', 'electricity')
+        ->latest()->paginate(10);
+        return view('admin.finance.elect.index', compact('histories'));
     }
     /**
      * Show electricity settings page
@@ -192,5 +198,45 @@ class FinanceController extends Controller
             return back()->with('success', 'Loan Plan deleted');
         }
         return back()->with('error', 'Loan plan not found');
+    }
+    /**
+     * Show CableTv page
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function cableTv()
+    {
+        $histories = VtuTrx::where('type', 'cabletv')
+        ->latest()->paginate(10);
+        return view('admin.finance.cableTv.index', compact('histories'));
+    }
+    /**
+     * Show CableTv settings page
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function cableTvSettings()
+    {
+        $cables = CableTv::all();
+        return view('admin.finance.cableTv.settings', compact('cables'));
+    }
+    /**
+     * Update cabletv settings
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function updateCableTvSettings(Request $request, $id)
+    {
+        $this->validate($request, [
+            'name'=>['required', 'max:100'],
+            'charge'=>['required', 'numeric'],
+            'comm_amt'=>['required', 'numeric'],
+            'ref_amt'=>['required']
+        ]);
+        if($cable = CableTv::find($id)){
+            $cable->update($request->all());
+            return back()->with('success', 'Provider updated');
+        }   
+        return back()->with('error', 'Provider not found');
     }
 }

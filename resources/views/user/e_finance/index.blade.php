@@ -1,8 +1,10 @@
 @extends('user.layout', ['title'=>'E-Finance'])
 @php
+use App\Http\Helpers;
 use Carbon\Carbon;
-$cur = App\Http\Helpers::LOCAL_CURR_SYMBOL;
+$cur = Helpers::LOCAL_CURR_SYMBOL;
 $user = Auth::user();
+$bronz_coin_price = (int)Helpers::getRegData('bronz_coin_price');
 @endphp
 @section('content')
 <style media="screen">
@@ -67,7 +69,13 @@ $user = Auth::user();
                 <h4 class="card-title">Bronze Coin</h4>
                 <div class="text-right">
                     <h2 class="font-light mb-0"><i class="mdi mdi-wallet text-success"></i>
-                      {{number_format($user->faccount->deca + $user->faccount->vtu_deca, 2, '.', ',')}}
+                      @php
+                        if($bronz_coin_price)
+                          $bronz_coin = (int)(($user->faccount->deca + $user->faccount->vtu_deca)/$bronz_coin_price);
+                        else
+                          $bronz_coin = 0;
+                      @endphp
+                      {{number_format($bronz_coin, 2, '.', ',')}}
                     </h2>
                     <span class="text-muted">Current Balance</span>
                 </div>
@@ -81,7 +89,7 @@ $user = Auth::user();
 <br>
 <div class="card" style="min-height:100px;">
   <div class="card-body text-center">
-    <a href="{{route('user.pay_bills.airtimeData.index')}}"  class="bill-l"><i class="fas fa-university text-primary"></i>Banking</a>
+    <a href="{{route('user.banking.index')}}"  class="bill-l"><i class="fas fa-university text-primary"></i>Banking</a>
     <a href="{{route('user.pay_bills.airtimeData.index')}}"  class="bill-l"><i class="fas fa-mobile-alt text-info"></i> Airtime & Data</a>
     <a href="{{route('user.pay_bills.elect.index')}}"  class="bill-l"><i class="fas fa-bolt text-danger"></i> Electricity</a>
     {{-- <a href="{{route('user.pay_bills.waterSub.index')}}"  class="bill-l"><i class="fas fa-shower"></i> Water</a> --}}

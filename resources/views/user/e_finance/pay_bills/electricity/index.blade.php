@@ -5,7 +5,7 @@ $cur = App\Http\Helpers::LOCAL_CURR_SYMBOL;
 $user = Auth::user();
 @endphp
 @section('content')
-<div class="card" style="min-height:80vh;">
+<div class="card" style="min-height:80vh;margin:0;">
     <div class="card-header text-center" style="background:#eee;">
       <h3>Electricity Bill</h3>
     </div>
@@ -46,6 +46,42 @@ $user = Auth::user();
            </div>
        </form>
      </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+      <h3 class="card-title">History</h3>
+      <div class="table-responsive">
+         <table class="table table-bordered table-hover stylish-table">
+           <thead>
+            <tr>
+              <th>No</th>
+              <th>Amount</th>
+              <th>Disco</th>
+              <th>Type</th>
+              <th>Date</th>
+            </tr>
+           </thead>
+           <tbody>
+            @if($histories->count())
+              @php $count = Helpers::tableNumber(10); @endphp
+              @foreach($histories as $history)
+                <tr>
+                  <td>{{$count++}}</td>
+                  <td>
+                    {{$cur.number_format($history->amount, 2, '.', ',')}}
+                    <div>{{$history->description}}</div>
+                  </td>
+                  <td>{{$history->service}}</td>
+                  <td>{{ucwords($history->type)}}</td>
+                  <td>{{$history->created_at->isoFormat('lll')}}</td>
+                </tr>
+              @endforeach
+            @endif
+           </tbody>
+         </table>
+      </div>
+      {{$histories->links()}}
     </div>
 </div>
 <script type="text/javascript">

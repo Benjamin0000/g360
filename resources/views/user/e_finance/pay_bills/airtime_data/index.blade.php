@@ -77,7 +77,7 @@ cursor: pointer;
     <div class="card-body">
       <h3 class="card-title">History</h3>
       <div class="table-responsive">
-         <table class="table table-bordered">
+         <table class="table table-bordered stylish-table">
            <thead>
             <tr>
               <th>No</th>
@@ -97,7 +97,7 @@ cursor: pointer;
                     {{$cur.number_format($history->amount, 2, '.', ',')}}
                     <div>{{$history->description}}</div>
                   </td>
-                  <td>{{$history->provider}}</td>
+                  <td>{{$history->service}}</td>
                   <td>{{ucwords($history->type)}}</td>
                   <td>{{$history->created_at->isoFormat('lll')}}</td>
                 </tr>

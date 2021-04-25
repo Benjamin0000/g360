@@ -16,6 +16,11 @@ class Data
        $reg = Register::where('name', 'epay_bearer')->first();
        $this->bearer = $reg->value;
     }
+    /**
+     * Issue get data plan request
+     * @param $number Int
+     * @return array
+     */
     public function getDataPlan($number)
     {
         $url = "http://epayment.com.ng/epayment/api/3pbundle_validate";
@@ -28,12 +33,23 @@ class Data
         $data = json_decode($response, true);
         return $data;
     }
+    /**
+     * Generate reference no
+     * 
+     * @return string
+     */
     private function genRefNo()
     {
         $code = bin2hex(openssl_random_pseudo_bytes(7));
         $check = VtuTrx::find($code);
         return $check ? $this->genRefNo() : $code;
     }
+    /**
+     * Issue data plan price request
+     * @param $number INT
+     * @param $code String
+     * @return array || boolean
+     */
     public function getDataPlanPrice($number, $code)
     {
         $products = $this->getDataPlan($number)['products'];
@@ -43,6 +59,11 @@ class Data
         }
         return false;
     }
+    /**
+     * Issue purchase data plan request
+     * 
+     * @return string
+     */
     public function purchase($code, $phone, $data_amount, $price, $service, $validity)
     {
         $phone = preg_replace('/^0/','234', $phone);
@@ -66,7 +87,7 @@ class Data
                 'amount'=>$price,
                 'type'=>'data',
                 'service'=>$service,
-                'description'=>$data_amount.'MB'.$validity.' Mobile data purchase'
+                'description'=>$data_amount.'MB '.$validity.' Mobile data purchase'
             ]);
             $user->trx_balance -= $price;
             $user->save();
@@ -83,6 +104,11 @@ class Data
         }
         return false;
     }
+    /**
+     * Verify Data plan purchase
+     * 
+     * @return string
+     */
     public function verifyPurchase($customer_reference)
     {
         $url = 'http://epayment.com.ng/epayment/api/3pbundle_verify';
@@ -104,7 +130,7 @@ class Data
     public function creditUpline(DataSub $data, User $user, $level = 1)
     {
         $cur = Helpers::LOCAL_CURR_SYMBOL;
-        $formular = explode(',', $data->ref_amt);
+        $formular = json_decode('[' . $data->ref_amt . ']', true);
         $levels = count($formular);
         if($level > $levels) return;
         if($user->placed_by)
@@ -121,7 +147,7 @@ class Data
             'gnumber'=>$user->gnumber,
             'name'=>'pend_balance',
             'type'=>'credit',
-            'description'=>$cur.$amt.' '.Helpers::ordinal($level)." Gen referral commision" 
+            'description'=>Helpers::ordinal($level)." Gen Data sub. referral commision" 
         ]);
         $user->faccount->deca += $amt;
         $user->faccount->save();

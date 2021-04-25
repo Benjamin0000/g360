@@ -65,6 +65,9 @@ class SettingsController extends Controller
         Helpers::saveRegData('p_share_formular', $request->formular);
         Helpers::saveRegData('vat', $request->vat);
         Helpers::saveRegData('h_token_price', $request->h_token_price);
+        Helpers::saveRegData('bronz_coin_price', $request->bronz_coin_price);
+        Helpers::saveRegData('silver_coin_price', $request->silver_coin_price);
+        Helpers::saveRegData('gold_coin_price', $request->gold_coin_price);
         return back()->with('success', 'Updated');
     }
 

@@ -204,6 +204,8 @@ Route::group(['prefix'=>'portal'],  function(){
     Route::get('/e-finance/tv/ktujmh/{id?}', [EFinanceController::class, 'tvPlans'])->name('user.pay_bills.tvSub.plans');
     Route::post('/e-finance/tv/jdkeis', [EFinanceController::class, 'validateTvAcc'])->name('user.pay_bills.validateTvAcc');
     Route::post('/e-finance/tv', [EFinanceController::class, 'finishSubTv'])->name('user.pay_bills.finishSubTv');
+    #Banking
+    Route::get('/e-finance/banking', [EFinanceController::class, 'banking'])->name('user.banking.index');
     #Gmarket
     Route::get('/g-market', [UGmarket::class, 'index'])->name('user.gmarket.index');
     #shop
@@ -232,6 +234,7 @@ Route::group(['prefix'=>'portal'],  function(){
     Route::post('/agent/create', [AgentController::class, 'create'])->name('user.agent.create');
     Route::delete('/agent/delete/{id}', [AgentController::class, 'deleteRequest'])->name('user.agent.deleteRequest');
 });
+
 #Admin
 Route::group(['prefix'=>'admin'],  function(){
    Route::get('/', [ADashboard::class, 'index'])->name('admin.dashboard.index');
@@ -264,7 +267,10 @@ Route::group(['prefix'=>'admin'],  function(){
    Route::get('/loan/settings', [AFinance::class, 'loanSettings'])->name('admin.finance.loanSettings');
    Route::post('/loan/settings/{id?}', [AFinance::class, 'updateLoanSettings'])->name('admin.finance.updateLoanSettings');
    Route::delete('/loan/settings/{id}', [AFinance::class, 'deleteLoanPlan'])->name('admin.finance.deleteLoanPlan');
-   
+   #Cable Tv
+   Route::get('/cableTv', [AFinance::class, 'cableTv'])->name('admin.finance.cableTv.index');
+   Route::get('/cableTv/settings', [AFinance::class, 'cableTvSettings'])->name('admin.finance.cableTv.settings');
+   Route::put('/cableTv/settings/{id}', [AFinance::class, 'updateCableTvSettings'])->name('admin.finance.cableTv.update');
    #Gmarket
    Route::get('/gmarket/shop', [AGMarket::class, 'shop'])->name('admin.gmarket.shop');
    #Partner

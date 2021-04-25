@@ -123,10 +123,11 @@ class GfundController extends Controller
         if($user->$trx_balance < $amount)
             return ['msg'=>"Insufficient fund for transfer"];
 
-        $fee = 0.05 * $amount; # 5% fee charge
+        // $fee = 0.05 * $amount; # 5% fee charge
+        $fee = 0;
         $total = $amount + $fee;
         if($user->$trx_balance < $total)
-            return ['msg'=>"Insufficient fund for the 5% fee"];
+            return ['msg'=>"Insufficient fund for this transfer"];
         
         if($request->wallet == 'w')
             $user->$with_balance += $amount;

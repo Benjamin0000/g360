@@ -55,8 +55,8 @@ $cur = Helpers::LOCAL_CURR_SYMBOL;
                        </form>
                    </div>
                    <div class="col-md-3">
-                       
-                       
+
+
                     <h3 class="text-center"><b>Others</b></h3>
                     <form action="{{route('admin.settings.psharing')}}" method="POST">
                         @csrf
@@ -69,10 +69,27 @@ $cur = Helpers::LOCAL_CURR_SYMBOL;
                             <label for="">VAT %</label>
                             <input name="vat" class="form-control" value="{{Helpers::getRegData('vat')}}" type="text">
                         </div>
+
                         <div class="form-group">
                             <label for="">H-Token Price</label>
                             <input name="h_token_price" class="form-control" value="{{Helpers::getRegData('h_token_price')}}" type="text">
                         </div>
+
+                        <div class="form-group">
+                            <label for="">Bronz Coin Price</label>
+                            <input name="bronz_coin_price" class="form-control" value="{{Helpers::getRegData('bronz_coin_price')}}" type="text">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="">Silver Coin Price</label>
+                            <input name="silver_coin_price" class="form-control" value="{{Helpers::getRegData('silver_coin_price')}}" type="text">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="">Gold Coin Price</label>
+                            <input name="gold_coin_price" class="form-control" value="{{Helpers::getRegData('gold_coin_price')}}" type="text">
+                        </div>
+
                         <div class="form-group">
                             <button class="btn btn-info">UPDATE</button>
                         </div>

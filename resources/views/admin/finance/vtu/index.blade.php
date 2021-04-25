@@ -21,9 +21,40 @@
                 <div class="d-flex m-b-40 align-items-center no-block">
                     <h5 class="card-title ">HISTORY</h5>
                 </div>
-                <div style="min-height:340px;">
-
+                <div class="table-responsive">
+                   <table class="table table-bordered stylish-table">
+                     <thead>
+                      <tr>
+                        <th>No</th>
+                        <th>User</th>
+                        <th>Amount</th>
+                        <th>Provider</th>
+                        <th>Date</th>
+                      </tr>
+                     </thead>
+                     <tbody>
+                      @if($histories->count())
+                        @php $count = Helpers::tableNumber(10); @endphp
+                        @foreach($histories as $history)
+                          <tr>
+                            <td>{{$count++}}</td>
+                            <td>{{$history->user->fname.' '.$history->user->lname}}</td>
+                            <td>
+                              {{$cur.number_format($history->amount, 2, '.', ',')}}
+                              <div>{{$history->description}}</div>
+                            </td>
+                            <td>{{$history->service}}</td>
+                            <td>
+                              {{$history->created_at->isoFormat('lll')}}
+                              <div>{{$history->created_at->diffForHumans()}}</div>
+                            </td>
+                          </tr>
+                        @endforeach
+                      @endif
+                     </tbody>
+                   </table>
                 </div>
+                {{$histories->links()}}
             </div>
         </div>
     </div>

@@ -389,8 +389,8 @@ var readyStateCheckInterval = setInterval(function() {
                             <ul aria-expanded="false" class="collapse">
                                 <li><a href="{{route('admin.finance.vtu')}}">Airtime & Data</a></li>
                                 <li><a href="{{route('admin.finance.disco.index')}}">Electricity</a></li>
-                                <li><a href="widget-apps.html">Cable TV</a></li>
-                                <li><a href="widget-apps.html">Money transfer</a></li>
+                                <li><a href="{{route('admin.finance.cableTv.index')}}">Cable TV</a></li>
+                                <li><a href="">Money transfer</a></li>
                                 <li><a href="{{route('admin.finance.loan.index')}}">Loan</a></li>
                             </ul>
                         </li>

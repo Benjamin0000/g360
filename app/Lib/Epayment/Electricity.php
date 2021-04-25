@@ -35,7 +35,7 @@ class Electricity
         $response = Http::withHeaders([
             'Authorization'=>"Bearer ".$this->bearer,
         ])->post($url, [
-            "service"=>$this->disco->code,
+            "service"=>$this->disco->code, 
             "customer_reference"=>$this->genRefNo(),
             "meter"=>$this->meter
         ]);
@@ -133,7 +133,7 @@ class Electricity
     private function creditUpline(EDisco $disco, User $user, $level = 1)
     {
         $cur = Helpers::LOCAL_CURR_SYMBOL;
-        $formular = explode(',', $disco->ref_amt);
+        $formular = json_decode('[' . $disco->ref_amt . ']', true);
         $levels = count($formular);
         if($level > $levels) return;
         if($user->placed_by)
@@ -150,7 +150,7 @@ class Electricity
             'gnumber'=>$user->gnumber,
             'name'=>'pend_balance',
             'type'=>'credit',
-            'description'=>$cur.$amt.' '.Helpers::ordinal($level)." Gen referral commision" 
+            'description'=>Helpers::ordinal($level)." Gen utility bill referral commision" 
         ]);
         $user->faccount->deca += $amt;
         $user->faccount->save();

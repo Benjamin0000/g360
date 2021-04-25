@@ -85,7 +85,7 @@ class CableTv
             $user->save();
             VtuTrx::create([
                 'id'=>$refNo,
-                'user_id'=>Auth::id(),
+                'user_id'=>$user->id,
                 'amount'=>$price,
                 'type'=>'cabletv',
                 'service'=>$cable->name,
@@ -143,7 +143,7 @@ class CableTv
     public function creditUpline(ECableTv $cable, User $user, $level = 1)
     {
         $cur = Helpers::LOCAL_CURR_SYMBOL;
-        $formular = explode(',', $cable->ref_amt);
+        $formular = json_decode('[' . $cable->ref_amt . ']', true);
         $levels = count($formular);
         if($level > $levels) return;
         if($user->placed_by)
@@ -160,7 +160,7 @@ class CableTv
             'gnumber'=>$user->gnumber,
             'name'=>'pend_balance',
             'type'=>'credit',
-            'description'=>$cur.$amt.' '.Helpers::ordinal($level)." Gen referral commision" 
+            'description'=>Helpers::ordinal($level)." Gen CableTV referral commision" 
         ]);
         $user->faccount->deca += $amt;
         $user->faccount->save();

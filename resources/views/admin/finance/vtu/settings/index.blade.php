@@ -8,10 +8,10 @@
     <div class="col-lg-12 col-md-12">
         <div class="card">
             <div class="card-body">
-                <div class="d-flex m-b-40 align-items-center no-block">
+                <div class="">
                     <h5 class="card-title ">VTU Settings</h5>
+                    <a href="{{route('admin.finance.vtu')}}" class="btn btn-info btn-sm">Back</a>
                 </div>
-                <div style="min-height:340px;">
                    <div class="row">
                       <div class="col-md-6">
                         <h4 class="text-center">Airtime</h4>
@@ -78,7 +78,6 @@
                           </div>
                       </div>
                    </div>
-                </div>
             </div>
         </div>
     </div>

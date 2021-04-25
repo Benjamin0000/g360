@@ -1,4 +1,4 @@
-@extends('admin.layout', ['title'=>'Electricity'])
+@extends('admin.layout', ['title'=>'Cable TV'])
 @section('content')
 @php
   use App\Http\Helpers;
@@ -6,11 +6,11 @@
 @endphp
 <div class="row page-titles">
     <div class="col-md-5 align-self-center">
-        <h4 class="text-themecolor">Electricity</h4>
+        <h4 class="text-themecolor">Cable TV</h4>
     </div>
     <div class="col-md-7 align-self-center text-right">
         <div class="d-flex justify-content-end align-items-center">
-            <a href="{{route('admin.finance.disco.settings')}}" class="btn btn-info d-none d-lg-block m-l-15"><i class="ti-settings"></i> Settings</a>
+            <a href="{{route('admin.finance.cableTv.settings')}}" class="btn btn-info d-none d-lg-block m-l-15"><i class="ti-settings"></i> Settings</a>
         </div>
     </div>
 </div>
@@ -28,7 +28,7 @@
                         <th>No</th>
                         <th>User</th>
                         <th>Amount</th>
-                        <th>Disco</th>
+                        <th>Provider</th>
                         <th>Date</th>
                       </tr>
                      </thead>

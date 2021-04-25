@@ -19,6 +19,13 @@ class Airtime
        $reg = Register::where('name', 'epay_bearer')->first();
        $this->bearer = $reg->value;
     }
+    /**
+     * Validate mobile number by network provider
+     * @param $number Int
+     * @param $perator String 
+     * @param $amount Float airtime amout
+     * @return \Illuminate\Http\Response
+     */
     public function validatePhone($number, $operator, $amount)
     {
         $url = 'http://epayment.com.ng/epayment/api/3pvtu_validate';
@@ -29,7 +36,7 @@ class Airtime
             "phone"=>$mobile,
         ]);
         $data = json_decode($response, true);
-        if(isset($data['opts']) && isset($data['opts']['operator'])){
+        if( isset( $data['opts'] ) && isset( $data['opts']['operator'] ) ){
             if(strtolower($data['opts']['operator']) == strtolower($operator)){
                 if( isset($data['products']) &&
                     isset($data['products'][0]) &&
@@ -42,17 +49,27 @@ class Airtime
                     return true;
                 }
             }else{
-                return ['error'=>'operator not match'];
+                return ['error'=>'operator don\'t match'];
             }
         }
         return false;
     }
+    /**
+     * Generate Reference number
+     *
+     * @return \Illuminate\Http\Response
+     */
     private function genRefNo()
     {
         $code = bin2hex(openssl_random_pseudo_bytes(7));
         $check = VtuTrx::find($code);
         return $check ? $this->genRefNo() : $code;
     }
+    /**
+     * Issue airtime purchase
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function purchase()
     {
         $url = 'http://epayment.com.ng/epayment/api/3pvtu_vend';
@@ -85,12 +102,17 @@ class Airtime
                 'gnumber'=>$user->gnumber,
                 'name'=>'trx_balance',
                 'type'=>'debit',
-                'description'=>'airtime purchase'
+                'description'=>$this->service.' Airtime Purchase'
             ]);
             return true;
         }
         return false;
     }
+    /**
+     * Verify Airtime purchase
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function verifyPurchase($customer_reference)
     {
         $url = 'http://epayment.com.ng/epayment/api/3pvtu_verify';
@@ -110,7 +132,7 @@ class Airtime
     public function creditUpline(RCard $airtime, User $user, $level = 1)
     {
         $cur = Helpers::LOCAL_CURR_SYMBOL;
-        $formular = explode(',', $airtime->ref_amt);
+        $formular = json_decode('[' . $airtime->ref_amt . ']', true);
         $levels = count($formular);
         if($level > $levels) return;
         if($user->placed_by)
@@ -127,7 +149,7 @@ class Airtime
             'gnumber'=>$user->gnumber,
             'name'=>'pend_balance',
             'type'=>'credit',
-            'description'=>$cur.$amt.' '.Helpers::ordinal($level)." Gen referral commision" 
+            'description'=>"Airtime ".Helpers::ordinal($level)." Gen Airtime referral commision" 
         ]);
         $user->faccount->deca += $amt;
         $user->faccount->save();
