@@ -6,6 +6,7 @@ use App\Models\Airtime;
 use App\Models\DataSub;
 use App\Models\EDisco;
 use App\Models\LoanSetting;
+use App\Models\Loan;
 class FinanceController extends Controller
 {
     /**
@@ -135,7 +136,8 @@ class FinanceController extends Controller
      */
     public function loan()
     {
-        return view('admin.finance.loan.index');
+        $loans = Loan::latest()->paginate(10);
+        return view('admin.finance.loan.index', compact('loans'));
     }
     /**
      * Show Loan settings page

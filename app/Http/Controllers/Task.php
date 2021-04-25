@@ -220,6 +220,8 @@ class Task extends G360
                 if($sA->last_grace != '' && Carbon::parse($sA->last_grace)->diffInMinutes() <= $graced_minutes){
                     #allow flow
                 }else{
+                    $user = User::find($sA->user_id);
+                    $cpv = $user->cpv;
                     if($sA->status == 1 && $cpv >= $rank->next()->pv){
                         $sA->status = 4;
                     }else{

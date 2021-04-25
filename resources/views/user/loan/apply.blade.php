@@ -1,11 +1,25 @@
-@extends('user.layout', ['title'=>'Apply For Loan'])
+@extends('user.layout', ['title'=>'Apply For A Loan'])
 @php
 use Carbon\Carbon;
 $cur = App\Http\Helpers::LOCAL_CURR_SYMBOL;
 $user = Auth::user();
-$min_loan = 50000;
+$min_loan = App\Models\LoanSetting::orderBy('min', 'ASC')->first()->min;
+$settings = App\Models\LoanSetting::orderBy('min', 'ASC')->get();
 @endphp
 @section('content')
+<style media="screen">
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+-webkit-appearance: none;
+margin: 0;
+}
+input[type=number] {
+-moz-appearance: textfield;
+}
+.show_details{
+  display:none;
+}
+</style>
   <div class="card">
       <div class="card-header text-center">
           Apply for Loan
@@ -28,14 +42,30 @@ $min_loan = 50000;
               <input type="hidden" name="nn" value="1">
             @endif
               <div class="form-group">
-                  <label for="example-month-input2">Amount</label>
-                  <input required type="number"id="lamt" name="amount" value="" class="form-control">
-              </div>
-              <div class="form-group">
-                <label for="example-month-input2">Period</label>
-                <select class="custom-select col-12" name="period" id="period">
+                <label for="example-month-input2">Range</label>
+                <select class="custom-select col-12" name="range" id="period">
                     <option value="">Select interval...</option>
+                    @if($settings->count())
+                      @foreach($settings as $setting)
+                        <option value="{{$setting->exp_months}}">{{$cur.number_format($setting->min)}} To {{$cur.number_format($setting->max)}}</option>
+                      @endforeach
+                    @endif
                 </select>
+              </div>
+              @if($settings->count())
+                @foreach($settings as $setting)
+                  <div class="form-group show_details" id="show_details{{$setting->exp_months}}">
+                     <small><b>Details</b></small>
+                     <div>Min: {{$cur.number_format($setting->min)}}</div>
+                     <div>Max: {{$cur.number_format($setting->max)}}</div>
+                     <div>Period: {{$setting->exp_months}}Months</div>
+                     <div>Interest: {{$setting->interest}}%</div>
+                  </div>
+                @endforeach
+              @endif
+              <div class="form-group">
+                  <label for="example-month-input2">Amount</label>
+                  <input required inputmode="numeric" type="text" name="amount" value="" class="form-control">
               </div>
               <div class="form-group">
                   <label for="example-text-input" name="name">Extra information</label>
@@ -50,16 +80,13 @@ $min_loan = 50000;
   </div>
   <script type="text/javascript">
      onReady(function(){
-        $('#lamt').on('keyup', function(){
-            var amt = $(this).val();
-            if(amt >= 50000 && amt <= 500000){
-               $('#period').empty().append("<option value='6' selected>6 months (10%)</option>");
-            }else if(amt > 500000 && amt <= 2000000){
-               $('#period').empty().append("<option value='12' selected>12 months (10%)</option>");
-            }else if(amt > 2000000 && amt <= 5000000){
-               $('#period').empty().append("<option value='24' selected>24 months (10%)</option>");
+        $('#period').on('change', function(){
+            var val = $(this).val();
+            if(val != ''){
+              $('.show_details').hide();
+              $("#show_details"+val).show();
             }else{
-              $('#period').empty();
+              $('.show_details').hide();
             }
         });
      });

@@ -62,11 +62,14 @@ class LoanController extends G360
         $settings = LoanSetting::orderBy('min', 'ASC')->get();
         if(!$settings->count())
             return back()->with('error', "Loan request not available at this time");
-
+        $this->validate($request, [
+            'amount'=>['required', 'numeric'],
+            'range'=>['required', 'numeric']
+        ]);
         $user = Auth::user();
         $garant = $request->gno_1;
         $amount = $request->amount;
-        $period = $request->period;
+        $period = $request->range;
 
         $min = LoanSetting::orderBy('min', 'ASC')->first()->min;
         $max = LoanSetting::orderBy('max', 'DESC')->first()->max;
@@ -85,9 +88,8 @@ class LoanController extends G360
                 break;
             }
         }
-
         if($period != $month)
-            return back()->with('error', 'Invalid period chosen');
+            return back()->with('error', 'Invalid range chosen for this loan');
 
         $loanDebt = abs($user->loanBalance());
         if($loanDebt > 0){
@@ -203,10 +205,10 @@ class LoanController extends G360
                         $loan->g_approve = 1;
                         $loan->expiry_date = Carbon::now()->addDays($exp_days);
                         $loan->save();
+                        return back()->with('success', "Loan approved");
                     }else{
                         return back()->with('error', 'Loan beneficiary not found');
                     }
-                    return back()->with('success', 'Loan has been approved');
                 case 'disapprove':
                     $loan->g_approve = 2;
                     $loan->expiry_date = "";
@@ -242,7 +244,7 @@ class LoanController extends G360
         $loan = Loan::where([
             ['user_id', $user->id],
             ['status', 0]
-        ])->first();
+        ])->whereNotNull('expiry_date')->first();
         if($loan){
             $left_amt = $loan->total_return - $loan->returned;
             if($user->trx_balance >= $left_amt){
@@ -283,7 +285,7 @@ class LoanController extends G360
             ['id', $id],
             ['user_id', $user->id],
             ['status', 0],
-        ])->first();
+        ])->whereNotNull('expiry_date')->first();
         if($loan){
             if($loan->defaulted > 0)
                 return back()->with('error', 'Cannot extend this loan');
