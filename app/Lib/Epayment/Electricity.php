@@ -69,7 +69,7 @@ class Electricity
         if(isset($data['status']) && $data['status'] == 201){
             VtuTrx::create([
                 'id'=>$refCode,
-                'user_id'=>Auth::id(),
+                'user_id'=>$user->id,
                 'amount'=>$this->amount,
                 'type'=>'electricity',
                 'service'=>$disco->name,

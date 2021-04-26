@@ -27,14 +27,35 @@
                     <!-- Tab panes -->
               <div class="tab-content tabcontent-border">
                 <div class="tab-pane active  p-3 pt-5" id="b" role="tabpanel">
-                    <form class="form-horizontal" >
-                        <div class="form-group">
-                            <label>Recipient Account-Number </label>
-                            <input type="text" class="form-control" name="pin" />
+                  <div class="text-center">
+                     <div style="font-size:25px;"><b>{{$cur}}<span class="bal">{{number_format(Auth::user()->with_balance, 2, '.', ',')}}</span></b></div>
+                     <small>Withdrawal Wallet</small>
+                  </div>
+                    <form method="POST" action="{{route('user.gfund.getBankAccountDetail')}}">
+                      <div class="form-group">
+                        <label for="">Amount</label>
+                        <input type="text" required name="amount" value="" class="form-control">
+                      </div>
+                      <div class="form-group">
+                           <label for="">Recipient Bank</label>
+                           <select required  name="bank" class="form-control">
+                             <option value="">Select</option>
+                              @if($banks->count())
+                                @foreach($banks as $bank)
+                                  <option value="{{$bank->code}}">{{$bank->name}}</option>
+                                @endforeach
+                              @endif
+                           </select>
                         </div>
                         <div class="form-group">
+                            <label>Account Number </label>
+                            <input type="text" required class="form-control" name="account_number" />
+                        </div>
+                        @csrf
+                        <input type="hidden" name="type" value="first">
+                        <div class="form-group">
                             <label>Current Password </label>
-                            <input type="text" class="form-control" name="pin" />
+                            <input type="password" required class="form-control" name="password" />
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary ml-2">Request Transfer </button>

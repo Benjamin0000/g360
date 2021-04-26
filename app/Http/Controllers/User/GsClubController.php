@@ -3,6 +3,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\G360;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Http\Helpers;
 use App\Models\GsClub;
 use App\Models\GsClubH;
 use App\Models\WalletHistory;

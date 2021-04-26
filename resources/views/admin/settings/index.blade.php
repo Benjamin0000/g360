@@ -91,6 +91,11 @@ $cur = Helpers::LOCAL_CURR_SYMBOL;
                         </div>
 
                         <div class="form-group">
+                            <label for="">Min Withdrawal</label>
+                            <input name="min_with" class="form-control" value="{{Helpers::getRegData('min_with')}}" type="text">
+                        </div>
+
+                        <div class="form-group">
                             <button class="btn btn-info">UPDATE</button>
                         </div>
                     </form>

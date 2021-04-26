@@ -10,7 +10,7 @@ use App\Models\Loan;
 use App\Models\VtuTrx; 
 use App\Models\CableTv;
 class FinanceController extends Controller
-{
+{ 
     /**
      * Creates a new Controller instance
      *
@@ -238,5 +238,11 @@ class FinanceController extends Controller
             return back()->with('success', 'Provider updated');
         }   
         return back()->with('error', 'Provider not found');
+    }
+    public function moneyTransfers()
+    {
+        $histories = VtuTrx::where('type', 'transfer')
+        ->latest()->paginate(10);
+        return view('admin.finance.money_transfer.index', compact('histories'));
     }
 }

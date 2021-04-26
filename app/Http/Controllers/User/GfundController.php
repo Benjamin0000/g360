@@ -1,13 +1,13 @@
 <?php
-
 namespace App\Http\Controllers\User;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Helpers;
 use App\Models\User;
+use App\Models\Bank;
 use App\Models\WalletHistory;
+use App\Lib\Epayment\MoneyTransfer;
 
 class GfundController extends Controller
 {
@@ -28,7 +28,8 @@ class GfundController extends Controller
      */
     public function index()
     {
-        return view('user.gfund.index');
+        $banks = Bank::all();
+        return view('user.gfund.index', compact('banks'));
     }
     /**
      * Transfer from withdrawal wallet
@@ -46,8 +47,7 @@ class GfundController extends Controller
         $last_pkg_id = 7;
         $amount = (float)$request->amount;
         $min = 1000;
-        if($amount <= 0)
-            return ['msg'=>"Please enter a valid amount"];
+
         if($amount < $min)
             return ['msg'=>"Minimum transfer amount is ".self::CUR.$min];
 
@@ -112,8 +112,6 @@ class GfundController extends Controller
         $amount = (float)$request->amount;
         $min = 1000;
 
-        if($amount <= 0)
-            return ['msg'=>"Please enter a valid amount"];
         if($amount < $min)
             return ['msg'=>"Minimum transfer amount is ".self::CUR.$min];
         if(!$request->wallet)
@@ -272,11 +270,71 @@ class GfundController extends Controller
      * Wallet transfer to bank account
      *
      * @return \Illuminate\Http\Response
-     */   
-    public function transBankAccount(Request $request)
+    */   
+    public function getBankAccountDetail(Request $request)
     {
+        $this->validate($request, [
+            'amount'=>['required', 'numeric'],
+            'bank'=>['required'],
+            'account_number'=>['required'],
+            'password'=>['required'],
+            'type'=>['required']
+        ]);
 
+        $min_amt = (float)Helpers::getRegData('min_with');
+        $amount = $request->amount;
+        $number = $request->account_number;
+
+        if($amount < $min_amt)
+            return back()->with('error', 'Minimum withdrawable amount is '. 
+            self::CUR.$min_amt);
+
+        $vat = (float)Helpers::getRegData('vat');
+        $vat = ($vat/100)*$amount;
+        $total = $vat + $amount;
+
+        $user = Auth::user();
+        $password = $request->password;
+        if($user->with_balance < $total)
+            return back()->with('error', 'Insufficent fund for transfer');
+
+        if(!password_verify($password, $user->password))
+            return back()->with('error', 'Invalid account password');
+        
+        $bank = Bank::where('code', $request->bank)->first();
+        if($bank){
+            $transfer = new MoneyTransfer();
+            $receiver = $transfer->getAccountInfo($number, $bank->id);
+            if(isset($receiver['status'])){
+                if($receiver['status'] == 200){
+                    if($request->type == 'first'){
+                        return view('user.gfund.user_info', 
+                        compact('receiver', 'vat', 'bank', 'amount', 'number', 'password'));
+                    }elseif($request->type == 'sec'){
+                        if($transfer->fundTransfer($number, $bank->id, $amount)){
+                            $user->with_balance -= $vat;
+                            $user->save();
+                            WalletHistory::create([
+                                'id'=>Helpers::genTableId(WalletHistory::class),
+                                'user_id'=>$user->id,
+                                'amount'=>$vat,
+                                'gnumber'=>$user->gnumber,
+                                'name'=>'with_balance',
+                                'type'=>'debit',
+                                'description'=>'Fund transfer VAT'
+                            ]);
+                            return redirect(route('user.gfund.index'))
+                            ->with('success', 'Transfer Successful');
+                        }
+                        return redirect(route('user.gfund.index'))
+                            ->with('error', 'Could not initiate transfer');
+                    }
+                    return redirect(route('user.gfund.index')); 
+                }
+                return back()->with('error', $receiver['message']);  
+            }
+            return back()->with('error', 'Unavailable at this time');
+        }
+        return back()->with('error', 'Invalid bank selected');
     }
-
-
 }

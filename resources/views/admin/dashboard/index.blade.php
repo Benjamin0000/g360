@@ -1,6 +1,9 @@
 @extends('admin.layout', ['title'=>'Admin Dashboard'])
 @section('content')
-
+  @php
+      use App\Http\Helpers;
+      $cur = Helpers::LOCAL_CURR_SYMBOL;
+  @endphp
     <!-- ============================================================== -->
     <!-- Bread crumb and right sidebar toggle -->
     <!-- ============================================================== -->
@@ -55,8 +58,8 @@
                     <div class="col-md-12">
                         <div class="d-flex no-block align-items-center">
                             <div>
-                                <h3><i class="icon-note"></i></h3>
-                                <p class="text-muted">NEW PROJECTS</p>
+                                <h3><i class="mdi-user"></i></h3>
+                                <p class="text-muted">VAT</p>
                             </div>
                             <div class="ml-auto">
                                 <h2 class="counter text-cyan">169</h2>
@@ -79,7 +82,7 @@
                     <div class="col-md-12">
                         <div class="d-flex no-block align-items-center">
                             <div>
-                                <h3><i class="icon-doc"></i></h3>
+                                <h3><i class="fa fa-money"></i></h3>
                                 <p class="text-muted">NEW INVOICES</p>
                             </div>
                             <div class="ml-auto">
@@ -103,7 +106,7 @@
                     <div class="col-md-12">
                         <div class="d-flex no-block align-items-center">
                             <div>
-                                <h3><i class="icon-bag"></i></h3>
+                                <h3><i class="fa fa-money"></i></h3>
                                 <p class="text-muted">All PROJECTS</p>
                             </div>
                             <div class="ml-auto">

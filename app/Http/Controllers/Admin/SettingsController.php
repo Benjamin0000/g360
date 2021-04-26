@@ -68,6 +68,7 @@ class SettingsController extends Controller
         Helpers::saveRegData('bronz_coin_price', $request->bronz_coin_price);
         Helpers::saveRegData('silver_coin_price', $request->silver_coin_price);
         Helpers::saveRegData('gold_coin_price', $request->gold_coin_price);
+        Helpers::saveRegData('min_with', $request->min_with);
         return back()->with('success', 'Updated');
     }
 

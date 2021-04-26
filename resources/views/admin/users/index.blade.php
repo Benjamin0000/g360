@@ -41,22 +41,23 @@
                                       <td>
                                           @if($user->package)
                                           {{$user->package->id == $last_pkg->id ? strtoupper($last_pkg->name): ucfirst($user->package->name)}}
-                                          @else 
+                                          @else
                                            None
                                           @endif
                                         </td>
                                       <td>
-                                        <div class="text-success">{{$user->totalNotPlaced()}}</div> 
+                                        <div class="text-success">{{$user->totalNotPlaced()}}</div>
                                         <div class="text-danger">{{$user->totalPlaced()}}</div>
                                     </td>
                                       <td style="font-size:15px;font-weight:bold;text-align:left;">
-                                        <div>With Bal: {{$cur.number_format($user->with_balance, 2, '.', ',')}}</div> 
+                                        <div>With Bal: {{$cur.number_format($user->with_balance, 2, '.', ',')}}</div>
                                         <div>TRX Bal: {{$cur.number_format($user->trx_balance, 2, '.', ',')}}</div>
                                         <div>PEND Bal: {{$cur.number_format($user->pend_balance, 2, '.', ',')}}</div>
                                         <div>PKG Bal: {{$cur.number_format($user->pkg_balance, 2, '.', ',')}}</div>
                                         <div>Award Point: {{$cur.number_format($user->award_point, 2, '.', ',')}}</div>
                                         <div>CPV: {{$user->cpv}}</div>
                                         <div>H-TOKEN: {{$user->h_token}}</div>
+                                        <div>L-Elig {{$cur.number_format($user->loan_elig_balance, 2, '.', ',')}}</div>
                                       </td>
                                       <td>
                                         {{$user->phone}}

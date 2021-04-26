@@ -48,4 +48,5 @@ $cur = App\Http\Helpers::LOCAL_CURR_SYMBOL;
       </div>
   </div>
 @endif
+
 @endsection
