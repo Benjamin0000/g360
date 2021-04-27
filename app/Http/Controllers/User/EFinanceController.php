@@ -154,7 +154,7 @@ class EFinanceController extends G360
         $data = $req->validatePhone($request->mobile_number, $request->operator, $amt);
 
         if(isset($data['error']))
-            return ['error'=>$data['error']];
+            return ['error'=>'Invalid number for this mobile operator'];
 
         if($data == true && $req->purchase()){
             $com = $amt*($airtime->comm/100);
