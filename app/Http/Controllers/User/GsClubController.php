@@ -31,9 +31,8 @@ class GsClubController extends G360
             ['status', 0]   
         ])->first();
         $histories = GsClubH::where('user_id', $user->id)->latest()->paginate(10);
-        $total_his = $histories->count();
         $totalE = GsClubH::where([ ['user_id', $user->id], ['type', 0] ])->sum('amount');
-        return view('user.gsclub.index', compact('member', 'histories', 'total_his', 'totalE'));
+        return view('user.gsclub.index', compact('member', 'histories', 'totalE'));
     }
     /**
      * Get more histories
@@ -45,9 +44,8 @@ class GsClubController extends G360
         if($request->ajax()){
             $user = Auth::user();
             $histories = GsClubH::where('user_id', $user->id)->paginate(10);
-            $total_his = $histories->count();
             $cur = self::$cur;
-            $view = view('user.gsclub.table_tr', compact('histories', 'total_his', 'cur'));
+            $view = view('user.gsclub.table_tr', compact('histories', 'cur'));
             if($view){
                 return ['data'=>"$view"];
             }
@@ -66,7 +64,7 @@ class GsClubController extends G360
         $h_token_percent = Helpers::getRegData('gs_h_token_percent');
         $fee_percent = Helpers::getRegData('gs_fee_percent');
         $assoc_percent = Helpers::getRegData('gs_assoc_percent');
-        $vat_percent = Helpers::getRegData('vat');
+        // $vat_percent = Helpers::getRegData('vat');
         $min_cashout = Helpers::getRegData('gs_min_cashout');
         $formular = explode(',', Helpers::getRegData('gs_ref_com_percent'));
         $user = Auth::user();
@@ -97,9 +95,10 @@ class GsClubController extends G360
                     $refAmt = (array_sum($formular) / 100)*$amt;
                     $amt = $amt - $refAmt;
                 }
-                $user->pend_balance += $amt;
+                $user->with_balance += $amt;
                 $user->h_token += $h_token;
                 $user->save();
+
                 // GsClubH::create([
                 //     'id'=>Helpers::genTableId(GsClubH::class),
                 //     'user_id'=>$user->id,
@@ -133,7 +132,7 @@ class GsClubController extends G360
                     'user_id'=>$user->id,
                     'amount'=>$amt,
                     'gnumber'=>$user->gnumber,
-                    'name'=>self::$pend_balance,
+                    'name'=>self::$with_balance,
                     'type'=>'credit',
                     'description'=>self::$cur.number_format($amt, 2, '.', ',').' GSTeam cashout'
                 ]);
@@ -146,6 +145,9 @@ class GsClubController extends G360
                     'type'=>'credit',
                     'description'=>$h_token.' GSTeam cashout'
                 ]);
+                $gsteam_fee = (float)Helpers::getRegData('total_gsteam_fee');
+                $gsteam_fee += $fee;
+                Helpers::saveRegData('total_gsteam_fee', $gsteam_fee);
                 return back()->with('success', 'Cashout Successfull');
             }else{
                 return back()->with('error', 'You can only cashout a minimum of '
@@ -190,7 +192,7 @@ class GsClubController extends G360
     private static function finishCredit(User $user, $reward, $h_token, $level=0)
     {
         if($reward <= 0 || $h_token <= 0)return;
-        $user->pend_balance += $reward;
+        $user->with_balance += $reward;
         $user->h_token += $h_token;
         $user->save();
         WalletHistory::create([
@@ -208,7 +210,7 @@ class GsClubController extends G360
             'user_id'=>$user->id,
             'amount'=>$reward,
             'gnumber'=>$user->gnumber,
-            'name'=>self::$pend_balance,
+            'name'=>self::$with_balance,
             'type'=>'credit',
             'description'=>self::$cur.number_format($reward).' GSTeam '.
             Helpers::ordinal($level).' Gen ref commision'

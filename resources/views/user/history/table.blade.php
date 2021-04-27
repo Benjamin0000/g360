@@ -14,7 +14,7 @@
     </thead>
     <tbody>
        @if($histories->count())
-         @php $count = Helpers::tableNumber($total) @endphp
+         @php $count = Helpers::tableNumber(10) @endphp
          @foreach($histories as $history)
            <tr>
              <td>{{$count++}}</td>

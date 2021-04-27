@@ -1,4 +1,4 @@
-@extends('user.layout', ['title'=>' T-wallet Log'])
+@extends('user.layout', ['title'=>'T-wallet Log'])
 @section('content')
 <div class="row">
       <div class="col-12">

@@ -27,11 +27,15 @@ class RewardController extends G360
      */
     public function index()
     {
-        $rewards = Reward::where([
+        $new_rewards = Reward::where([
             ['user_id', Auth::id()],
             ['status', 0] 
          ])->get();
-        return view('user.reward.index', compact('rewards'));
+
+        $rewards = Reward::where([
+            ['user_id', Auth::id()]
+        ])->latest()->paginate(10);
+        return view('user.reward.index', compact('new_rewards', 'rewards'));
     }
     /**
      * Select leadership monthly bonus

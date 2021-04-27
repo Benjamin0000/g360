@@ -323,6 +323,9 @@ class GfundController extends Controller
                                 'type'=>'debit',
                                 'description'=>'Fund transfer VAT'
                             ]);
+                            $total_vat = (float)Helpers::getRegData('total_vat');
+                            $total_vat += $vat;
+                            Helpers::saveRegData('total_vat', $total_vat);
                             return redirect(route('user.gfund.index'))
                             ->with('success', 'Transfer Successful');
                         }

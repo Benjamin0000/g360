@@ -21,12 +21,8 @@
             </div>
         </div> --}}
     </div>
-    <!-- ============================================================== -->
-    <!-- End Bread crumb and right sidebar toggle -->
-    <!-- ============================================================== -->
-    <!-- ============================================================== -->
-    <!-- Info box -->
-    <!-- ============================================================== -->
+
+
     <div class="card-group">
         <div class="card">
             <div class="card-body">
@@ -38,13 +34,13 @@
                                 <p class="text-muted">TOTAL USERS</p>
                             </div>
                             <div class="ml-auto">
-                                <h2 class="counter text-primary">{{$total_users}}</h2>
+                                <h2 class="counter">{{$total_users}}</h2>
                             </div>
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="progress">
-                            <div class="progress-bar bg-primary" role="progressbar" style="width: 100%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="" role="progressbar" style="width: 100%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
                 </div>
@@ -58,17 +54,42 @@
                     <div class="col-md-12">
                         <div class="d-flex no-block align-items-center">
                             <div>
-                                <h3><i class="mdi-user"></i></h3>
+                                <h3><i class="fas fa-cash-o"></i></h3>
                                 <p class="text-muted">VAT</p>
                             </div>
                             <div class="ml-auto">
-                                <h2 class="counter text-cyan">169</h2>
+                                <h2 class="counter">{{$cur.number_format($vat,2,'.',',')}}</h2>
                             </div>
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="progress">
-                            <div class="progress-bar bg-cyan" role="progressbar" style="width: 85%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="" role="progressbar" style="width: 100%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+                <a href="{{route('admin.vat_history')}}">Settings</a>
+            </div>
+        </div>
+        <!-- Column -->
+        <!-- Column -->
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="d-flex no-block align-items-center">
+                            <div>
+                                <h3><i class="fa fa-money"></i></h3>
+                                <p class="text-muted">WITH BALANCE</p>
+                            </div>
+                            <div class="ml-auto">
+                                <h2 class="counter">{{$cur.number_format($with_bal, 2, '.', ',')}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="progress">
+                            <div class="" role="progressbar" style="width: 100%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
                 </div>
@@ -83,63 +104,163 @@
                         <div class="d-flex no-block align-items-center">
                             <div>
                                 <h3><i class="fa fa-money"></i></h3>
-                                <p class="text-muted">NEW INVOICES</p>
+                                <p class="text-muted">PEND BALANCE</p>
                             </div>
                             <div class="ml-auto">
-                                <h2 class="counter text-purple">157</h2>
+                                <h2 class="counter">{{$cur.number_format($pend_bal, 2, '.', ',')}}</h2>
                             </div>
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="progress">
-                            <div class="progress-bar bg-purple" role="progressbar" style="width: 85%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Column -->
-        <!-- Column -->
-        <div class="card">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="d-flex no-block align-items-center">
-                            <div>
-                                <h3><i class="fa fa-money"></i></h3>
-                                <p class="text-muted">All PROJECTS</p>
-                            </div>
-                            <div class="ml-auto">
-                                <h2 class="counter text-success">431</h2>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="progress">
-                            <div class="progress-bar bg-success" role="progressbar" style="width: 85%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="" role="progressbar" style="width: 100%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- ============================================================== -->
-    <!-- End Info box -->
-    <!-- ============================================================== -->
-    <!-- ============================================================== -->
-    <!-- Over Visitor, Our income , slaes different and  sales prediction -->
-    <!-- ============================================================== -->
-    <div class="row">
+
+
+    <div class="card-group">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="d-flex no-block align-items-center">
+                            <div>
+                                <h3><i class=""></i></h3>
+                                <p class="text-muted">TRX-BALANCE</p>
+                            </div>
+                            <div class="ml-auto">
+                                <h2 class="counter">{{$cur.number_format($trx_bal, 2, '.', ',')}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="progress">
+                            <div class="" role="progressbar" style="width: 100%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Column -->
+        <!-- Column -->
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="d-flex no-block align-items-center">
+                            <div>
+                                <h3><i class="fas fa-cash-o"></i></h3>
+                                <p class="text-muted">PKG BALANCE</p>
+                            </div>
+                            <div class="ml-auto">
+                                <h2 class="counter">{{$cur.number_format($pkg_bal, 2, '.', ',')}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="progress">
+                            <div class="" role="progressbar" style="width: 100%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Column -->
+        <!-- Column -->
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="d-flex no-block align-items-center">
+                            <div>
+                                <h3><i class="fa fa-money"></i></h3>
+                                <p class="text-muted">LOAN ELIG BALANCE</p>
+                            </div>
+                            <div class="ml-auto">
+                                <h2 class="counter">{{$cur.number_format($loan_elig_bal, 2, '.', ',')}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="progress">
+                            <div class="" role="progressbar" style="width: 100%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Column -->
+        <!-- Column -->
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="d-flex no-block align-items-center">
+                            <div>
+                                <h3><i class="fa fa-money"></i></h3>
+                                <p class="text-muted">SAVED LOAN BALANCE</p>
+                            </div>
+                            <div class="ml-auto">
+                                <h2 class="counter">{{$cur.number_format($total_loan_bal, 2, '.', ',')}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="progress">
+                            <div class="" role="progressbar" style="width: 100%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+  <div class="card col-md-3">
+      <div class="card-body">
+          <div class="row">
+              <div class="col-md-12">
+                  <div class="d-flex no-block align-items-center">
+                      <div>
+                          <h3><i class="fas fa-cash-o"></i></h3>
+                          <p class="text-muted">GSTEAM FEE</p>
+                      </div>
+                      <div class="ml-auto">
+                          <h2 class="counter">{{$cur.number_format($gsteam_fee,2,'.',',')}}</h2>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-12">
+                  <div class="progress">
+                      <div class="" role="progressbar" style="width: 100%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+              </div>
+          </div>
+          <a href="{{route('admin.gs_fee')}}">Settings</a>
+      </div>
+  </div>
+
+
+
+
+
+
+    {{-- <div class="row">
         <!-- Column -->
         <div class="col-lg-12 col-md-12">
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex m-b-40 align-items-center no-block">
-                        {{-- <h5 class="card-title ">YEARLY SALES</h5> --}}
+                        <h5 class="card-title ">YEARLY SALES</h5>
                     </div>
-                    <div style="height: 340px;"></div>
+
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 @endsection

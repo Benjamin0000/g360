@@ -130,8 +130,8 @@
                     <!-- User profile text-->
                     <div class="profile-text"> <a href="#" class="dropdown-toggle link u-dropdown" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">@ {{Auth::user()->username}}<span class="caret"></span></a>
                         <div class="dropdown-menu animated flipInY">
-                            <a href="/user/profile" class="dropdown-item"><i class="ti-user"></i> My Profile</a>
-                            <div class="dropdown-divider"></div> <a href="/user/setting" class="dropdown-item"><i class="ti-settings"></i> Account Setting</a>
+                            <a href="{{route('user.profile.index')}}" class="dropdown-item"><i class="ti-user"></i> My Profile</a>
+                            <div class="dropdown-divider"></div> <a href="{{route('user.settings.index')}}" class="dropdown-item"><i class="ti-settings"></i> Account Setting</a>
                             <div class="dropdown-divider"></div> <a href="javascript:void(0)" class="dropdown-item lou_btn"><i class="fa fa-power-off"></i> Logout</a>
                         </div>
                     </div>
@@ -217,6 +217,7 @@
                                 <li><a href="{{route('user.history.w_wallet')}}">W-Wallet</a></li>
                                 <li><a href="{{route('user.history.p_wallet')}}">P-wallet</a></li>
                                 <li><a href="{{route('user.history.t_wallet')}}">T-Wallet</a></li>
+                                <li><a href="{{route('user.history.pkg_wallet')}}">PKG-Wallet</a></li>
                             </ul>
                         </li>
 

@@ -45,10 +45,8 @@ class WalletHistoryController extends Controller
         $histories = WalletHistory::where([ 
             ['user_id', $user->id],
             ['name', Helpers::TRX_BALANCE],
-        ]);
-        $total = $histories->count();
-        $histories = $histories->latest()->paginate(10);
-        return view('user.history.t_wallet', compact('histories', 'total'));
+        ])->latest()->paginate(10);
+        return view('user.history.t_wallet', compact('histories'));
     }
     /**
      * Store a newly created resource in storage.
@@ -62,10 +60,8 @@ class WalletHistoryController extends Controller
         $histories = WalletHistory::where([ 
             ['user_id', $user->id],
             ['name', Helpers::PEND_BALANCE],
-        ]);
-        $total = $histories->count();
-        $histories = $histories->latest()->paginate(10);
-        return view('user.history.p_wallet', compact('histories', 'total'));
+        ])->latest()->paginate(10);
+        return view('user.history.p_wallet', compact('histories'));
     }
     /**
      * Display the specified resource.
@@ -73,15 +69,13 @@ class WalletHistoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function g_wallet()
+    public function pkg_wallet()
     {
         $user = Auth::user();
         $histories = WalletHistory::where([ 
             ['user_id', $user->id],
-            ['name', Helpers::LOAN_PKG_BALANCE],
-        ]);
-        $total = $histories->count();
-        $histories = $histories->latest()->paginate(10);
-        return view('user.history.g_wallet', compact('histories', 'total'));
+            ['name', Helpers::PKG_BALANCE],
+        ])->latest()->paginate(10);
+        return view('user.history.pkg_wallet', compact('histories'));
     }
 }

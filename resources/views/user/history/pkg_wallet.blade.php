@@ -1,10 +1,10 @@
-@extends('user.layout', ['title'=>'PEND-wallet Log'])
+@extends('user.layout', ['title'=>'PKG-wallet Log'])
 @section('content')
 <div class="row">
       <div class="col-12">
           <div class="card">
               <div class="card-body">
-                  <h4 class="card-title">P-Wallet Transaction Log</h4>
+                  <h4 class="card-title">PKG-Wallet Transaction Log</h4>
                   <div class="table-responsive">
                      @include('user.history.table')
                   </div>

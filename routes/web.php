@@ -26,6 +26,8 @@ use App\Http\Controllers\User\TradingController;
 use App\Http\Controllers\User\PartnershipController;
 use App\Http\Controllers\User\GmarketController as UGmarket;
 use App\Http\Controllers\User\AgentController;
+use App\Http\Controllers\User\SettingsController;
+use App\Http\Controllers\User\ProfileController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use App\Lib\Interswitch\BillPayment;
@@ -177,7 +179,7 @@ Route::group(['prefix'=>'portal'],  function(){
     Route::get('/history/W-wallet', [WalletHistoryController::class, 'w_wallet'])->name('user.history.w_wallet');
     Route::get('/history/T-wallet', [WalletHistoryController::class, 't_wallet'])->name('user.history.t_wallet');
     Route::get('/history/P-wallet', [WalletHistoryController::class, 'p_wallet'])->name('user.history.p_wallet');
-    Route::get('/history/G-wallet', [WalletHistoryController::class, 'g_wallet'])->name('user.history.g_wallet');
+    Route::get('/history/PKG-wallet', [WalletHistoryController::class, 'pkg_wallet'])->name('user.history.pkg_wallet');
     #downline
     Route::get('/downline/direct', [DownlineController::class, 'direct'])->name('user.downline.direct');
     Route::get('/downline/indirect', [DownlineController::class, 'indirect'])->name('user.downline.indirect');
@@ -238,16 +240,27 @@ Route::group(['prefix'=>'portal'],  function(){
     Route::get('/agent/apply', [AgentController::class, 'apply'])->name('user.agent.apply');
     Route::post('/agent/create', [AgentController::class, 'create'])->name('user.agent.create');
     Route::delete('/agent/delete/{id}', [AgentController::class, 'deleteRequest'])->name('user.agent.deleteRequest');
+    #profile
+    Route::get('/settings', [SettingsController::class, 'index'])->name('user.settings.index');
+    Route::post('/settings/nin', [SettingsController::class, 'updateNin'])->name('user.settings.nin');
+    Route::post('/settings/pass', [SettingsController::class, 'updatePassword'])->name('user.settings.pass');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('user.profile.index');
+    #settings
 });
 
 #Admin
 Route::group(['prefix'=>'admin'],  function(){
-
-   Route::get('/', [ADashboard::class, 'index'])->name('admin.dashboard.index');
    Route::get('/login', [ALogin::class, 'index'])->name('admin.login');
    Route::post('/login', [ALogin::class, 'login'])->name('admin.login');
    Route::post('/logout', [ALogin::class, 'logout'])->name('admin.logout');
-  
+   
+   #Dashboard
+   Route::get('/', [ADashboard::class, 'index'])->name('admin.dashboard.index');
+   Route::get('/vat-history', [ADashboard::class, 'vat_page'])->name('admin.vat_history');
+   Route::get('/gsfee-history', [ADashboard::class, 'gsteam_fee_page'])->name('admin.gs_fee');
+   Route::post('/vat-debitVat', [ADashboard::class, 'debitVat'])->name('admin.debitVat');
+   Route::post('/vat-debitGST', [ADashboard::class, 'debitGsTeam'])->name('admin.debitGST');
+   
    #Users
    Route::get('/users', [AUsers::class, 'index'])->name('admin.users.index');
    

@@ -2,7 +2,7 @@
 use App\Http\Helpers;
 @endphp
 @if($histories->count())
-  @php $count = Helpers::tableNumber($total_his) @endphp
+  @php $count = Helpers::tableNumber(10) @endphp
   @foreach ($histories as $history)
     <tr>
        <td>{{$count++}}</td>
