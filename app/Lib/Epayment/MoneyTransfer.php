@@ -60,7 +60,7 @@ class MoneyTransfer
             VtuTrx::create([
                 'id'=>$refCode,
                 'user_id'=>$user->id,
-                'amount'=>$this->amount,
+                'amount'=>$amount,
                 'type'=>'transfer',
                 'service'=>$bank->name,
                 'description'=>'Fund transfer to '.$bank->name.
@@ -71,7 +71,7 @@ class MoneyTransfer
             WalletHistory::create([
                 'id'=>Helpers::genTableId(WalletHistory::class),
                 'user_id'=>$user->id,
-                'amount'=>$this->amount,
+                'amount'=>$amount,
                 'gnumber'=>$user->gnumber,
                 'name'=>'with_balance',
                 'type'=>'debit',
