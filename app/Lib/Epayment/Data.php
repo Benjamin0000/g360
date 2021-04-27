@@ -81,13 +81,15 @@ class Data
         $data = json_decode($response, true);
         if(isset($data['status']) && $data['status'] == 201){
             $user = Auth::user();
+            $mobile = '0'.substr($phone, 3, 15);
             VtuTrx::create([
                 'id'=>$refCode,
                 'user_id'=>$user->id,
                 'amount'=>$price,
                 'type'=>'data',
                 'service'=>$service,
-                'description'=>$data_amount.'MB '.$validity.' Mobile data purchase'
+                'description'=>$data_amount.'MB '
+                .$validity.' Mobile data purchase '.'['.$mobile.']'
             ]);
             $user->trx_balance -= $price;
             $user->save();
@@ -98,7 +100,8 @@ class Data
                 'gnumber'=>$user->gnumber,
                 'name'=>'trx_balance',
                 'type'=>'debit',
-                'description'=>'Mobile data purchase'
+                'description'=>$data_amount.'MB '
+                .$validity.' Mobile data purchase '.'['.$mobile.']'
             ]);
             return true;
         }

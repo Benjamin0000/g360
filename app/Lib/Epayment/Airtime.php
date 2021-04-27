@@ -86,12 +86,14 @@ class Airtime
         $data = json_decode($response, true);
         if(isset($data['status']) && $data['status'] == 201){
             $user = Auth::user();
+            $mobile = '0'.substr($this->phone, 3, 15);
             VtuTrx::create([
                 'id'=>$refCode,
                 'user_id'=>$user->id,
                 'amount'=>$this->amount,
                 'type'=>'airtime',
-                'service'=>$this->service
+                'service'=>$this->service,
+                'description'=>'['.$mobile.']'
             ]);
             $user->trx_balance -= $this->amount;
             $user->save();
@@ -102,7 +104,7 @@ class Airtime
                 'gnumber'=>$user->gnumber,
                 'name'=>'trx_balance',
                 'type'=>'debit',
-                'description'=>$this->service.' Airtime Purchase'
+                'description'=>$this->service.' Airtime Purchase ['.$mobile.']'
             ]);
             return true;
         }
