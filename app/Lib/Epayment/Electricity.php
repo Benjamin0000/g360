@@ -72,8 +72,8 @@ class Electricity
                 'user_id'=>$user->id,
                 'amount'=>$this->amount,
                 'type'=>'electricity',
-                'service'=>$disco->name,
-                'description'=>$data
+                'service'=>$this->disco->name,
+                'description'=>"$data"
                 // 'description'=>$disco->name.' meter ['.$this->meter.'] Unit'.
             ]);
             $user->trx_balance -= $total;
