@@ -66,7 +66,7 @@ class Electricity
             "amount"=>$this->amount
         ]);
         $data = json_decode($response, true);
-        if(isset($data['status']) && $data['status'] == 201){
+        // if(isset($data['status']) && $data['status'] == 201){
             VtuTrx::create([
                 'id'=>$refCode,
                 'user_id'=>$user->id,
@@ -89,8 +89,8 @@ class Electricity
             ]);
             $this->creditCashBack($this->disco);
             return true;
-        }
-        return false;
+        // }
+        // return false;
     }
     public function creditCashBack(EDisco $disco)
     {
