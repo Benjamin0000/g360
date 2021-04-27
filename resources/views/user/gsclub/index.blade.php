@@ -99,11 +99,9 @@ $min_cashout = (float)Helpers::getRegData('gs_min_cashout');
         </tbody>
       </table>
     </div>
-    @if($total_his >= 10)
       <div class="text-center">
          <button class="btn btn-primary btn-sm" p='2' id='mbtn'>Load more</button>
       </div>
-    @endif
   </div>
 </div>
 <script type="text/javascript">

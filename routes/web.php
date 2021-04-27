@@ -3,6 +3,7 @@ use App\Lib\Epayment\Airtime;
 use App\Lib\Epayment\Data;
 use App\Lib\Epayment\CableTv;
 use App\Lib\Epayment\MoneyTransfer;
+use App\Lib\Epayment\Electricity;
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FrontController;
@@ -45,6 +46,7 @@ use App\Http\Controllers\Admin\GsTeamController as AGsTeam;
 use App\Http\Controllers\Admin\UsersController as AUsers;
 use App\Http\Helpers;
 use App\Models\Bank;
+use App\Models\EDisco;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -55,9 +57,14 @@ use App\Models\Bank;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 Route::get('/test', function(){
-    $transfer = new MoneyTransfer();
-    return $transfer->getAccountInfo('1226075485', 9);
+ return;
+    // $disco = EDisco::where('code', 'BPE-NGCABABA-OR')->first();
+    // $elect = new Electricity('07126018816', $disco, 600);
+    // return $elect->verifyPurchase(537314);
+    // $transfer = new MoneyTransfer();
+    // return $transfer->getAccountInfo('1226075485', 9);
     // $ecable = new CableTv('BPD-NGCA-AQA');
     // return $ecable->validateSmartCard('1025640366');
     // return Helpers::ordinal(1);
