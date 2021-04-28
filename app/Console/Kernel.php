@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->call(function(){
-            Task::trackFreeUsers();
+            Task::trackFreeUsers();  
         })->timezone('Africa/Lagos')->daily();
 
         $schedule->call(function(){

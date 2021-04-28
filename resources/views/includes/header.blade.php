@@ -128,7 +128,7 @@
 										</li>
 
 										<li class="nav-item">
-											<a href="{{route('front.how_works')}}" class="nav-link">
+											<a href="#how_it_works" class="nav-link">
 												How It Works
 											</a>
 										</li>

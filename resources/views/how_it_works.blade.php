@@ -7,7 +7,7 @@
 					<ul>
 						<li>
 							<a href="/">
-								Home 
+								Home
 							</a>
 						</li>
 
@@ -18,7 +18,7 @@
 		</div>
 		<!-- End Page Title Area -->
 
-		
+
 		<section class="terms-conditions ptb-100">
 			<div class="container">
 			<center><h2>HOW IT WORKS</h2></center>
@@ -40,515 +40,7 @@
 					<p>upgrade fee of 1500 is charged. Once you sign up with any package the point value (PV) and other commissions are distributed accordingly. And when there is an upgrade to any package the balance of corresponding point value (PV) is added to you.</p>
 					<p>Example: - when Mike sign up with basic package (13500) he gets 80pv and when and upgrade is done to master package (40500) 27000 will be deducted from his earning 160pv will be added to him and when he upgrade to professional package (67500) 40500 will be deducted from his earning the balance of 160pv will also be added to him to cumulate it to 400pv. When it is direct from basic to professional 320PV will be added. Same happens to the up links as you upgrade they get the point value (PV) accordingly.</p>
 					<br><br>
-					 
-					<table class="table table-striped table-bordered">
-						<tr>
-							<th>UPLINK</th>
-							<th>DISTRIBUTION</th>
-							<th>GENERATION</th>
-							<th>COMMISSION  PERCENTAGE %  </th>
-							<th>REFERRAL PIONT VALUE(PV) </th>
-							<th>INSURANCE TOKEN</th>
-							<th>STARTER</th>
-							<th>BASIC</th>
-							<th>MASTER</th>
-						</tr>
-						<tr>
-							<td></td>
-							<td>SIGN UP</td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td>13,500</td>
-							<td>40,500</td>
-							<td>67,500</td>
-						</tr>
 
-						<tr>
-							<td></td>
-							<td>POINT VALUE (PV)</td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td>80</td>
-							<td>160</td>
-							<td>400</td>
-						</tr>
-
-						<tr>
-							<td></td>
-							<td>SIGN UP INSURANCE TOKEN</td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-						</tr>	
-
-						<tr>
-							<td></td>
-							<td>CASH BACK COMMISSION</td>
-							<td>YOU</td>
-							<td>10</td>
-							<td>80</td>
-							<td></td>
-							<td>10%</td>
-							<td>10%</td>
-							<td>10%</td>
-						</tr>
-
-						<tr>
-							<td></td>
-							<td>DIRECT UPLINK COMMISION</td>
-							<td>1<sup>ST</st></td>
-							<td>8</td>
-							<td>60</td>
-							<td>10</td>
-							<td>8%</td>
-							<td>8%</td>
-							<td>8%</td>
-						</tr>
-
-						<tr>
-							<td>1<sup>ST</st></td>
-							<td>INDIRECT UPLINK COMMSSION</td>
-							<td>2<sup>ND</st></td>
-							<td>4</td>
-							<td>55</td>
-							<td>6</td>
-							<td>4%</td>
-							<td>4%</td>
-							<td>4%</td>
-						</tr>
-
-						<tr>
-							<td>2<sup>ND</st></td>
-							<td>INDIRECT UPLINK COMMSSION</td>
-							<td>3<sup>RD</st></td>
-							<td>2</td>
-							<td>50</td>
-							<td>4</td>
-							<td>2%</td>
-							<td>2%</td>
-							<td>2%</td>
-						</tr>
-
-						<tr>
-							<td>3<sup>RD</st></td>
-							<td>INDIRECT UPLINK COMMSSION</td>
-							<td>4<sup>TH</st></td>
-							<td>1</td>
-							<td>45</td>
-							<td>2</td>
-							<td>1%</td>
-							<td>1%</td>
-							<td>1%</td>
-
-						</tr>
-
-						<tr>
-							<td>4<sup>TH</st></td>
-							<td>INDIRECT UPLINK COMMSSION</td>
-							<td>5<sup>TH</st></td>
-							<td>0.6</td>
-							<td>45</td>
-							<td>1</td>
-							<td></td>
-							<td>0.6%</td>
-							<td>0.6%</td>
-						</tr>
-
-						<tr>
-							<td>5<sup>TH</st></td>
-							<td>INDIRECT UPLINK COMMSSION</td>
-							<td>6<sup>TH</st></td>
-							<td>0.6</td>
-							<td>45</td>
-							<td>1</td>
-							<td></td>
-							<td>0.6%</td>
-							<td>0.6%</td>
-						</tr>
-
-						<tr>
-							<td>6<sup>TH</st></td>
-							<td>INDIRECT UPLINK COMMSSION</td>
-							<td>7<sup>TH</st></td>
-							<td>0.6</td>
-							<td>45</td>
-							<td>1</td>
-							<td></td>
-							<td>0.6%</td>
-							<td>0.6%</td>
-						</tr>
-
-						<tr>
-							<td>7<sup>TH</st></td>
-							<td>INDIRECT UPLINK COMMSSION</td>
-							<td>8<sup>TH</st></td>
-							<td>0.6</td>
-							<td>45</td>
-							<td>1</td>
-							<td></td>
-							<td></td>
-							<td>0.4%</td>
-						</tr>
-
-						<tr>
-							<td>8<sup>TH</st></td>
-							<td>INDIRECT UPLINK COMMSSION</td>
-							<td>9<sup>TH</st></td>
-							<td>0.4</td>
-							<td>45</td>
-							<td>1</td>
-							<td></td>
-							<td></td>
-							<td>0.4%</td>
-						</tr>
-
-						<tr>
-							<td>9<sup>TH</st></td>
-							<td>INDIRECT UPLINK COMMSSION</td>
-							<td>10<sup>TH</st></td>
-							<td>0.4</td>
-							<td>45</td>
-							<td>1</td>
-							<td></td>
-							<td></td>
-							<td>0.4%</td>
-						</tr>
-
-						<tr>
-							<td>10<sup>TH</st></td>
-							<td>INDIRECT UPLINK COMMSSION</td>
-							<td>11<sup>TH</st></td>
-							<td>0.2</td>
-							<td>40</td>
-							<td>1</td>
-							<td></td>
-							<td></td>
-							<td></td>
-						</tr>
-
-						<tr>
-							<td>11<sup>TH</st></td>
-							<td>INDIRECT UPLINK COMMSSION</td>
-							<td>12<sup>TH</st></td>
-							<td>0.2</td>
-							<td>40</td>
-							<td>1</td>
-							<td></td>
-							<td></td>
-							<td></td>
-						</tr>
-					
-						<tr>
-							<td>12<sup>TH</st></td>
-							<td>INDIRECT UPLINK COMMSSION</td>
-							<td>13<sup>TH</st></td>
-							<td>0.2</td>
-							<td>40</td>
-							<td>1</td>
-							<td></td>
-							<td></td>
-							<td></td>
-						</tr>
-
-						<tr>
-							<td>13<sup>TH</st></td>
-							<td>INDIRECT UPLINK COMMSSION</td>
-							<td>14<sup>TH</st></td>
-							<td>0.2</td>
-							<td>40</td>
-							<td>1</td>
-							<td></td>
-							<td></td>
-							<td></td>
-						</tr>
-
-						<tr>
-							<td>14<sup>TH</st></td>
-							<td>INDIRECT UPLINK COMMSSION</td>
-							<td>15<sup>TH</st></td>
-							<td>0.2</td>
-							<td>40</td>
-							<td>1</td>
-							<td></td>
-							<td></td>
-							<td></td>
-						</tr>
-                    </table>
-                     
-					<br> 
-					<br> 
-					<h3 class="mt-0">STAGES/LEVEL/REFERRAL COMMISSION PERCENTAGE %</h3>
-					<p>This is the are the different levels members attains and the point value they need to cumulate to attain the levels</p>
-                    <table class="table table-striped table-bordered">
-						<tr>
-							<th></th>
-							<th>DISTRIBUTION</th>
-							<th>GENERATION</th>
-							<th>PROFESSIONAL</th>
-							<th>ASSOCIATE</th>
-							<th>SINIOR ASSOCIATE</th>
-							<th>MANAGER</th>
-							<th>DIRECTOR</th>
-							<th>EXECUTIVE DIRECTOR</th>
-						</tr>
-
-						<tr>
-							<td></td>
-							<td>SIGN UP(VAT) INCLUSIVE</td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-						</tr>
-
-
-					<tr>
-					<td></td>
-					<td>CUMMLATIVE POINT VALUE (PV)</td>
-					<td></td>
-					<td>25,000</td>
-					<td>70,000</td>
-					<td>160,000</td>
-					<td>370,000</td>
-					<td>670,000</td>
-					<td>1200,000</td>
-					</tr>
-
-
-					<tr>
-					<td></td>
-					<td>SIGN UP HEALTH TOKEN</td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					</tr>
-
-
-					<tr>
-					<td></td>
-					<td>CASH BACK COMMISSION</td>
-					<td>YOU</td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					</tr>
-
-
-					<tr>
-					<td></td>
-					<td>DIRECT UPLINK COMMISION</td>
-					<td>1<sup>ST</sup></td>
-					<td>8%</td>
-					<td>8%</td>
-					<td>8%</td>
-					<td>8%</td>
-					<td>8%</td>
-					<td>8%</td>
-					</tr>
-
-
-					<tr>
-					<td>1<sup>ST</st></td>
-					<td>INDIRECT UPLINK COMMSSION</td>
-					<td>2<sup>ND</st></td>
-					<td>4%</td>
-					<td>4%</td>
-					<td>4%</td>
-					<td>4%</td>
-					<td>4%</td>
-					<td>4%</td>
-					</tr>
-
-					<tr>
-					<td>2<sup>ND</st></td>
-					<td>INDIRECT UPLINK COMMSSION</td>
-					<td>3<sup>RD</st></td>
-					<td>2%</td>
-					<td>2%</td>
-					<td>2%</td>
-					<td>2%</td>
-					<td>2%</td>
-					<td>2%</td>
-
-					</tr>
-
-					<tr>
-					<td>3<sup>RD</st></td>
-					<td>INDIRECT UPLINK COMMSSION</td>
-					<td>4<sup>TH</st></td>
-					<td>1%</td>
-					<td>1%</td>
-					<td>1%</td>
-					<td>1%</td>
-					<td>1%</td>
-					<td>1%</td>
-
-					</tr>
-
-					<tr>
-					<td>4<sup>TH</st></td>
-					<td>INDIRECT UPLINK COMMSSION</td>
-					<td>5<sup>TH</st></td>
-				    <td>0.6%</td>
-				    <td>0.6%</td>
-				    <td>0.6%</td>
-				    <td>0.6%</td>
-				    <td>0.6%</td>
-					<td>0.6%</td>
-                    </tr>
-
-					<tr>
-					<td>5<sup>TH</st></td>
-					<td>INDIRECT UPLINK COMMSSION</td>
-					<td>6<sup>TH</st></td>
-					<td>0.6%</td>
-				    <td>0.6%</td>
-				    <td>0.6%</td>
-				    <td>0.6%</td>
-				    <td>0.6%</td>
-					<td>0.6%</td>
-					</tr>
-
-
-					<tr>
-					<td>6<sup>TH</st></td>
-					<td>INDIRECT UPLINK COMMSSION</td>
-					<td>7<sup>TH</st></td>
-					<td>0.6%</td>
-				    <td>0.6%</td>
-				    <td>0.6%</td>
-				    <td>0.6%</td>
-				    <td>0.6%</td>
-					<td>0.6%</td>
-					</tr>
-
-
-					<tr>
-					<td>7<sup>TH</st></td>
-					<td>INDIRECT UPLINK COMMSSION</td>
-					<td>8<sup>TH</st></td>
-					<td>0.4%</td>
-					<td>0.4%</td>
-					<td>0.4%</td>
-					<td>0.4%</td>
-					<td>0.4%</td>
-					<td>0.4%</td>
-					</tr>
-
-					<tr>
-					<td>8<sup>TH</st></td>
-					<td>INDIRECT UPLINK COMMSSION</td>
-					<td>9<sup>TH</st></td>
-					<td>0.4%</td>
-					<td>0.4%</td>
-					<td>0.4%</td>
-					<td>0.4%</td>
-					<td>0.4%</td>
-					<td>0.4%</td>
-					</tr>
-
-					<tr>
-					<td>9<sup>TH</st></td>
-					<td>INDIRECT UPLINK COMMSSION</td>
-					<td>10<sup>TH</st></td>
-					<td>0.4%</td>
-					<td>0.4%</td>
-					<td>0.4%</td>
-					<td>0.4%</td>
-					<td>0.4%</td>
-					<td>0.4%</td>
-					</tr>
-
-					<tr>
-					<td>9<sup>TH</st></td>
-					<td>INDIRECT UPLINK COMMSSION</td>
-					<td>10<sup>TH</st></td>
-					<td>0.4%</td>
-					<td>0.4%</td>
-					<td>0.4%</td>
-					<td>0.4%</td>
-					<td>0.4%</td>
-					<td>0.4%</td>
-					</tr>
-
-					<tr>
-					<td>10<sup>TH</st></td>
-					<td>INDIRECT UPLINK COMMSSION</td>
-					<td>11<sup>TH</st></td>
-					<td></td>
-					<td></td>
-					<td>0.2%</td>
-					<td>0.2%</td>
-					<td>0.2%</td>
-					<td>0.2%</td>
-                    <tr>
-
-
-					<td>11<sup>TH</st></td>
-					<td>INDIRECT UPLINK COMMSSION</td>
-					<td>12<sup>TH</st></td>
-					<td></td>
-					<td></td>
-					<td>0.2%</td>
-					<td>0.2%</td>
-					<td>0.2%</td>
-					<td>0.2%</td>
-					</tr>
-					
-					<tr>
-					<td>12<sup>TH</st></td>
-					<td>INDIRECT UPLINK COMMSSION</td>
-					<td>13<sup>TH</st></td>
-					<td></td>
-					<td></td>
-					<td>0.2%</td>
-					<td>0.2%</td>
-					<td>0.2%</td>
-					<td>0.2%</td>
-					</tr>
-
-					
-					<tr>
-					<td>13<sup>TH</st></td>
-					<td>INDIRECT UPLINK COMMSSION</td>
-					<td>14<sup>TH</st></td>
-					<td></td>
-					<td></td>
-					<td>0.2%</td>
-					<td>0.2%</td>
-					<td>0.2%</td>
-					<td>0.2%</td>
-					</tr>
-
-					<tr>
-					<td>14<sup>TH</st></td>
-					<td>INDIRECT UPLINK COMMSSION</td>
-					<td>15<sup>TH</st></td>
-					<td></td>
-					<td></td>
-					<td>0.2%</td>
-					<td>0.2%</td>
-					<td>0.2%</td>
-					<td>0.2%</td>
-					</tr>
-                    </table>
                     <br>
                     <br>
                     <br>
@@ -556,7 +48,7 @@
 
 					<h3> 45 DAYS ONEOFF COMMISION</h3>
 
-                    <p>Once an intern cumulative point value equals or greater than 3000pv within 45days of signup</p>
+          <p>Once an intern cumulative point value equals or greater than 3000pv within 45days of signup</p>
 					<h6>Benefits</h6>
 					<li>₦10000</li>
 					<li>One year health insurance</li>
@@ -567,19 +59,11 @@
 					<h6>Benefits</h6>
 					<li>Cash ₦3000 per 1500CPV</li>
 					<br><br>
-                    
-					<h3> CIRCLE COMMISSION</h3>
-                    <p>Whenever an intern cumulative point value (PV) equals or greater than 12000 points he/she becomes an associate. You earn associate reward any month your cumulative point value adds up with 12000 point value (PV)</p>
-					<h6>Benefits</h6>
-					<li>Cash ₦40000 per 12000CPV</li>
-					<br><br>
 
 
-					<h3>ACHIEVER </h3>
-                    <p>Once a member cumulative point value equals or greater than 24000pv within 90days of sign up that automatically becomes an achievers account. You earn achievers reward once your cumulative point value adds up with 24000 point value (PV) every 90 days. When you don’t meet up the 90day the sum of ₦2000 will be deducted on request to reactivate the achiever account. Another 90days starts counting you can only get an achiever account from 1st to 90th day of you sign up after which that account can never be an achievers account. </p>
-					<h6>Benefits</h6>
-					<li>Cash ₦20000</li>
-					<br><br>
+
+
+
 
 
 					<h3>PROFESSIONAL </h3>
@@ -632,7 +116,7 @@
                     <br><br>
 
 
-					
+
 
 
 
@@ -681,7 +165,7 @@
 
 					 <h3>BUYERS COMMISSION/POINT VALUE (PV).</h3>
 					 <p>When the cashback value accumulates #1000 they earn one coin and when the coin accumulate to five (5) coin they earn 100 point value (PV).</p>
-					
+
 					 <br><br>
 					 <h3>MEMBERS SELLERS COMMISSION/POINT VALUE (PV).</h3>
 					 <p>For every fifty coins accumulated from your store you earn #1800. This is for only registered members with store listed </p>
@@ -829,7 +313,7 @@
 					 <td>0.025%</td>
 					 <td>0.025%</td>
 					 </tr>
-                      
+
 
 					 <tr>
 					 <td>9<sup>TH</sup></td>
@@ -902,7 +386,7 @@
 					 <p>Once investment is made it take a period of 14 days incubation period and on the 15th day the commission starts dropping.</p>
 					 <p>The minimum amount that can be invested is fifty thousand naira (50000) while the maximum is one million (5000000)</p>
 					 <p>Note: - 27th of every month that’s is the company month end and all payouts is made if there is any account owning the company deduction is made. Before final balance will be paid</p>
-					 
+
 			  </div>
 			</div>
 		</section>

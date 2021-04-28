@@ -40,34 +40,8 @@ class DashboardController extends G360
         }
         $histories = WalletHistory::where([ 
             ['user_id', $user->id]
-            // ['name', '<>', 'h_token'],
-            // ['name', '<>', 'cpv'],
-            // ['name', '<>', 'award_point']
-        ])
-        ->latest()->take(15)->get();
-        // $referals = [];
-        // $d_referals = User::where('ref_gnum', $user->gnumber)->latest()->get();
-        // if($d_referals->count()){
-        //     foreach($d_referals as $d_referal){
-        //         array_push($referals, $d_referal);
-        //         self::getRef($d_referal->gnumber, $referals);
-        //     }
-        // }
+        ])->latest()->take(20)->get();
         return view('user.dashboard.index',  compact('histories'));
-    }
-     /**
-     * Get referral levels
-     *
-     * @return \Illuminate\Http\Response
-     */   
-    private static function getRef($gnumber, &$referals, $level=1)
-    {
-        if($level > 15 || count($referals) >= 15) return;
-        $user = User::where('ref_gnum', $gnumber)->first();
-        if($user){
-            array_push($referals, $user);
-            self::getRef($user->gnumber, $referals, $level+1);
-        }
     }
     /**
      * Reactivate Supper assoc

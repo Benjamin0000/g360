@@ -1,9 +1,10 @@
 <?php
-
 namespace App\Http\Controllers\User;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use App\Models\User;
 class DownlineController extends Controller
@@ -36,13 +37,17 @@ class DownlineController extends Controller
      *
      * @return \Illuminate\Http\Response
      */   
-    private static function getIndirectRef($gnumber, &$referals, $level=1)
+    private static function getRefGen($gnumber, &$referals, $level=1)
     {
         if($level > 15) return;
-        $user = User::where('ref_gnum', $gnumber)->first();
+        $user = User::where('ref_gnum', $gnumber)
+        ->orWhere('placed_by', $gnumber)->first();
         if($user){
+            $user['level'] = $level;
             array_push($referals, $user);
-            self::getRef($user->gnumber, $referals, $level+1);
+            self::getRefGen($user->gnumber, $referals, $level+1);
+        }else {
+            return;
         }
     }
     /**
@@ -52,7 +57,22 @@ class DownlineController extends Controller
      */
     public function indirect()
     {
-       
+        $user = Auth::user();
+        $referals = [];
+        $d_referals = User::where('ref_gnum', $user->gnumber)->latest()->get();
+        if($d_referals->count()){
+            foreach($d_referals as $d_referal){
+                self::getRefGen($d_referal->gnumber, $referals);
+            }
+        }
+        $referals = $this->paginate($referals, 10);
+        return view('user.downline.indirect', compact('referals'));
+    }
+    public function paginate($items, $perPage = 5, $page = null, $options = [])
+    {
+        $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
+        $items = $items instanceof Collection ? $items : Collection::make($items);
+        return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
     }
 
 }

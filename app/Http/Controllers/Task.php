@@ -579,7 +579,7 @@ class Task extends G360
      * @return void
     */
     public static function rPPP()
-    {
+    { 
         $acheived = 1;
         $pv = Helpers::getRegData('ppp_pv');
         $reward = Helpers::getRegData('ppp_payment');

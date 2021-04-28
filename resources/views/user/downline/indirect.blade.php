@@ -1,8 +1,11 @@
-@extends('user.layout', ['title'=>' Direct Downlines'])
+@extends('user.layout', ['title'=>'Indirect Downlines'])
 @section('content')
+@php
+use App\Http\Helpers;
+@endphp
 <div class=" clearfix row ">
     <div class="col-sm-12 p-3">
-        <a href="{{route('user.downline.indirect')}}" class="btn btn-outline-default float-right">Indirect Downline</a>
+        <a href="{{route('user.downline.direct')}}" class="btn btn-outline-default float-right">Direct Downline</a>
     </div>
 </div>
 <div class="row">
@@ -18,15 +21,24 @@
                                 <th>Name</th>
                                 <th>Package</th>
                                 <th>Join date</th>
-                                <th>Activation date</th>
                             </tr>
                         </thead>
                         <tbody>
-
-
+                          @if($referals->count())
+                            @php $count =  Helpers::tableNumber(10) @endphp
+                            @foreach($referals as $referal)
+                              <tr>
+                                <td>{{$count++}}</td>
+                                <td>{{$referal->fname.' '.$referal->lname}}</td>
+                                <td>{{$referal->package->name}}</td>
+                                <td>{{$referal->created_at->isoFormat('lll')}}</td>
+                              </tr>
+                            @endforeach
+                          @endif
                         </tbody>
                     </table>
                 </div>
+                {{$referals->links()}}
             </div>
         </div>
     </div>
