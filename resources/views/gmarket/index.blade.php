@@ -35,7 +35,7 @@
     <h3 class="text-center">Browse Categories</h3>
   <div class="row">
     <div class="col-md-3">
-      <a href="{{route('eshop.index')}}" class="gcon">
+      <a href="#{{--route('eshop.index')--}}" class="gcon">
           <img class="" width="72" src="/assets/shop.png" alt="Restaurants">
           <h3 class="">E-Shop</h3>
       </a>

@@ -92,11 +92,25 @@ class Package extends Model
             $amount = $this->amount - $old_package->amount;
         else
             $amount = $this->amount;
-        
+
+        $cash_back = ($cash_back_percent/100)*$amount;
         if($insurance == 'yes'){
+            $h_token_price = (float)Helpers::getRegData('h_token_price');
+            $h_token = $cash_back / $h_token_price;
+            $user->h_token += $h_token;
+            $user->save();
+            WalletHistory::create([
+                'id'=>Helpers::genTableId(WalletHistory::class),
+                'user_id'=>$user->id,
+                'amount'=>$h_token,
+                'gnumber'=>$user->gnumber,
+                'name'=>'h_token',
+                'type'=>'credit',
+                'description'=>'health insurance'
+            ]);
             //activate insurance
         }else{
-            $cash_back = ($cash_back_percent/100)*$amount;
+            // $cash_back = ($cash_back_percent/100)*$amount;
             $user->$pend_balance += $cash_back;
             $user->save();
             WalletHistory::create([

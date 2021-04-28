@@ -206,6 +206,7 @@ class Task extends G360
     */
     public static function superAssocReward()
     {
+        set_time_limit(0);
         $rank = Rank::find(1);
         $pv = $rank->pv;
         $minutes = $rank->minutes;
@@ -261,6 +262,7 @@ class Task extends G360
     */
     public static function ranking()
     {
+        set_time_limit(0);
         $sA_rank_id = 1;
         $ranks = Rank::where('id', '<>', $sA_rank_id)->get();
         $last_rank = Rank::orderBy('id', 'DESC')->first()->id;
@@ -348,6 +350,7 @@ class Task extends G360
     */
     public static function lmp()
     {
+        set_time_limit(0);
         $lmps = Lmp::where('status', 0)->get();
         if($lmps->count()){
             foreach($lmps as $lmp){
@@ -406,6 +409,7 @@ class Task extends G360
     */
     public static function gsClub()
     {
+       set_time_limit(0);
        $switch = Helpers::gsTeamSwitch();
        $givers = GsClub::where([
           ['status', 0],
@@ -522,6 +526,7 @@ class Task extends G360
     */
     public static  function ppp()
     {
+        set_time_limit(0);
         $acheived = 1;
         $needGrace = 2;
         $faild = 3;
@@ -580,6 +585,7 @@ class Task extends G360
     */
     public static function rPPP()
     { 
+        set_time_limit(0);
         $acheived = 1;
         $pv = Helpers::getRegData('ppp_pv');
         $reward = Helpers::getRegData('ppp_payment');
@@ -617,6 +623,7 @@ class Task extends G360
     */
     public static function trading()
     {
+        set_time_limit(0);
         $trading = Trading::where('status', 0)->get();
         foreach($trading as $trade){
             if($trade->created_at->diffInHours() >= 48 && $trade->interest_returned == 0){
@@ -637,7 +644,7 @@ class Task extends G360
                         " Interest from $trade->name plan trading"
                     ]);
                     #pay referrals
-                    TradeCon::sharePv($user, $trade->pv, $level=1);
+                    TradeCon::sharePv($user, $trade->ref_pv, $level=1);
                     if($trade->ref_percent != ''){
                         $formular =  explode(',', $trade->ref_percent);
                         TradeCon::shareCommission($user, $formular, $trade->amount, $trade->name, $level=1);
@@ -679,6 +686,7 @@ class Task extends G360
     */
     public static function shareSignupProfit()
     {
+        set_time_limit(0);
         $track = PartnerProfit::where('name', 'partner')->first();
         $contracts = PContract::where('status', 0);
         $total = $track->users_count - $track->last_count;
@@ -702,6 +710,7 @@ class Task extends G360
     }
     public static function expire_contract()
     {
+        set_time_limit(0);
         $contracts = PContract::where('status', 0);
         if($contracts->exists()){
             foreach($contracts->get() as $contract){
@@ -718,6 +727,7 @@ class Task extends G360
     }
     public static function sAgentRGcoin()
     {
+        set_time_limit(0);
         $sAgents = Agent::where('type', 1)->get();
         if($sAgents->count()){
             $set = AgentSetting::first();

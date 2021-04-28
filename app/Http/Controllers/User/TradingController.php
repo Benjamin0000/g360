@@ -4,9 +4,12 @@ use App\Http\Controllers\G360;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Helpers;
+use App\Models\WalletHistory;
 use App\Models\TradePkg;
 use App\Models\Trading;
 use App\Models\Package;
+use App\Models\User;
+use Carbon\Carbon;
 class TradingController extends G360
 {
     /**
@@ -38,7 +41,7 @@ class TradingController extends G360
         $user = Auth::user();
         if($package = TradePkg::find($id)){
             $amt = $package->amount;
-            if($user->self::$trx_balance >= $amt){
+            if($user->trx_balance >= $amt){
                 $pkg = Package::where('name', $package->min_pkg)->first();
                 if($pkg){
                     if($user->pkg_id < $pkg->id)
@@ -46,14 +49,14 @@ class TradingController extends G360
                 }else{
                     return back()->with('error', 'Sorry cannot trade at this time');
                 }
-                $user->self::$trx_balance -= $amt;
+                $user->trx_balance -= $amt;
                 $user->save();
                 WalletHistory::create([
                     'id'=>Helpers::genTableId(WalletHistory::class),
                     'user_id'=>$user->id,
                     'amount'=>$amt,
                     'gnumber'=>$user->gnumber,
-                    'name'=>self::$trx_balance,
+                    'name'=>'trx_balance',
                     'type'=>'debit',
                     'description'=>self::$cur.$amt.
                     " for $package->name plan trading"
@@ -71,6 +74,11 @@ class TradingController extends G360
                     'exp_days'=>$package->exp_days,
                     'last_added'=>Carbon::now(),
                 ]);
+                $pv = $package->ref_pv;
+                $plan_name = $package->name;
+                $formular = json_decode('['.$package->ref_percent.']',true);
+                // self::sharePv($user, $pv, $plan_name);
+                // self::shareCommission($user, $formular, $amt, $plan_name);
                 return back()->with('success', 'Your trade with us has been initiated');
             }else{
                 return back()->with('error', "Insufficient fund for this trading plan");
@@ -89,12 +97,11 @@ class TradingController extends G360
     {
         $user = Auth::user();
         $trades = Trading::where('user_id', $user->id)->latest()->paginate(20);
-        $total = $trades->count();
         $tActive = Trading::where([['user_id', $user->id], ['status', 0]])->sum('amount');
         $tReceived = Trading::where([['user_id', $user->id], ['status', 1]]);
         $tReceived = $tReceived->sum('amount') + $tReceived->sum('interest_amt');
         $tTraded = Trading::where('user_id', $user->id)->sum('amount');
-        return view('user.trading.history', compact('trades', 'total', 'tActive', 'tReceived', 'tTraded'));
+        return view('user.trading.history', compact('trades', 'tActive', 'tReceived', 'tTraded'));
     }
     /**
      *
@@ -132,7 +139,7 @@ class TradingController extends G360
         else
             $user = User::where([ ['gnumber', $user->ref_gnum], ['status', 1] ])->first();
         if($user){
-            $user->self::$with_balance += $profit;
+            $user->with_balance += $profit;
             $user->save();
             WalletHistory::create([
                 'id'=>Helpers::genTableId(WalletHistory::class),

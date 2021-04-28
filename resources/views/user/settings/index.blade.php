@@ -29,7 +29,7 @@
                                           <i class="ti-email"></i>
                                       </span>
                                   </div>
-                                  <input type="password" name="password" class="form-control" placeholder="New password">
+                                  <input type="password" required name="password" class="form-control" placeholder="New password">
                               </div>
                           </div>
                           <div class="form-group">
@@ -40,7 +40,7 @@
                                           <i class="ti-lock"></i>
                                       </span>
                                   </div>
-                                  <input type="password" name="password_confirmation"  class="form-control" id="pwd1" placeholder="Confirm password">
+                                  <input type="password" required name="password_confirmation"  class="form-control" id="pwd1" placeholder="Confirm password">
                               </div>
                           </div>
                           <div class="form-group">
@@ -51,7 +51,7 @@
                                           <i class="ti-lock"></i>
                                       </span>
                                   </div>
-                                  <input type="password" name="current_password"  class="form-control" id="pwd2" placeholder="Current password">
+                                  <input type="password" required name="current_password"  class="form-control" id="pwd2" placeholder="Current password">
                               </div>
                           </div>
                           @csrf
@@ -62,7 +62,7 @@
                        <form action="{{route('user.settings.nin')}}" method="post">
                           <div class="form-group">
                             <label for="">Enter NIN number</label>
-                            <input type="text" name="nin_number" value="{{$user->nin_number}}" class="form-control">
+                            <input type="text" required name="nin_number" value="{{$user->nin_number}}" class="form-control">
                           </div>
                           @csrf
                           <div class="form-group">

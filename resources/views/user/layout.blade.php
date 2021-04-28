@@ -202,7 +202,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="ddd" >
+                            <a href="#" >
                                 <i class="fa  fa-medkit"></i>
                                 <span class="hide-menu">Insurrance</span>
                             </a>
@@ -229,7 +229,7 @@
                         </li>-->
 
                         <li>
-                            <a href="dd" >
+                            <a href="{{route('user.support.index')}}" >
                                 <i class="mdi mdi-help"></i>
                                 <span class="hide-menu">Support </span>
                             </a>

@@ -1,6 +1,7 @@
 @extends('user.layout', ['title'=>'Trading History'])
 @php
-$cur = App\Http\Helpers::LOCAL_CURR_SYMBOL;
+use App\Http\Helpers;
+$cur = Helpers::LOCAL_CURR_SYMBOL;
 @endphp
 @section('content')
   <div class="row">
@@ -81,7 +82,7 @@ $cur = App\Http\Helpers::LOCAL_CURR_SYMBOL;
          </thead>
          <tbody>
            @if($trades->count())
-             @php $count = Helpers::tableNumber($total) @endphp
+             @php $count = Helpers::tableNumber(20) @endphp
              @foreach($trades as $trade)
                <tr>
                  <td>{{$count++}}</td>
@@ -96,8 +97,8 @@ $cur = App\Http\Helpers::LOCAL_CURR_SYMBOL;
                      <span class="badge badge-warning">Trading</span>
                    @endif
                  </td>
-                 <td>{{$trade->created_at->isoFormat()}}</td>
-                 <td>{{$trade->created_at->addDays($trade->exp_days)->isoFormat()}}</td>
+                 <td>{{$trade->created_at->isoFormat('lll')}}</td>
+                 <td>{{$trade->created_at->addDays($trade->exp_days)->isoFormat('lll')}}</td>
                </tr>
              @endforeach
           @endif

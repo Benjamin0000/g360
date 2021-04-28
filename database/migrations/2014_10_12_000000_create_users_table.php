@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('phone');
             $table->string('pic')->nullable();
+            $table->string('nin_number')->nullable();
             $table->bigInteger('ref_gnum');
             $table->integer('pkg_id')->default(0);
             $table->integer('rank_id')->default(0);

@@ -131,7 +131,7 @@
                      </thead>
                      <tbody>
                        @if($trades->count())
-                         @php $count = Helpers::tableNumber($total) @endphp
+                         @php $count = Helpers::tableNumber(10) @endphp
                          @foreach($trades as $trade)
                            <tr>
                              <td>{{$count++}}</td>

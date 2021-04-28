@@ -82,7 +82,7 @@ $cur = App\Http\Helpers::LOCAL_CURR_SYMBOL;
 </div>
 <div class="row">
   <div class="col-md-3">
-    <a href="{{route('user.shop.index')}}">
+    <a href="#{{--route('user.shop.index')--}}">
       <div class="gcon">
         <img class="" width="72" src="/assets/shop.png" alt="Restaurants">
         <h3 class="">Shops</h3>
@@ -112,7 +112,7 @@ $cur = App\Http\Helpers::LOCAL_CURR_SYMBOL;
     <a href="#">
     <div class="gcon">
       <img class="" width="72" src="/assets/deliv.webp" alt="Restaurants">
-      <h3 class="">Ligistics</h3>
+      <h3 class="">Logistics</h3>
     </div>
     </a>
   </div>

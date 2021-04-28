@@ -29,6 +29,7 @@ use App\Http\Controllers\User\GmarketController as UGmarket;
 use App\Http\Controllers\User\AgentController;
 use App\Http\Controllers\User\SettingsController;
 use App\Http\Controllers\User\ProfileController;
+use App\Http\Controllers\User\SupportController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use App\Lib\Interswitch\BillPayment;
@@ -44,9 +45,9 @@ use App\Http\Controllers\Admin\SettingsController as ASettings;
 use App\Http\Controllers\Admin\PackageController as APackage;
 use App\Http\Controllers\Admin\GsTeamController as AGsTeam;
 use App\Http\Controllers\Admin\UsersController as AUsers;
-use App\Http\Helpers;
-use App\Models\Bank;
-use App\Models\EDisco;
+// use App\Http\Helpers;
+// use App\Models\Bank;
+// use App\Models\EDisco;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -247,12 +248,15 @@ Route::group(['prefix'=>'portal'],  function(){
     Route::get('/agent/apply', [AgentController::class, 'apply'])->name('user.agent.apply');
     Route::post('/agent/create', [AgentController::class, 'create'])->name('user.agent.create');
     Route::delete('/agent/delete/{id}', [AgentController::class, 'deleteRequest'])->name('user.agent.deleteRequest');
-    #profile
+    #settings
     Route::get('/settings', [SettingsController::class, 'index'])->name('user.settings.index');
     Route::post('/settings/nin', [SettingsController::class, 'updateNin'])->name('user.settings.nin');
     Route::post('/settings/pass', [SettingsController::class, 'updatePassword'])->name('user.settings.pass');
+    #profile
     Route::get('/profile', [ProfileController::class, 'index'])->name('user.profile.index');
-    #settings
+    #support
+    Route::get('/support', [SupportController::class, 'index'])->name('user.support.index');
+    Route::post('/support', [SupportController::class, 'send'])->name('user.support.send');
 });
 
 #Admin
