@@ -21,6 +21,7 @@ use App\Http\Helpers;
                                 <th>Name</th>
                                 <th>Package</th>
                                 <th>Generation</th>
+                                <th>PV</th>
                                 <th>Join date</th>
                             </tr>
                         </thead>
@@ -30,9 +31,13 @@ use App\Http\Helpers;
                             @foreach($referals as $referal)
                               <tr>
                                 <td>{{$count++}}</td>
-                                <td>{{$referal->fname.' '.$referal->lname}}</td>
+                                <td>
+                                  {{$referal->fname.' '.$referal->lname}}
+                                  <div>{{$referal->gnumber}}</div>
+                                </td>
                                 <td>{{$referal->package->name}}</td>
                                 <td>{{Helpers::ordinal($referal['level'])}}</td>
+                                <td>{{$referal->cpv}}</td>
                                 <td>{{$referal->created_at->isoFormat('lll')}}</td>
                               </tr>
                             @endforeach
