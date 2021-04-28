@@ -20,6 +20,7 @@ use App\Http\Helpers;
                                 <th>S/N</th>
                                 <th>Name</th>
                                 <th>Package</th>
+                                <th>Generation</th>
                                 <th>Join date</th>
                             </tr>
                         </thead>
@@ -31,6 +32,7 @@ use App\Http\Helpers;
                                 <td>{{$count++}}</td>
                                 <td>{{$referal->fname.' '.$referal->lname}}</td>
                                 <td>{{$referal->package->name}}</td>
+                                <td>{{$referal['level']}}</td>
                                 <td>{{$referal->created_at->isoFormat('lll')}}</td>
                               </tr>
                             @endforeach

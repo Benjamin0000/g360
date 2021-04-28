@@ -65,14 +65,17 @@ class DownlineController extends Controller
                 self::getRefGen($d_referal->gnumber, $referals);
             }
         }
-        $referals = $this->paginate($referals, 10);
+        $referals = $this->paginate($referals, 10,);
         return view('user.downline.indirect', compact('referals'));
     }
     public function paginate($items, $perPage = 5, $page = null, $options = [])
     {
         $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
         $items = $items instanceof Collection ? $items : Collection::make($items);
-        return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
+        $paginator = new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
+        $paginator->setPath(route('user.downline.indirect'));
+        // $paginator->setPageName("p");
+        return $paginator;
     }
 
 }
