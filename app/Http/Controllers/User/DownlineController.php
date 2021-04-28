@@ -37,7 +37,7 @@ class DownlineController extends Controller
      *
      * @return \Illuminate\Http\Response
      */   
-    private static function getRefGen($gnumber, &$referals, $level=1)
+    private static function getRefGen($gnumber, &$referals, $level=2)
     {
         if($level > 15) return;
         $user = User::where('ref_gnum', $gnumber)
@@ -59,9 +59,10 @@ class DownlineController extends Controller
     {
         $user = Auth::user();
         $referals = [];
-        $d_referals = User::where('ref_gnum', $user->gnumber)->latest()->get();
-        if($d_referals->count()){
-            foreach($d_referals as $d_referal){
+        $d_referals = User::where('ref_gnum', $user->gnumber)
+        ->orWhere('placed_by', $user->gnumber)->latest();
+        if($d_referals->exists()){
+            foreach($d_referals->get() as $d_referal){
                 self::getRefGen($d_referal->gnumber, $referals);
             }
         }

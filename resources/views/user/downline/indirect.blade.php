@@ -32,7 +32,7 @@ use App\Http\Helpers;
                                 <td>{{$count++}}</td>
                                 <td>{{$referal->fname.' '.$referal->lname}}</td>
                                 <td>{{$referal->package->name}}</td>
-                                <td>{{$referal['level']}}</td>
+                                <td>{{Helpers::ordinal($referal['level'])}}</td>
                                 <td>{{$referal->created_at->isoFormat('lll')}}</td>
                               </tr>
                             @endforeach
