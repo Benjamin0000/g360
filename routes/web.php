@@ -45,99 +45,6 @@ use App\Http\Controllers\Admin\SettingsController as ASettings;
 use App\Http\Controllers\Admin\PackageController as APackage;
 use App\Http\Controllers\Admin\GsTeamController as AGsTeam;
 use App\Http\Controllers\Admin\UsersController as AUsers;
-// use App\Http\Helpers;
-// use App\Models\Bank;
-// use App\Models\EDisco;
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
-Route::get('/test', function(){
- return;
-    // $disco = EDisco::where('code', 'BPE-NGCABABA-OR')->first();
-    // $elect = new Electricity('07126018816', $disco, 600);
-    // return $elect->verifyPurchase(537314);
-    // $transfer = new MoneyTransfer();
-    // return $transfer->getAccountInfo('1226075485', 9);
-    // $ecable = new CableTv('BPD-NGCA-AQA');
-    // return $ecable->validateSmartCard('1025640366');
-    // return Helpers::ordinal(1);
-    // return Helpers::ripeForUpgrade();
-    // $url = 'https://passport.interswitchng.com/passport/oauth/token';
-    // $clientID = "IKIAC7E97F86359001BC72CDBD9BEE2AF4B3BEE7C2F9";
-    // $secret = "3EC51A292F79ECAE110BA51348A88F34B620CE95";
-    // $data = "$clientID:$secret";
-    // $bill = new BillPayment($clientID, $secret);
-    // return $bill->get_billers();
-    // $encoded = base64_encode($data);
-    // $response = Http::withHeaders([
-    //     'Authorization'=>"Basic ".$encoded,
-    //     'Content-Type'=>'application/x-www-form-urlencoded'
-    // ])->post($url, [
-    //     "grant_type"=>"client_credentials",
-    // ]);
-
-    // $url = 'http://epayment.com.ng/epayment/api/3pbundle_validate';
-    // $response = Http::withHeaders([
-    //     'Authorization'=>"Bearer An4jkYjFi0Q5HFvt5CyaZD6HP8GkM1TNJkoyXftrASROz3dBNVbqyLvPyaw9",
-    // ])->post($url, [
-    //     "phone"=>"2348115814769",
-    // ]);
-
-    // return json_decode($response, true);
-    // $epay = new Airtime();
-    // return $epay->validatePhone('2348115814769', 'Globacom', 100);
-    // return $epay->purchase();
-    // return $epay->product_code;
-    // $epay = new Data();
-    // return $epay->getDataPlan('07066571490');
-    // return bcrypt('anole22@101');
-    $data = '{ "_id":"605db9767f0e4f023173e207","updatedAt":"2021-03-26T10:37:52.094Z","createdAt":"2021-03-26T10:37:42.465Z","exec_agent":null,"exec_ip":"192.241.155.216","exec_by":"6057a9cd8e91c40269
-        ee1cb9","test":false,"operator_reference":"4b601310-8e1f-11eb-a683-
-        176daa8e08be","client_apireqbody":{"meter":"45056459105","product_id":"BPE-NGCABABA-
-        OR","denomination":"600","customer_reference":"1542-
-        494846"},"app_host":"gra46","subtype":"electricity","type":"billpay","channel":"api","opera
-        tor_name":"Abuja
-        Prepaid","country":"Nigeria","customer_reference":"5e2619dae30f4873ae91148f#1542-
-        494846","paid_currency":"NGN","paid_amount":591,"topup_currency":"NGN","topup_amount":600,"ta
-        rget":"45056459105","txkey":"213261137410461111","state":"fin","wholesaler":"586d78cfb7746627
-        5ba0bd2d","account":"5e2619dae30f4873ae91148f","product_id":"BPE-NGCABABA-
-        OR","__v":2,"wh_com":-9,"client_apiresponse":{"status":201,"message":"Operation
-        Successful, Recharge created, Reference :
-        4b601310-8e1f-11eb-a683-176daa8e08be","reference":"4b601310-8e1f-11eb-a683-
-        176daa8e08be","code":"RECHARGE_COMPLETE","paid_amount":591,"paid_currency":"NGN",
-        "topup_amount":600,"topup_currency":"NGN","target":"45056459105","product_id":"BP
-        E-NGCABABA-OR","time":"2021-03-
-        26T10:37:52.094Z","country":"Nigeria","operator_name":"Abuja
-        Prepaid","completed_in":10262,"customer_reference":"1542-
-        494846","pin_based":true,"pin_code":"11726918305519546894","pin_option1":"Token:
-        11726918305519546894; Units : 13.4Kwh; Debt Amount : N/A; Debt Remaining : N/A; Recept No:
-        210326954352;
-        "},"code":"RECHARGE_COMPLETE","completed_in":10262,"message":"Operation
-        Successful","pin_based":true,"pin_code":"11726918305519546894","pin_option1":"Token:
-        11726918305519546894; Units :
-        13.4Kwh; Debt Amount : N/A; Debt Remaining : N/A; Recept No: 210326954352;
-        ","success":true,"ws_host":"210326954352","custom_details":[],"related_transactions":["605db9
-        757f0e4f023173e206","605db9807f0e4f023173e209","605db9767f0e4f023173e207"],"time":"2021-03-
-        26T10:37:42.464Z"}';
-        return json_encode($data);
-});
-
-// function SHA256($signaturecipher)
-
-// {return hash("sha256",$signaturecipher);}
-
-// function SHA1($signaturecipher)
-
-// {return sha1($signaturecipher, true);}
-
 Route::get('/',  [FrontController::class, 'index'])->name('front.index');
 Route::get('/about',  [FrontController::class, 'about'])->name('front.about');
 Route::get('/how-it-works',  [FrontController::class, 'how_works'])->name('front.how_works');
@@ -314,7 +221,10 @@ Route::group(['prefix'=>'admin'],  function(){
 
    #Gmarket
    Route::get('/gmarket/shop', [AGMarket::class, 'shop'])->name('admin.gmarket.shop');
-
+   Route::get('/gmarket/shop/category', [AGMarket::class, 'shopCategory'])->name('admin.gmarket.shop.category.index');
+   Route::post('/gmarket/shop/category', [AGMarket::class, 'createShopCategory'])->name('admin.gmarket.shop.category.create');
+   Route::put('/gmarket/shop/category/{id}', [AGMarket::class, 'updateShopCategory'])->name('admin.gmarket.shop.category.update');
+   Route::delete('/gmarket/shop/category/{id}', [AGMarket::class, 'deleteShopCategory'])->name('admin.gmarket.shop.category.destroy');
    #Partner
    Route::get('/partner', [APartner::class, 'index'])->name('admin.partner.index');
    Route::post('/partner', [APartner::class, 'store'])->name('admin.partner.store');

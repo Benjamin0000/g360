@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Shop;
+use App\Models\ShopCategory;
 class GmarketController extends Controller
 {
      /**
@@ -25,45 +26,59 @@ class GmarketController extends Controller
         return view('admin.gmarket.shop.index', compact('shops'));
     }
     /**
-     * Store a newly created resource in storage.
+     * Show category page
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function shopCategory()
+    {
+        $categories = ShopCategory::all();
+        return view('admin.gmarket.shop.category.index', compact('categories'));
+    }
+    /**
+     * Create shop category
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function createShopCategory(Request $request)
     {
-        //
+        $this->validate($request, [
+            'name'=>['required', 'unique:shop_categories']
+        ]);
+        ShopCategory::create($request->all());
+        return back()->with('success', 'category created');
     }
     /**
-     * Display the specified resource.
-     *
+     * Update shop category
+     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function updateShopCategory(Request $request, $id)
     {
-        //
-    }
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        if($category = ShopCategory::find($id)){
+            $category->update($request->all());
+            return back()->with('success', 'Category updated');
+        }
+        return back()->with('error', 'category not found');
     }
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function deleteShopCategory($id)
     {
-        //
+        if($category = ShopCategory::find($id)){
+            if(!$category->shops->count()){
+                $category->delete();
+                return back()->with('success', 'Category Deleted');
+            }
+            return back()->with('error', "Can't delete category, there are shops registered under this category");
+        }
+        return back()->with('error', 'category not found');
     }
     /**
      * Remove the specified resource from storage.

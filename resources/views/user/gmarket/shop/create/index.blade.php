@@ -11,6 +11,9 @@ $states = config('states');
       <h3>Create A Shop</h3>
     </div>
     <div class="card-body">
+      <div class="float-right" style="margin-bottom:5px;">
+      <a class="btn btn-primary" href="{{route('user.shop.index')}}"><i class="mdi mdi-arrow-left"></i> Back</a>
+      </div>
       <form enctype="multipart/form-data" action="{{route('user.shop.save')}}" method="post">
            <div class="form-group">
              <input type="text" placeholder="Name Of Shop" name="name" class="form-control" value="">

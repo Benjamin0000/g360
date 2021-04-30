@@ -13,6 +13,7 @@ class Shop extends Model
         'id',
         'user_id',
         'name',
+        'slug',
         'shop_category_id',
         'logo',
         'state_id',
@@ -33,5 +34,17 @@ class Shop extends Model
                 'onUpdate'=>true
             ]
         ];
+    }
+    public function category()
+    {
+        return $this->belongsTo(ShopCategory::class, 'shop_category_id');
+    }
+    public function state()
+    {
+        return $this->belongsTo(State::class, 'state_id');
+    }
+    public function city()
+    {
+        return $this->belongsTo(State::class, 'city_id');
     }
 }
