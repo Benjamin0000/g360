@@ -1,4 +1,4 @@
-@extends('user.layout', ['title'=>'Create Shop'])
+@extends('user.layout', ['title'=>'Edit Shop'])
 @section('content')
 @php
 $states = config('states');
@@ -8,26 +8,30 @@ $states = config('states');
 </style>
 <div class="card" style="min-height:80vh;">
     <div class="card-header text-center" style="background:#eee;">
-      <h3>Create A Shop</h3>
+      <h3>Edit Shop</h3>
     </div>
     <div class="card-body">
       <div class="float-right" style="margin-bottom:5px;">
       <a class="btn btn-primary" href="{{route('user.shop.index')}}"><i class="mdi mdi-arrow-left"></i> Back</a>
       </div>
-      <form enctype="multipart/form-data" action="{{route('user.shop.save')}}" method="post">
+      <form enctype="multipart/form-data" action="{{route('user.shop.update', $shop->id)}}" method="post">
            <div class="form-group">
-             <input type="text" placeholder="Name Of Shop" name="name" class="form-control" value="">
+             <input type="text" placeholder="Name Of Shop" name="name" class="form-control" value="{{$shop->name}}">
            </div>
            <div class="form-group">
-              <div><label for="">Logo &nbsp;<small class="text-danger">(100kb max)</small></label></div>
+              <div>
+                  <label for="">Logo &nbsp;<small class="text-danger">(100kb max)</small></label>
+                  <img src="{{Storage::disk('do')->url($shop->logo)}}" width="50" class="img-fluid" alt="logo">
+                </div>
               <input type="file" name="logo" value="">
            </div>
+           @method('put')
            <div class="form-group">
               <select class="form-control" name="category">
                 <option value="">Select Category</option>
                 @if($categories->count())
                   @foreach($categories as $category)
-                    <option value="{{$category->name}}">{{$category->name}}</option>
+                    <option value="{{$category->name}}" @if($category->id == $shop->shop_category_id) selected @endif>{{$category->name}}</option>
                   @endforeach
                 @endif
               </select>
@@ -43,13 +47,13 @@ $states = config('states');
            </div>
            <div id="city_s_c"></div>
            <div class="form-group">
-             <input type="text" name="phone_number" placeholder="Mobile numbers" value="" class="form-control">
+             <input type="text" name="phone_number" placeholder="Shop mobile number" value="{{$shop->phone_number}}" class="form-control">
            </div>
            <div class="form-group">
-                <textarea name="address" class="form-control" placeholder="Enter shop address"></textarea>
+                <textarea name="address" class="form-control" placeholder="Enter address">{{$shop->address}}</textarea>
            </div>
            <div class="form-group">
-             <button class="btn btn-primary" name="button"><i class="mdi mdi-plus-circle"></i> Create Shop</button>
+             <button class="btn btn-primary" name="button"><i class="mdi mdi-plus-circle"></i>UPDATE</button>
            </div>
       </form>
     </div>

@@ -30,6 +30,7 @@ use App\Http\Controllers\User\AgentController;
 use App\Http\Controllers\User\SettingsController;
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\SupportController;
+use App\Http\Controllers\User\ProductController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use App\Lib\Interswitch\BillPayment;
@@ -45,6 +46,7 @@ use App\Http\Controllers\Admin\SettingsController as ASettings;
 use App\Http\Controllers\Admin\PackageController as APackage;
 use App\Http\Controllers\Admin\GsTeamController as AGsTeam;
 use App\Http\Controllers\Admin\UsersController as AUsers;
+
 Route::get('/',  [FrontController::class, 'index'])->name('front.index');
 Route::get('/about',  [FrontController::class, 'about'])->name('front.about');
 Route::get('/how-it-works',  [FrontController::class, 'how_works'])->name('front.how_works');
@@ -66,6 +68,7 @@ Route::post('/password/update', [LoginController::class, 'updatePassword'])->nam
 Route::get('/register', [RegisterController::class, 'index'])->name('register');
 Route::post('/register', [RegisterController::class, 'store'])->name('register');
 Route::get('/verify-email/{token}/{email}', [RegisterController::class, 'verifyEmail'])->name('register.verify');
+Route::get('/xmdie/{gnum?}', [RegisterController::class, 'verifyGnumber'])->name('reg.gnumber');
 #user
 Route::group(['prefix'=>'portal'],  function(){
     Route::get('/', [DashboardController::class, 'index'])->name('user.dashboard.index');
@@ -133,11 +136,17 @@ Route::group(['prefix'=>'portal'],  function(){
     #shop
     Route::get('/shop', [UShop::class, 'index'])->name('user.shop.index');
     Route::get('/shop/create', [UShop::class, 'create'])->name('user.shop.create');
-    Route::post('/shop', [UShop::class, 'store'])->name('user.shop.save');
+    Route::post('/shop', [UShop::class, 'store'])->name('user.shop.save'); 
     Route::get('/shop/{id}', [UShop::class, 'edit'])->name('user.shop.edit');
     Route::put('/shop/{id}', [UShop::class, 'update'])->name('user.shop.update');
     Route::delete('/shop/{id}', [UShop::class, 'destroy'])->name('user.shop.destroy');
     Route::get('/BRrbPKqRyyJcMei/{name?}', [UShop::class, 'getCities'])->name('user.shop.getCities');
+    #categories
+    Route::get('/shop/{id}/category', [UShop::class, 'category'])->name('user.shop.category');
+    Route::post('/shop/{id}/category', [UShop::class, 'saveCategory'])->name('user.shop.saveCategory');
+    #products
+    Route::get('/shop/{id}/products', [ProductController::class, 'index'])->name('user.product.index');
+    Route::get('/shop/{id}/products/create', [ProductController::class, 'create'])->name('user.product.create');
     #GTClub 
     Route::get('/gsteam', [GsClubController::class, 'index'])->name('user.gsclub.index');
     Route::get('/myueynjsyh', [GsClubController::class, 'moreHistories'])->name('user.gsclub.morehis');
@@ -251,7 +260,8 @@ Route::group(['prefix'=>'admin'],  function(){
    Route::get('/settings', [ASettings::class, 'index'])->name('admin.settings.index');
    Route::post('/settings/ppp', [ASettings::class, 'ppp'])->name('admin.settings.ppp');
    Route::post('/settings/psharing', [ASettings::class, 'updatePsharing'])->name('admin.settings.psharing');
-   
+   #change password
+   Route::post('/settings/password',  [ASettings::class, 'updatePassword'])->name('admin.settings.passd');
    #package
    Route::get('/package', [APackage::class, 'index'])->name('admin.package.index');
    Route::put('/package/{id}', [APackage::class, 'update'])->name('admin.package.update');

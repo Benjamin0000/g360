@@ -173,7 +173,7 @@ class EFinanceController extends G360
             ]);
             #credit upline
             $value = (int)($user->faccount->vtu_deca/50);
-            $value - $user->faccount->v_deca_c;
+            $value -= $user->faccount->v_deca_c;
             if($value > 0){
                 $req->creditUpline($airtime, $user);
                 $user->faccount->v_deca_c += $value;
@@ -257,7 +257,7 @@ class EFinanceController extends G360
             ]);
             #credit upline
             $value = (int)($user->faccount->vtu_deca/50);
-            $value - $user->faccount->v_deca_c;
+            $value -= $user->faccount->v_deca_c;
             if($value > 0){
                 $data->creditUpline($check, $user);
                 $user->faccount->v_deca_c += $value;

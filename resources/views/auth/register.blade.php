@@ -63,10 +63,12 @@
             <div class="form-group">
                 <label for="sponsor">Sponsor G-Number</label>
                 <input type="text" value="{{App\Http\Helpers::defaultGnum()}}" class="form-control" id="sponsor" name="sponsor" required>
-            </div>
+                <div id='sp_show'></div> 
+              </div>
             <div class="form-group">
                 <label for="pu">Place under</label>
                 <input type="text" name="pu" value="" class="form-control" placeholder="G-number" id="pu">
+                <div id='pu_show'></div> 
             </div>
             <div class="form-group">
                 <label for="phone">Phone number</label>
@@ -134,5 +136,33 @@
     <script type='text/javascript' src='/assets/js/custom.js?v={{time()}}'></script>
     <script type="text/javascript" src="/assets/js/p.js"></script>
     <script type='text/javascript' src='/assets/plugins/styleswitcher/jQuery.style.switcher.js'></script>
+    <script>
+      function verfeg(div, th){
+        $(div).html("<div class=''><i class='fa fa-spinner fa-spin'></i></div>");
+          $.ajax({
+            type:'get',
+            url:"{{route('reg.gnumber')}}/"+$(th).val(),
+            success:function(data){
+              if(data.data){
+                $(div).html("<b>"+data.data+"</b>");
+              }
+              else if(data.error){
+                $(div).html("<span class='text-danger'>"+data.error+"</span>");
+              }else{
+                $(div).html("<span class='text-danger'>Couldn't complete search</span>");
+              }
+            },
+            error(){
+              $(div).html("<span class='text-danger'>Couldn't complete search</span>");
+            }
+          });
+      }
+      $(document).on('input', '#pu', function () {
+        verfeg("#pu_show", this);
+      });
+      $(document).on('input', '#sponsor', function () {
+        verfeg("#sp_show", this);
+      });
+    </script>
 </body>
 </html>

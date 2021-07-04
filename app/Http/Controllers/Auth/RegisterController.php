@@ -137,4 +137,18 @@ class RegisterController extends Controller
         }
         return redirect( route('login') )->with('expired_link', 'expired');
     }
+
+    public function verifyGnumber(Request $request, $no=0)
+    {
+        if($request->ajax()){
+            $user = User::where('gnumber', $no)->first();
+            if($user){
+                if($user->def_user){
+                    return ['data'=>'Default'];
+                }
+                return ['data'=>$user->fname.' '.$user->lname];
+            }
+            return ['error'=>'User not found'];
+        }
+    }
 }

@@ -3,24 +3,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
-class Shop extends Model
+class ProductCategory extends Model
 {
     use HasFactory, Sluggable;
     public $incrementing = false;
     protected $primaryKey = 'id';
     protected $keyType = 'string';
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
         'id',
-        'user_id',
         'name',
         'slug',
-        'shop_category_id',
-        'logo',
-        'state_id',
-        'city_id',
-        'location_id',
-        'phone_number',
-        'address'
+        'user_id',
+        'shop_id'
     ];
     /**
      * Return the sluggable configuration array for this model.
@@ -35,17 +34,5 @@ class Shop extends Model
                 'onUpdate'=>true
             ]
         ];
-    }
-    public function category()
-    {
-        return $this->belongsTo(ShopCategory::class, 'shop_category_id');
-    }
-    public function state()
-    {
-        return $this->belongsTo(State::class, 'state_id');
-    }
-    public function city()
-    {
-        return $this->belongsTo(State::class, 'city_id');
     }
 }

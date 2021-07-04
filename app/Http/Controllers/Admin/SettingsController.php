@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Helpers;
 use App\Models\Register;
+use App\Models\Admin;
 class SettingsController extends Controller
 {
      /**
@@ -71,5 +74,23 @@ class SettingsController extends Controller
         Helpers::saveRegData('min_with', $request->min_with);
         return back()->with('success', 'Updated');
     }
-
+     /**
+     * update Password
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function updatePassword(Request $request)
+    {
+        $this->validate($request, [
+            'password'=>['required', 'confirmed'],
+            'current_password'=>['required']
+        ]);
+        $admin = Auth::guard('admin')->user();
+        if(!password_verify($request->current_password, $admin->password))
+            return back()->with('error', 'Incorrect account password');
+        $admin->password = Hash::make($request->password);
+        $admin->save();
+        return back()->with('success', 'password updated');
+    }
 }

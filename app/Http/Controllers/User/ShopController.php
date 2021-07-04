@@ -8,7 +8,7 @@ use App\Http\Helpers;
 use App\Models\Shop;
 use App\Models\State as Place;
 use App\Models\ShopCategory;
-
+use App\Models\ProductCategory;
 class ShopController extends Controller
 {
     /**
@@ -77,6 +77,7 @@ class ShopController extends Controller
             'category'=>['required', 'max:100'],
             'state'=>['required', 'max:100'],
             'city'=>['required'],
+            'phone_number'=>['required'],
             'address'=>['required', 'max:500']
         ]);
         $state = $request->state;
@@ -125,19 +126,10 @@ class ShopController extends Controller
             'state_id'=>$checkState->id,
             'city_id'=>$checkCity->id,
             'location_id'=>$checkLocation?$checkLocation->id:null,
+            'phone_number'=>$request->phone_number,
             'address'=>$request->address
         ]);
         return redirect(route('user.shop.index'))->with('success', 'Shop created');
-    }
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
     }
     /**
      * Show the form for editing the specified resource.
@@ -147,7 +139,16 @@ class ShopController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = Auth::user();
+        $shop = Shop::where([
+            ['user_id', $user->id], 
+            ['id', $id]  
+        ])->first();
+        if($shop){
+            $categories = ShopCategory::all();
+            return view('user.gmarket.shop.edit', compact('shop', 'categories'));
+        }
+        return back()->with('error', 'Shop not found');
     }
     /**
      * Update the specified resource in storage.
@@ -158,7 +159,79 @@ class ShopController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'name'=>['required', 'max:200'],
+            'category'=>['required', 'max:100'],
+            'state'=>['required', 'max:100'],
+            'city'=>['required'],
+            'phone_number'=>['required'],
+            'address'=>['required', 'max:500']
+        ]);
+        $user = Auth::user();
+        $shop = Shop::where([
+            ['user_id', $user->id], 
+            ['id', $id]  
+        ])->first();
+        if(!$shop)
+            return back()->with('error', 'Not found');
+        $data = $request->all();
+        $e_n = Shop::where([
+            ['id', '<>', $id],
+            ['name', $request->name], 
+        ])->exists();
+        if($e_n)
+            return back()->with('error', 'Shop name already exists');
+        $state = $request->state;
+        $category = $request->category;
+        $city = $request->city;
+        $location = $request->location;
+
+        $checkState = Place::where('name', $state)->first();
+        $checkCity = Place::where('name', $city)->first();
+
+        if(!$checkState)
+            return back()->with('error', 'Invalid state selected');
+        if(!$checkCity || $checkCity->parent_id != $checkState->id)
+            return back()->with('error', 'Invalid city selected');
+
+        if($location){
+            $checkLocation = Place::where([ 
+                ['name', $location],
+                ['parent_id', $checkCity->id]
+            ])->first();
+            if(!$checkLocation)
+                return back()->with('error', 'Invalid location selected');  
+            
+            $data['location_id'] = $checkLocation ? $checkLocation->id:null;
+        }
+        $checkCategory = ShopCategory::where('name', $category)->first();
+        if(!$checkCategory)
+            return back()->with('error', 'Invalid category selected');
+
+        if(!$location)
+            $checkLocation = '';
+        
+        $data['shop_category_id'] = $checkCategory->id;
+        $data['state_id'] = $checkState->id;
+        $data['city_id'] = $checkCity->id;
+
+        if($request->file('logo')){
+            $this->validate($request, [
+                'logo'=>['required', 'mimes:jpeg,bmp,png,jpg']
+            ]);
+            $logo = $request->file('logo');
+            $logoName = strtolower($logo->getClientOriginalName());
+            if(($logo->getSize()/1000) > 100)
+                 return back()->with('error', 'Logo size must not be greater than 100kb');
+            
+            if(Storage::disk('do')->exists($shop->logo))
+                Storage::disk('do')->delete($shop->logo);
+            
+            $path = Storage::disk('do')->putFile('images', $logo);
+            $data['logo'] = $path;
+        }
+        $shop->update($data);
+        return back()->with('success', 'Shop updated');
     }
     /**
      * Remove the specified resource from storage.
@@ -168,6 +241,44 @@ class ShopController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $shop = Shop::where([
+            ['user_id', $user->id], 
+            ['id', $id]  
+        ])->first();
+        if(!$shop)
+            return back()->with('error', 'Not found');
+        #delete products
+        return back()->with('error', 'We are working on this feature');
     }
+    /**
+     * Category
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function category($id)
+    {
+        $user = Auth::user();
+        $shop = Shop::where([
+            ['user_id', $user->id], 
+            ['id', $id]  
+        ])->first();
+        if(!$shop)
+            return back()->with('error', 'Not found');
+
+        $categories = ProductCategory::where([
+            ['user_id', $user->id],
+            ['shop_id', $shop->id]
+        ])->get();
+        return view('user.gmarket.shop.category.index', compact('shop', 'categories'));
+    }
+    /**
+     * Category
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function saveCategory(Request $request)
+    {
+        
+    }
+
 }

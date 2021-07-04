@@ -23,6 +23,7 @@ class CreateShopsTable extends Migration
             $table->integer('location_id')->nullable();
             $table->string('geo_location')->nullable();
             $table->string('address', 500);
+            $table->string('phone_number');
             $table->boolean('status')->default(1);
             $table->timestamps();
         });

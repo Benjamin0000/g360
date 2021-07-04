@@ -41,7 +41,7 @@
       </a>
     </div>
 
-    <div class="col-md-3">
+    {{-- <div class="col-md-3">
       <a href="#" class="gcon">
         <img class="" width="72" src="/assets/res.png" alt="Restaurants">
         <h3 class="">Restaurants</h3>
@@ -53,7 +53,7 @@
           <img class="" width="72" src="/assets/serve.png" alt="Restaurants">
           <h3 class="">Services</h3>
       </a>
-    </div>
+    </div> --}}
 
     <div class="col-md-3">
       <a href="#" class="gcon">
@@ -62,12 +62,12 @@
       </a>
     </div>
 
-    <div class="col-md-3">
+    {{-- <div class="col-md-3">
       <a href="#" class="gcon">
           <img class="" width="72" src="/assets/night.png" alt="Restaurants">
           <h3 class="">Nightlife</h3>
       </a>
-    </div>
+    </div> --}}
   </div>
 </div>
 <br>

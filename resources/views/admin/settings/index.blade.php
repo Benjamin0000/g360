@@ -100,6 +100,26 @@ $cur = Helpers::LOCAL_CURR_SYMBOL;
                         </div>
                     </form>
                    </div>
+                   <div class="col-md-3">
+                     <form action="{{route('admin.settings.passd')}}" method="POST">
+                         <div class="form-group">
+                             <label for="">Current Password</label>
+                             <input type="text" class="form-control" required name="current_password">
+                         </div>
+                         <div class="form-group">
+                             <label for="">New password</label>
+                             <input type="text" class="form-control" required name="password">
+                         </div>
+                         <div class="form-group">
+                             <label for="">Confirm Password</label>
+                             <input type="text" class="form-control" required name="password_confirmation">
+                         </div>
+                         @csrf
+                         <div class="form-group">
+                             <button class="btn btn-primary">Change</button>
+                         </div>
+                     </form>
+                   </div>
                </div>
             </div>
         </div>
