@@ -15,6 +15,7 @@ use App\Models\FAccount;
 use App\Models\EDisco;
 use App\Models\CableTv;
 use App\Models\VtuTrx;
+use App\Models\ElectHistory;
 class EFinanceController extends G360
 {
     /**
@@ -35,12 +36,12 @@ class EFinanceController extends G360
     {
         $user = Auth::user();
         if(!FAccount::where('user_id', $user->id)->exists()){
-            FAccount::create([
+            $user->faccount = FAccount::create([
                 'id'=>Helpers::genTableId(FAccount::class),
                 'user_id'=>$user->id
             ]);
         }
-        return view('user.e_finance.index');
+        return view('user.e_finance.index', compact('user'));
     }
     /**
      * Show electrical pay bills page
@@ -51,11 +52,8 @@ class EFinanceController extends G360
     {
         $user = Auth::user();
         $discos = EDisco::all();
-        $histories = VtuTrx::where([
-            ['user_id', $user->id],
-            ['type', 'electricity']
-        ])->latest()->paginate(10);
-        return view('user.e_finance.pay_bills.electricity.index', 
+        $histories = ElectHistory::where('user_id', $user->id)->latest()->paginate(10);
+        return view('user.e_finance.pay_bills.electricity.index',
         compact('discos', 'histories'));
     }
     /**
@@ -91,13 +89,11 @@ class EFinanceController extends G360
                 $data['charge'] = $disco->charge;
                 $view = view('user.e_finance.pay_bills.electricity.info', compact('data'));
                 return ['status'=>"$view"];
-            break;
             case 2:
                 if($elect->purchase())
                     return back()->with('success', 'Transaction completed');
                 return back()->with('error', 'Cound not complete transaction');
-                break;
-            default: 
+            default:
                 return ['error'=>'invalid operation'];
         }
     }
@@ -117,7 +113,7 @@ class EFinanceController extends G360
             ['type', 'airtime']
         ])->orWhere('type', 'data')->latest()->paginate(10);
 
-        return view('user.e_finance.pay_bills.airtime_data.index', 
+        return view('user.e_finance.pay_bills.airtime_data.index',
         compact('airtimes', 'datasub', 'histories'));
     }
     /**
@@ -134,22 +130,22 @@ class EFinanceController extends G360
         ]);
         if(!$request->operator)
             return ['error'=>'Select a network provider'];
-        
+
         $airtime = Airtime::where('name', $request->operator)->first();
         if(!$airtime)
             return ['error'=>'Select a network provider'];
-        
+
         $amt = $request->amount;
         if($amt < $airtime->min_buy)
-            return ['error'=>'Minimum is '.self::$cur.$airtime->min_buy]; 
-        
+            return ['error'=>'Minimum is '.self::$cur.$airtime->min_buy];
+
         if($amt > $airtime->max_buy)
             return ['error'=>'Maximum is '.self::$cur.$airtime->max_buy];
-        
+
         $user = Auth::user();
         if($user->trx_balance < $amt)
             return ['error'=>'Insufficient fund in your TRX-Wallet'];
-        
+
         $req = new Pairtime();
         $data = $req->validatePhone($request->mobile_number, $request->operator, $amt);
 
@@ -207,18 +203,19 @@ class EFinanceController extends G360
      */
     public function purchaseData(Request $request)
     {
-        $this->validate($request, [
-            'mobile_number'=>['required', 'numeric'],
-            'plan'=>['required'],
-            'operator'=>['required']
-        ]);
+        if(!$request->mobile_number)
+            return ['error'=>'Enter a valid phone number'];
+
         if(!$request->operator)
             return ['error'=>'Select a network provider'];
-        
+
+        if(!$request->plan)
+            return ['error'=>'Select a valid plan'];
+
         $check = DataSub::where('name', $request->operator)->first();
         if(!$check)
             return ['error'=>'Select a network provider'];
-        
+
         $data = new DataSubscription();
         $plan = explode(',', $request->plan);
         $product = $data->getDataPlanPrice($request->mobile_number, $plan[0]);
@@ -237,7 +234,7 @@ class EFinanceController extends G360
             return ['error'=>'not available'];
         if($user->trx_balance < $price)
             return ['error'=>'Insufficient Fund in your TRX-Wallet'];
-        
+
         $p = $data->purchase($product_id, $mobile_number, $data_amt, $price, $operator, $validity);
         if($p){
             $com = $price*($check->comm/100);
@@ -281,7 +278,7 @@ class EFinanceController extends G360
             ['user_id', $user->id],
             ['type', 'cabletv']
         ])->latest()->paginate(10);
-        return view('user.e_finance.pay_bills.tvsub.index', 
+        return view('user.e_finance.pay_bills.tvsub.index',
         compact('providers', 'histories'));
     }
     /**
@@ -357,7 +354,7 @@ class EFinanceController extends G360
                     $ecable->purchase($request->smartcard_number, $package, $price);
                     if($ecable->purchase_done)
                         return back()->with('success', "Package activation successful");
-                    return back()->with('error', "activation faild"); 
+                    return back()->with('error', "activation faild");
                 }else{
                     return back()->with('error', 'Invalid smart card number');
                 }
@@ -375,5 +372,18 @@ class EFinanceController extends G360
     public function banking()
     {
         return view('user.e_finance.banking.index');
+    }
+
+    public function receipt(Request $request, $id, $type = '')
+    {
+        if(!$request->ajax()) return;
+        $user = Auth::user();
+        if($type == 'elect'){
+            $data = ElectHistory::where([
+                ['id', $id],
+                ['user_id', $user->id]
+            ])->first();
+            return view('user.e_finance.pay_bills.electricity.receipt', compact('data'));
+        }
     }
 }

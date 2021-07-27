@@ -131,12 +131,13 @@ Route::group(['prefix'=>'portal'],  function(){
     Route::post('/e-finance/tv', [EFinanceController::class, 'finishSubTv'])->name('user.pay_bills.finishSubTv');
     #Banking
     Route::get('/e-finance/banking', [EFinanceController::class, 'banking'])->name('user.banking.index');
+    Route::get('/receipt/{id?}/{type?}', [EFinanceController::class, 'receipt'])->name('receipt.print');
     #Gmarket
     Route::get('/g-market', [UGmarket::class, 'index'])->name('user.gmarket.index');
     #shop
     Route::get('/shop', [UShop::class, 'index'])->name('user.shop.index');
     Route::get('/shop/create', [UShop::class, 'create'])->name('user.shop.create');
-    Route::post('/shop', [UShop::class, 'store'])->name('user.shop.save'); 
+    Route::post('/shop', [UShop::class, 'store'])->name('user.shop.save');
     Route::get('/shop/{id}', [UShop::class, 'edit'])->name('user.shop.edit');
     Route::put('/shop/{id}', [UShop::class, 'update'])->name('user.shop.update');
     Route::delete('/shop/{id}', [UShop::class, 'destroy'])->name('user.shop.destroy');
@@ -147,7 +148,7 @@ Route::group(['prefix'=>'portal'],  function(){
     #products
     Route::get('/shop/{id}/products', [ProductController::class, 'index'])->name('user.product.index');
     Route::get('/shop/{id}/products/create', [ProductController::class, 'create'])->name('user.product.create');
-    #GTClub 
+    #GTClub
     Route::get('/gsteam', [GsClubController::class, 'index'])->name('user.gsclub.index');
     Route::get('/myueynjsyh', [GsClubController::class, 'moreHistories'])->name('user.gsclub.morehis');
     Route::post('/NalQpdnl', [GsClubController::class, 'cashout'])->name('user.gsclub.cashout');
@@ -180,51 +181,51 @@ Route::group(['prefix'=>'admin'],  function(){
    Route::get('/login', [ALogin::class, 'index'])->name('admin.login');
    Route::post('/login', [ALogin::class, 'login'])->name('admin.login');
    Route::post('/logout', [ALogin::class, 'logout'])->name('admin.logout');
-   
+
    #Dashboard
    Route::get('/', [ADashboard::class, 'index'])->name('admin.dashboard.index');
    Route::get('/vat-history', [ADashboard::class, 'vat_page'])->name('admin.vat_history');
    Route::get('/gsfee-history', [ADashboard::class, 'gsteam_fee_page'])->name('admin.gs_fee');
    Route::post('/vat-debitVat', [ADashboard::class, 'debitVat'])->name('admin.debitVat');
    Route::post('/vat-debitGST', [ADashboard::class, 'debitGsTeam'])->name('admin.debitGST');
-   
+
    #Users
    Route::get('/users', [AUsers::class, 'index'])->name('admin.users.index');
-   
+
    #Rank
    Route::get('/rank', [ARank::class, 'index'])->name('admin.rank.index');
    Route::put('/rank/{id}', [ARank::class, 'update'])->name('admin.rank.update');
-   
+
    #Trading
    Route::get('/trading', [ATrading::class, 'index'])->name('admin.trading.index');
    Route::get('/trading/package', [ATrading::class, 'package'])->name('admin.trading.package');
    Route::post('/trading/package', [ATrading::class, 'createPackage'])->name('admin.trading.createPackage');
    Route::put('/trading/pacakage/{id}', [ATrading::class, 'updatePackage'])->name('admin.trading.updatePackage');
    Route::delete('/trading/pacakage/{id}', [ATrading::class, 'deletePackage'])->name('admin.trading.deletePackage');
-   
+
    #VTU
    Route::get('/vtu', [AFinance::class, 'index'])->name('admin.finance.vtu');
    Route::get('/vtu/settings', [AFinance::class, 'settings'])->name('admin.finance.vtu.settings');
    Route::put('/vtu/settings/airtime/{id}', [AFinance::class, 'updateAirtime'])->name('admin.finance.vtu.updateAirtime');
    Route::put('/vtu/settings/data/{id}', [AFinance::class, 'updateData'])->name('admin.finance.vtu.updateData');
-  
+
    #Electricity
    Route::get('/disco', [AFinance::class, 'electricity'])->name('admin.finance.disco.index');
    Route::get('/disco/settings', [AFinance::class, 'electSettings'])->name('admin.finance.disco.settings');
    Route::put('/disco/settings/{id}', [AFinance::class, 'updateDisco'])->name('admin.finance.updateDisco');
-  
+
    #Loan
    Route::get('/loan', [AFinance::class, 'loan'])->name('admin.finance.loan.index');
    Route::put('/loan', [AFinance::class, 'loan'])->name('admin.finance.loan.update');
    Route::get('/loan/settings', [AFinance::class, 'loanSettings'])->name('admin.finance.loanSettings');
    Route::post('/loan/settings/{id?}', [AFinance::class, 'updateLoanSettings'])->name('admin.finance.updateLoanSettings');
    Route::delete('/loan/settings/{id}', [AFinance::class, 'deleteLoanPlan'])->name('admin.finance.deleteLoanPlan');
-   
+
    #Cable Tv
    Route::get('/cableTv', [AFinance::class, 'cableTv'])->name('admin.finance.cableTv.index');
    Route::get('/cableTv/settings', [AFinance::class, 'cableTvSettings'])->name('admin.finance.cableTv.settings');
    Route::put('/cableTv/settings/{id}', [AFinance::class, 'updateCableTvSettings'])->name('admin.finance.cableTv.update');
-   
+
    #Money Transfer
    Route::get('/money-transfer', [AFinance::class, 'moneyTransfers'])->name('admin.finance.money_transfer');
 
@@ -244,7 +245,7 @@ Route::group(['prefix'=>'admin'],  function(){
    Route::delete('/partner/contract/{id}', [APartner::class, 'destroyContract'])->name('admin.pcontract.delete');
    Route::get('/partner-cashout', [APartner::class, 'cashout'])->name('admin.partner.cashout');
    Route::patch('/partner-cashout/process/{id}', [APartner::class, 'processCashout'])->name('admin.partner.processCashout');
-  
+
    #Agents
    Route::get('/agents', [AAgent::class, 'index'])->name('admin.agents.index');
    Route::post('/agents', [AAgent::class, 'create'])->name('admin.agents.create');
@@ -255,7 +256,7 @@ Route::group(['prefix'=>'admin'],  function(){
    Route::get('/agents/settings', [AAgent::class, 'settings'])->name('admin.agents.settings');
    Route::post('/agents/settings/update', [AAgent::class, 'updateAgent'])->name('admin.agents.settings.update');
    Route::post('/superagents/settings/update', [AAgent::class, 'updateSuperAgent'])->name('admin.superagent.settings.update');
-  
+
    #settings
    Route::get('/settings', [ASettings::class, 'index'])->name('admin.settings.index');
    Route::post('/settings/ppp', [ASettings::class, 'ppp'])->name('admin.settings.ppp');

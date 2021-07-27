@@ -89,10 +89,10 @@
 
 							<ul>
 								<li class="pl-0">
-									<a href="tel:Phone:+61-821-456">
+									<a href="tel:Phone:+2348182540024">
 										<i class="bx bx-phone-call"></i>
 										<span>Hotline:</span>
-										Phone: +234-123-456-78
+										Phone: +2348182540024
 									</a>
 								</li>
 

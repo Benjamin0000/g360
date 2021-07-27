@@ -33,7 +33,11 @@
               $('#plan').html(data);
             },
             error:function(){
-              $('#plan').html("<div class='alert alert-danger'><i class='fa fa-info-circle'></i>Not available</div>");
+              if($('#dnum').val() == ''){
+                  $('#plan').html("<div class='alert alert-danger'><i class='fa fa-info-circle'></i>Enter mobile number first before you select a provider</div>");
+              }else {
+                  $('#plan').html("<div class='alert alert-danger'><i class='fa fa-info-circle'></i>Not available, are you sure the phone number is correct?</div>");
+              }
             }
           });
       });

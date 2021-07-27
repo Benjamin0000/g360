@@ -75,9 +75,9 @@
 								</li>
 
 								<li>
-									<a href="tel:+61-821-456">
+									<a href="tel:+2348182540024">
 										<i class="bx bx-phone-call"></i>
-										Call Us: +61-821-456
+										Call Us: +2348182540024
 									</a>
 								</li>
 							</ul>

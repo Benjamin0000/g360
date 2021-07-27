@@ -46,7 +46,7 @@ $user = Auth::user();
 </div>
 <div class="card">
     <div class="card-body">
-      <h3 class="card-title">History</h3>
+      <h3 class="card-title">HISTORY</h3>
       <div class="table-responsive">
          <table class="table table-bordered table-hover stylish-table">
            <thead>
@@ -94,7 +94,7 @@ onReady(function(){
        },
        error:function(xmlhttprequest, textstatus, message){
           if(textstatus==="timeout") {
-              $('#plan').html("<div class='alert alert-danger'><i class='fa fa-info-circle'></i> Provider taking too long try again</div>");
+              $('#plan').html("<div class='alert alert-danger'><i class='fa fa-info-circle'></i> Provider is taking too long to respond, try again later</div>");
           }else{
             $('#plan').html("<div class='alert alert-danger'><i class='fa fa-info-circle'></i> Cannot proceed</div>");
           }

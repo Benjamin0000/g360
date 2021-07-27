@@ -1,5 +1,6 @@
 <?php
 namespace App\Lib\Epayment;
+use App\Models\FAccount;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Helpers;
@@ -22,7 +23,7 @@ class Airtime
     /**
      * Validate mobile number by network provider
      * @param $number Int
-     * @param $perator String 
+     * @param $perator String
      * @param $amount Float airtime amout
      * @return \Illuminate\Http\Response
      */
@@ -130,34 +131,45 @@ class Airtime
      * Share referral commissions
      *
      * @return null
-    */ 
+    */
     public function creditUpline(RCard $airtime, User $user, $level = 1)
     {
-        $cur = Helpers::LOCAL_CURR_SYMBOL;
         $formular = json_decode('[' . $airtime->ref_amt . ']', true);
         $levels = count($formular);
-        if($level > $levels) return;
-        if($user->placed_by)
-            $user = User::where([ ['gnumber', $user->placed_by], ['status', 1] ])->first();
+        if ($level > $levels) return;
+        if ($user->placed_by)
+            $user = User::where([['gnumber', $user->placed_by], ['status', 1]])->first();
         else
-            $user = User::where([ ['gnumber', $user->ref_gnum], ['status', 1] ])->first();
-        $amt = (float)$formular[$level - 1];
-        $user->pend_balance += $amt;
-        $user->save();
-        WalletHistory::create([
-            'id'=>Helpers::genTableId(WalletHistory::class),
-            'amount'=>$amt,
-            'user_id'=>$user->id,
-            'gnumber'=>$user->gnumber,
-            'name'=>'pend_balance',
-            'type'=>'credit',
-            'description'=>"Airtime ".Helpers::ordinal($level)." Gen Airtime referral commision" 
-        ]);
-        $user->faccount->deca += $amt;
-        $user->faccount->save();
-        if($user->ref_gnum)
-            $this->creditUpline($airtime, $user, $level+1);
-        else 
-            return;
+            $user = User::where([['gnumber', $user->ref_gnum], ['status', 1]])->first();
+        if ($user){
+            $amt = (float)$formular[$level - 1];
+            $user->pend_balance += $amt;
+            $user->save();
+            WalletHistory::create([
+                'id' => Helpers::genTableId(WalletHistory::class),
+                'amount' => $amt,
+                'user_id' => $user->id,
+                'gnumber' => $user->gnumber,
+                'name' => 'pend_balance',
+                'type' => 'credit',
+                'description' => "Airtime " . Helpers::ordinal($level) . " Level Airtime referral commission"
+            ]);
+
+            if(!$user->faccount){
+                #Create Finance Account if uplink don't have
+                $faccount = FAccount::create([
+                    'id'=>Helpers::genTableId(FAccount::class),
+                    'user_id'=>$user->id
+                ]);
+            }else{
+                $faccount = $user->faccount;
+            }
+            $faccount->deca += $amt;
+            $faccount->save();
+
+            if ($user->ref_gnum)
+                $this->creditUpline($airtime, $user, $level + 1);
+        }
+        return;
     }
 }

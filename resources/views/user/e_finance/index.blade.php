@@ -3,7 +3,6 @@
 use App\Http\Helpers;
 use Carbon\Carbon;
 $cur = Helpers::LOCAL_CURR_SYMBOL;
-$user = Auth::user();
 $bronz_coin_price = (int)Helpers::getRegData('bronz_coin_price');
 @endphp
 @section('content')

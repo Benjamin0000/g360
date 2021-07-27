@@ -1,7 +1,8 @@
 @extends('user.layout', ['title'=>'Pay Bills'])
 @php
 use Carbon\Carbon;
-$cur = App\Http\Helpers::LOCAL_CURR_SYMBOL;
+use App\Http\Helpers;
+$cur = Helpers::LOCAL_CURR_SYMBOL;
 $user = Auth::user();
 @endphp
 @section('content')
@@ -50,15 +51,16 @@ $user = Auth::user();
 </div>
 <div class="card">
     <div class="card-body">
-      <h3 class="card-title">History</h3>
+      <h3 class="card-title">HISTORY</h3>
       <div class="table-responsive">
          <table class="table table-bordered table-hover stylish-table">
            <thead>
-            <tr>
+            <tr class="text-center">
               <th>No</th>
+              <th>Ref. no.</th>
               <th>Amount</th>
               <th>Disco</th>
-              <th>Type</th>
+              <th>Token</th>
               <th>Date</th>
             </tr>
            </thead>
@@ -66,15 +68,21 @@ $user = Auth::user();
             @if($histories->count())
               @php $count = Helpers::tableNumber(10); @endphp
               @foreach($histories as $history)
-                <tr>
+                <tr class="text-center">
                   <td>{{$count++}}</td>
+                  <td>{{$history->id}}</td>
                   <td>
-                    {{$cur.number_format($history->amount, 2, '.', ',')}}
-                    <div>{{$history->description}}</div>
+                    {{$cur.number_format($history->amount)}}
                   </td>
-                  <td>{{$history->service}}</td>
-                  <td>{{ucwords($history->type)}}</td>
-                  <td>{{$history->created_at->isoFormat('lll')}}</td>
+                  <td>{{$history->operator_name}}</td>
+                  <td>
+                      {{$history->pin_code}}
+                      <div>[meter No: {{$history->meter_no}}]</div>
+                  </td>
+                  <td>
+                      {{$history->created_at->isoFormat('lll')}}
+                      <div><button onclick="print_receipt('{{$history->id}}', 'elect')" class="btn btn-primary btn-sm">Print</button></div>
+                  </td>
                 </tr>
               @endforeach
             @endif
@@ -116,5 +124,23 @@ onReady(function(){
     });
   });
 });
+  function print_receipt(id, type){
+      $.ajax({
+          url:'{{route('receipt.print')}}/'+id+'/'+type,
+          type:'GET',
+          success:function(data){
+              var WinPrint = window.open('', '', 'left=0,top=0,width=800px,height=900px,toolbar=0,scrollbars=0,status=0');
+              WinPrint.document.write(data);
+              WinPrint.document.close();
+              WinPrint.focus();
+              WinPrint.print();
+              WinPrint.close();
+          },
+          error:function(){
+              alert("An error occurred! could not print file");
+          }
+      });
+  }
+
 </script>
 @endsection
