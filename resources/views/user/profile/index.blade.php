@@ -26,10 +26,10 @@ $user = Auth::user();
                                     <h6>{{$user->email}}</h6>
                                     <small class="text-muted p-t-30 db">Phone</small>
                                     <h6>{{$user->phone}}</h6>
-                                    {{-- <small class="text-muted p-t-30 db">Address</small>
-                                    <h6>Address</h6>
-                                    <small class="text-muted p-t-30 db">Date of Birth</small>
-                                    <h6>987</h6> --}}
+                                    <small class="text-muted p-t-30 db">BVN</small>
+                                    <h6>{{$user->bvn}}</h6>
+                                    <small class="text-muted p-t-30 db">Virtual Account number</small>
+                                    <h6>{{$user->v_account_no}}</h6> 
                                 </div>
                             </div>
                         </div>
@@ -39,7 +39,7 @@ $user = Auth::user();
                             <div class="card">
                                 <!-- Nav tabs -->
                                 <ul class="nav nav-tabs profile-tab" role="tablist">
-                                    <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#settings" role="tab">Info</a> </li>
+                                    <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#settings" role="tab">INFO</a> </li>
                                 </ul>
                                 <!-- Tab panes -->
                                 <div class="tab-content">
