@@ -168,6 +168,7 @@ Route::group(['prefix'=>'portal'],  function(){
     #settings
     Route::get('/settings', [SettingsController::class, 'index'])->name('user.settings.index');
     Route::post('/settings/nin', [SettingsController::class, 'updateNin'])->name('user.settings.nin');
+    Route::post('/settings/bvn', [SettingsController::class, 'addBvn'])->name('user.settings.bvn');
     Route::post('/settings/pass', [SettingsController::class, 'updatePassword'])->name('user.settings.pass');
     #profile
     Route::get('/profile', [ProfileController::class, 'index'])->name('user.profile.index');

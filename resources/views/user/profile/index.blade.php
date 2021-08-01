@@ -27,9 +27,9 @@ $user = Auth::user();
                                     <small class="text-muted p-t-30 db">Phone</small>
                                     <h6>{{$user->phone}}</h6>
                                     <small class="text-muted p-t-30 db">BVN</small>
-                                    <h6>{{$user->bvn}}</h6>
+                                    <h6>{{$user->virtualAccount ? $user->virtualAccount->bvn : ''}}</h6>
                                     <small class="text-muted p-t-30 db">Virtual Account number</small>
-                                    <h6>{{$user->v_account_no}}</h6> 
+                                    <h6>{{$user->virtualAccount ? $user->virtualAccount->number : ''}}</h6> 
                                 </div>
                             </div>
                         </div>

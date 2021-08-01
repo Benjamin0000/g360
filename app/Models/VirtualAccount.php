@@ -11,12 +11,14 @@ class VirtualAccount extends Model
     public $incrementing = false;
     protected $primaryKey = 'id';
     protected $keyType = 'string';
-    
+
     protected $fillable = [
         'id',
         'user_id',
         'reference', 
         'number',
-        'bvn'
+        'bvn',
+        'bank_name',
+        'bank_code'
     ];
 }

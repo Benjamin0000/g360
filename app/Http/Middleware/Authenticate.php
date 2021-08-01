@@ -42,9 +42,14 @@ class Authenticate extends Middleware
            $currentUrl == route('user.loan.debt') ||
            $currentUrl == route('user.loan.pay') || 
            str_contains($currentUrl, '/loan/extend/') == true ||
-           str_contains($currentUrl, '/gfund') == true
+           str_contains($currentUrl, '/gfund') == true || 
+           str_contains($currentUrl, 'portal/settings') == true
         )return $next($request);
         $user = Auth::user();
+
+        if(!$user->virtualAccount)
+            return redirect(route('user.settings.index'))->with('error', 'Please add your bvn');
+
         if($user->hasLoanDebt())
             return redirect(route('user.loan.debt'));
         

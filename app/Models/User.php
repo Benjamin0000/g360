@@ -45,13 +45,19 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function  virtualAccount()
+    {
+        return $this->hasOne(VirtualAccount::class,  'user_id');
+    }
+
     /**
      * Get Loan Balance
      * @return bool
-    */      
+    */
     public function loanBalance()
-    { 
-        $loan = Loan::where([ 
+    {
+        $loan = Loan::where([
             ['user_id', $this->id],
             ['status', 0]
         ])->whereNotNull('expiry_date');
@@ -59,17 +65,17 @@ class User extends Authenticatable
             $returned = $loan->sum('returned');
             $total_return = $loan->sum('total_return');
             return $returned - $total_return;
-        }   
+        }
         return 0;
     }
     /**
      * Determine if users can earn from a ref level
      * @return bool
-    */  
+    */
     public function canEarnFromLevel($level)
     {
         $package = Package::find($this->pkg_id);
-        if($package){   
+        if($package){
             if($package->gen >= $level)
                 return true;
         }
@@ -78,7 +84,7 @@ class User extends Authenticatable
     /**
      * Get users signed up package
      * @return object
-    */  
+    */
     public function package()
     {
         return $this->belongsTo(Package::class, 'pkg_id');
@@ -86,7 +92,7 @@ class User extends Authenticatable
     /**
      * Get users package upgrade history
      * @return object
-    */      
+    */
     public function upgrade()
     {
         return $this->hasOne(UpgradeHistory::class, 'user_id', 'id');
@@ -94,26 +100,26 @@ class User extends Authenticatable
     /**
      * Find yet to be paid loan
      * @return bool
-    */      
+    */
     public function haveUnPaidLoan()
     {
         return Loan::where([
-            ['user_id', $this->id], 
-            ['status', 0] 
+            ['user_id', $this->id],
+            ['status', 0]
         ])->whereNotNull('expiry_date')->exists();
     }
     public function loanExists()
     {
         return Loan::where([
-            ['user_id', $this->id], 
+            ['user_id', $this->id],
             ['status', 0],
-            ['g_approve', '<>', 2] 
+            ['g_approve', '<>', 2]
         ])->exists();
     }
     public function hasLoanDebt()
     {
        $first = Loan::where([
-            ['user_id', $this->id], 
+            ['user_id', $this->id],
             ['status', 0],
             ['defaulted', 0],
             ['expiry_date', '<=', Carbon::now()]
@@ -122,7 +128,7 @@ class User extends Authenticatable
             return true;
         }else{
             return Loan::where([
-                ['user_id', $this->id], 
+                ['user_id', $this->id],
                 ['status', 0],
                 ['defaulted', '<>', 0],
                 ['grace_date', '<=', Carbon::now()]
@@ -132,7 +138,7 @@ class User extends Authenticatable
     /**
      * Super associate bonus
      * @return object
-     */   
+     */
     public function superAssoc()
     {
         return $this->hasOne(SuperAssociate::class, 'user_id', 'id');
@@ -140,7 +146,7 @@ class User extends Authenticatable
     /**
      * Get users rank
      * @return object
-     */   
+     */
     public function rank()
     {
         return $this->belongsTo(Rank::class, 'rank_id');
@@ -148,7 +154,7 @@ class User extends Authenticatable
     /**
      * Get Users Loan
      * @return object
-    */      
+    */
     public function loan()
     {
         return $this->hasOne(Loan::class, 'user_id', 'id');
@@ -156,24 +162,24 @@ class User extends Authenticatable
     /**
      * Get total direct valid referrals
      * @return int
-    */   
+    */
     public function totalValidRef()
     {
-        return self::where([ 
+        return self::where([
             ['ref_gnum', $this->gnumber],
-            ['pkg_id', '>', 1], 
+            ['pkg_id', '>', 1],
         ])->orWhere('placed_by', $this->gnumber)->count();
     }
     public function totalPlaced()
     {
-        return self::where([ 
+        return self::where([
             ['placed_by', $this->gnumber],
         ])->count();
     }
     public function totalNotPlaced()
     {
-        return self::where([ 
-            ['ref_gnum', $this->gnumber], 
+        return self::where([
+            ['ref_gnum', $this->gnumber],
         ])->count();
     }
     /**
@@ -195,7 +201,7 @@ class User extends Authenticatable
     public function validPartner()
     {
         if($this->partner){
-            return PContract::where([ 
+            return PContract::where([
                 ['partner_id', $this->partner->id],
                 ['status', 0 ]
             ])->exists();
@@ -224,7 +230,7 @@ class User extends Authenticatable
     }
     public function rewards()
     {
-        return Reward::where([ 
+        return Reward::where([
             ['user_id', $this->id],
             ['status', 0]
         ])->count();

@@ -20,6 +20,12 @@ class GfundController extends Controller
     public function __construct()
     {
       $this->middleware('auth');
+      $this->middleware(function ($request, $next) {
+          $user = Auth::user();
+          if(!$user->virtualAccount)
+              return redirect(route('user.settings.index'))->with('error', 'Please add your bvn');
+          return $next($request);
+      });
     }
     /**
      * Display a listing of the resource.
@@ -28,6 +34,7 @@ class GfundController extends Controller
      */
     public function index()
     {
+
         $banks = Bank::all();
         return view('user.gfund.index', compact('banks'));
     }
@@ -37,7 +44,7 @@ class GfundController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function withdrawalWalletTransfer(Request $request)
-    { 
+    {
         if(!$request->ajax())return;
 
         $trx_balance = Helpers::TRX_BALANCE;
@@ -57,11 +64,11 @@ class GfundController extends Controller
 
         $amount = abs($amount); #👈 no need for this line, it's just for fun sake 😄
         switch($request->wallet){
-            case 'tw': 
+            case 'tw':
                 $wallet = 'TRX-wallet';
                 $sent = $trx_balance;
                 $user->$trx_balance += $amount;
-            break; 
+            break;
             case 'pkg':
                 if($user->pkg_id == $last_pkg_id)
                     return ['msg'=>"Can't make transfer to PKG-wallet"];
@@ -69,7 +76,7 @@ class GfundController extends Controller
                 $sent = $pkg_balance;
                 $user->$pkg_balance += $amount;
             break;
-            default: 
+            default:
                 return ['msg'=>"Please select a valid wallet"];
         }
         $user->$with_balance -= $amount;
@@ -93,8 +100,8 @@ class GfundController extends Controller
             'description'=>self::CUR.$amount.' received from W-wallet'
         ]);
         return [
-            'status'=>1, 
-            'msg'=>"Transfer successful", 
+            'status'=>1,
+            'msg'=>"Transfer successful",
             'bal'=>number_format($user->$with_balance, 2, '.', ','),
             'bal3'=>number_format($user->$trx_balance, 2, '.', ',')
         ];
@@ -103,7 +110,7 @@ class GfundController extends Controller
      * Transfer from transaction wallet
      *
      * @return \Illuminate\Http\Response
-     */ 
+     */
     public function trxWalletTransfer(Request $request)
     {
         if(!$request->ajax())return;
@@ -126,10 +133,10 @@ class GfundController extends Controller
         $total = $amount + $fee;
         if($user->$trx_balance < $total)
             return ['msg'=>"Insufficient fund for this transfer"];
-        
+
         if($request->wallet == 'w')
             $user->$with_balance += $amount;
-        else 
+        else
             return ['msg'=>"Wallet option not supported "];
 
         $user->$trx_balance -= $total;
@@ -153,8 +160,8 @@ class GfundController extends Controller
             'description'=>self::CUR.$amount.' transfered to W-wallet'
         ]);
         return [
-            'status'=>1, 
-            'msg'=>"Transfer successful", 
+            'status'=>1,
+            'msg'=>"Transfer successful",
             'bal'=>number_format($user->$trx_balance, 2, '.', ','),
             'bal2'=>number_format($user->$with_balance, 2, '.', ',')
         ];
@@ -163,14 +170,14 @@ class GfundController extends Controller
      * Validate Transaction before transfer
      *
      * @return \Illuminate\Http\Response
-     */     
+     */
     private static function validateTransfer(Request $request)
     {
         if(!$request->ajax())return;
 
         $with_balance = Helpers::WITH_BALANCE;
 
-        $min = 1000; 
+        $min = 1000;
         if(!$amount = (float)$request->amount)
             return ['msg'=>"Please enter a valid amount"];
 
@@ -183,13 +190,13 @@ class GfundController extends Controller
         $sender = Auth::user();
         if($sender->$with_balance < $amount)
             return ['msg'=>"Insufficient fund for transfer"];
-            
+
         if($gnumber = $request->gnumber){
-            $recipient = User::where([ 
-                ['gnumber', $gnumber], 
+            $recipient = User::where([
+                ['gnumber', $gnumber],
                 ['status', 1],
                 ['gnumber', '<>', $sender->gnumber],
-                ['id', '<>', $sender->id]  
+                ['id', '<>', $sender->id]
             ])->first();
             if($recipient){
                 return [
@@ -200,14 +207,14 @@ class GfundController extends Controller
                 ];
             }else
                 return ['msg'=>"Recipient not found"];
-        }else 
+        }else
             return ['msg'=>"Enter a G-number"];
     }
     /**
      * Get members detail before transfer
      *
      * @return \Illuminate\Http\Response
-     */    
+     */
     public function getMemeberDetail(Request $request)
     {
         return self::validateTransfer($request);
@@ -254,7 +261,7 @@ class GfundController extends Controller
                         $sender->fname.' '.$sender->lname.' ['.$sender->gnumber.']'
                     ]);
                     return [
-                        'status'=>true, 
+                        'status'=>true,
                         'bal'=>$sender->$with_balance,
                         'amount'=>$amount,
                         'receiver'=>$receiver->fname.' '.$receiver->lname
@@ -270,7 +277,7 @@ class GfundController extends Controller
      * Wallet transfer to bank account
      *
      * @return \Illuminate\Http\Response
-    */   
+    */
     public function getBankAccountDetail(Request $request)
     {
         $this->validate($request, [
@@ -286,7 +293,7 @@ class GfundController extends Controller
         $number = $request->account_number;
 
         if($amount < $min_amt)
-            return back()->with('error', 'Minimum withdrawable amount is '. 
+            return back()->with('error', 'Minimum withdrawable amount is '.
             self::CUR.$min_amt);
 
         $vat = (float)Helpers::getRegData('vat');
@@ -300,7 +307,7 @@ class GfundController extends Controller
 
         if(!password_verify($password, $user->password))
             return back()->with('error', 'Invalid account password');
-        
+
         $bank = Bank::where('code', $request->bank)->first();
         if($bank){
             $transfer = new MoneyTransfer();
@@ -308,7 +315,7 @@ class GfundController extends Controller
             if(isset($receiver['status'])){
                 if($receiver['status'] == 200){
                     if($request->type == 'first'){
-                        return view('user.gfund.user_info', 
+                        return view('user.gfund.user_info',
                         compact('receiver', 'vat', 'bank', 'amount', 'number', 'password'));
                     }elseif($request->type == 'sec'){
                         if($transfer->fundTransfer($number, $bank->id, $amount)){
@@ -332,9 +339,9 @@ class GfundController extends Controller
                         return redirect(route('user.gfund.index'))
                             ->with('error', 'Could not initiate transfer');
                     }
-                    return redirect(route('user.gfund.index')); 
+                    return redirect(route('user.gfund.index'));
                 }
-                return back()->with('error', $receiver['message']);  
+                return back()->with('error', $receiver['message']);
             }
             return back()->with('error', 'Unavailable at this time');
         }

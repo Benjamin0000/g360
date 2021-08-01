@@ -16,9 +16,11 @@ class CreateVirtualAccountsTable extends Migration
         Schema::create('virtual_accounts', function (Blueprint $table) {
             $table->string('id', 30)->primary();
             $table->string('user_id');
-            $table->string('reference');
-            $table->bigInteger('number');
-            $table->bigInteger('bvn');
+            $table->string('reference')->unique();
+            $table->string('number')->unique();
+            $table->string('bvn')->unique();
+            $table->string('bank_code');
+            $table->string('bank_name');
             $table->timestamps();
         });
     }

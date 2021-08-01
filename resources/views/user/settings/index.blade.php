@@ -59,16 +59,28 @@
                       </form>
                     </div>
                     <div class="col-md-6">
-                       <form action="{{route('user.settings.nin')}}" method="post">
+                       {{-- <form action="{{route('user.settings.nin')}}" method="post">
                           <div class="form-group">
                             <label for="">Enter NIN number</label>
                             <input type="text" required name="nin_number" value="{{$user->nin_number}}" class="form-control">
                           </div>
                           @csrf
                           <div class="form-group">
-                            <button class="btn btn-success">Save Settings</button>
+                            <button class="btn btn-success">Save</button>
                           </div>
-                       </form>
+                       </form> --}}
+
+                       <form action="{{route('user.settings.bvn')}}" method="post">
+                            <div class="form-group">
+                            <label for="">BVN</label>
+                            <input type="text" required name="bvn" @if($user->virtualAccount) readonly @endif value="@if($user->virtualAccount){{$user->virtualAccount->bvn}} @elseif( old('bvn') ) {{old('bvn')}} @endif" class="form-control">
+                            </div>
+                            @csrf
+                            <div class="form-group">
+                                <button onclick="return confirm('Are you sure this is correct?')" @if($user->virtualAccount) disabled @endif class="btn btn-success">Save</button>
+                            </div>
+                        </form>
+
                     </div>
                   </div>
               </div>

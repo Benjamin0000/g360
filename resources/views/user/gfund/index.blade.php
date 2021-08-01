@@ -164,18 +164,24 @@
           </div>
           <div class="col-md-5">
             <h4 class="card-title text-center">Fund Wallet</h4>
-            <br>
+            
             <div class="text-center">
-              <b>1234566677</b>
+              <b>{{$user->virtualAccount ? $user->virtualAccount->number : ''}}</b>
+              <div><small>{{$user->virtualAccount ? $user->virtualAccount->bank_name : ''}}</small></div> 
               <div><small>Your virtual account number</small></div> 
               <br>
               <div>
                 Transfer funds to the account number above to automatically fund your W-wallet
               </div>  
-              <br>
+              <div class="text-danger">
+                <small>
+                  <i class="fa fa-info-circle"></i> Note this is an automatic process you don't need to contact support.
+                </small>
+              </div> 
+              {{-- <br>
               <div>
                 <a href="">View History</a>
-              </div>
+              </div> --}}
             </div>
           </div>
         </div>
