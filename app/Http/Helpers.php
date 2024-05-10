@@ -197,7 +197,7 @@ use Exception;
 
             case 'sponsor': 
                 if(!User::where('gnumber', $value)->exists())
-                    return "invalid sponsor code";
+                    // return "invalid sponsor code";
             break; 
 
             case 'pu':

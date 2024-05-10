@@ -47,8 +47,8 @@ class Authenticate extends Middleware
         )return $next($request);
         $user = Auth::user();
 
-        if(!$user->virtualAccount)
-            return redirect(route('user.settings.index'))->with('error', 'Please add your bvn');
+        // if(!$user->virtualAccount)
+        //     return redirect(route('user.settings.index'))->with('error', 'Please add your bvn');
 
         if($user->hasLoanDebt())
             return redirect(route('user.loan.debt'));

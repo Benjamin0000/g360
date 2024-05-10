@@ -20,12 +20,12 @@ class GfundController extends Controller
     public function __construct()
     {
       $this->middleware('auth');
-      $this->middleware(function ($request, $next) {
-          $user = Auth::user();
-          if(!$user->virtualAccount)
-              return redirect(route('user.settings.index'))->with('error', 'Please add your bvn');
-          return $next($request);
-      });
+    //   $this->middleware(function ($request, $next) {
+    //       $user = Auth::user();
+    //       if(!$user->virtualAccount)
+    //           return redirect(route('user.settings.index'))->with('error', 'Please add your bvn');
+    //       return $next($request);
+    //   });
     }
     /**
      * Display a listing of the resource.
