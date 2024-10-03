@@ -68,16 +68,16 @@
 						<div class="col-lg-6 col-sm-6">
 							<ul class="header-content-left">
 								<li>
-									<a href="mailto:hello@surety.com">
+									<a href="mailto:support@triab.online">
 										<i class="bx bx-envelope"></i>
-										Email: hello@getsupport360.com
+										Email: support@triab.online
 									</a>
 								</li>
 
 								<li>
-									<a href="tel:+2348182540024">
+									<a href="tel:+2348027755940">
 										<i class="bx bx-phone-call"></i>
-										Call Us: +2348182540024
+										Call Us: +2348027755940
 									</a>
 								</li>
 							</ul>

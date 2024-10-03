@@ -89,10 +89,10 @@
 
 							<ul>
 								<li class="pl-0">
-									<a href="tel:Phone:+2348182540024">
+									<a href="tel:Phone:+2348027755940">
 										<i class="bx bx-phone-call"></i>
 										<span>Hotline:</span>
-										Phone: +2348182540024
+										Phone: +2348027755940
 									</a>
 								</li>
 
@@ -100,7 +100,7 @@
 									<a href="mailto:hello@surety.com">
 										<i class="bx bx-envelope"></i>
 										<span>Email:</span>
-										hello@g360.com
+										support@triab.online
 									</a>
 								</li>
 
